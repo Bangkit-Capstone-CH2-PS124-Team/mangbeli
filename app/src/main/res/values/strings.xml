@@ -12,6 +12,15 @@
     <string name="move_to_item_detail">move to item detail</string>
     <string name="searchbar_hint">Cari Pedagang..</string>
     <string name="title_home_vendor_around">Pedagang di Sekitarmu..</string>
+    <string name="description_logo">Grobak Logo</string>
     <string name="sort_by">Sort By</string>
     <string name="set_sort_by">set sort by</string>
+    <string name="title_login">Sign In</string>
+    <string name="description_login">Selamat Datang Di MangBeli silahkan login</string>
+    <string name="email">Email</string>
+    <string name="input">Input</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="or">OR</string>
+    <string name="sign_in_with_google">Sign In With Google</string>
 </resources>

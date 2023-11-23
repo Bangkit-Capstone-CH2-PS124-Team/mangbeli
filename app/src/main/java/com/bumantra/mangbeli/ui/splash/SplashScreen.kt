@@ -1,4 +1,4 @@
-package com.bumantra.mangbeli.ui.splashscreen
+package com.bumantra.mangbeli.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent

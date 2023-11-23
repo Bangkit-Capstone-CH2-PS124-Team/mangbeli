@@ -72,4 +72,7 @@ dependencies {
     // Room
     implementation("androidx.room:room-runtime:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
+
+    //google
+    implementation ("com.google.android.gms:play-services-auth:19.2.0")
 }
