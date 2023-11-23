@@ -14,17 +14,21 @@
         android:theme="@style/Theme.MangBeli"
         tools:targetApi="31">
         <activity
-            android:name=".ui.home.HomeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_home" />
-        <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.splashscreen.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true">
         </activity>
     </application>
 
