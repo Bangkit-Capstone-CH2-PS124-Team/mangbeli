@@ -9,4 +9,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_settings">Settings</string>
+    <string name="move_to_item_detail">move to item detail</string>
+    <string name="searchbar_hint">Cari Pedagang..</string>
+    <string name="title_home_vendor_around">Pedagang di Sekitarmu..</string>
+    <string name="sort_by">Sort By</string>
+    <string name="set_sort_by">set sort by</string>
 </resources>

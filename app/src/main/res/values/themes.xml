@@ -33,6 +33,9 @@
     <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
     </style>
+    <style name="circularImageView" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
