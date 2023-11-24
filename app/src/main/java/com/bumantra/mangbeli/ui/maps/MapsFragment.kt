@@ -4,13 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.FragmentMapsBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.MarkerOptions
 
-class MapsFragment : Fragment() {
+class MapsFragment : Fragment(), OnMapReadyCallback {
 
+    private lateinit var mMap: GoogleMap
     private var _binding: FragmentMapsBinding? = null
 
     // This property is only valid between onCreateView and
@@ -28,11 +34,31 @@ class MapsFragment : Fragment() {
         _binding = FragmentMapsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        mapsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        val mapFragment = childFragmentManager
+            .findFragmentById(R.id.google_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
+
         return root
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isIndoorLevelPickerEnabled = true
+        mMap.uiSettings.isMapToolbarEnabled = true
+        mMap.uiSettings.isCompassEnabled = true
+
+        mMap.setOnMapClickListener {
+            val markerOptions = MarkerOptions()
+            markerOptions.position(it)
+            markerOptions.title("${it.latitude} : ${it.longitude}")
+            mMap.clear()
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
+            mMap.addMarker(markerOptions)
+        }
+
     }
 
     override fun onDestroyView() {

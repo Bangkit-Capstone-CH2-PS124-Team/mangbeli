@@ -38,4 +38,6 @@
     <string name="title_languanges">Languanges</string>
     <string name="desc_languange">Set your languange</string>
     <string name="logout">Logout</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="action_bar_maps">Lokasi Pedagang</string>
 </resources>
