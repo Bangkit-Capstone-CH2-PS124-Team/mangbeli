@@ -3,7 +3,7 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_notifications">Notification</string>
     <string name="title_maps">Maps</string>
     <string name="title_profile">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -23,4 +23,19 @@
     <string name="login">LOGIN</string>
     <string name="or">OR</string>
     <string name="sign_in_with_google">Sign In With Google</string>
+    <string name="profile">Profile</string>
+    <string name="suka">Suka :</string>
+    <string name="location_profile">Lokasi</string>
+    <string name="email_hint">Email</string>
+    <string name="no_hp_hint">No.HP</string>
+    <string name="list_favorite_hint">List favorit makanan</string>
+    <string name="reset_btn">Reset</string>
+    <string name="save_btn">Save</string>
+    <string name="list_of_favorit_user">List of favorite, Bakso, Ketoprak, Mie Ayam, Nasi Goreng</string>
+    <string name="desc_notification">Set notification for nearest street vendor</string>
+    <string name="title_dark_mode">Dark Mode</string>
+    <string name="desc_dark_mode">Set thems to dark mode</string>
+    <string name="title_languanges">Languanges</string>
+    <string name="desc_languange">Set your languange</string>
+    <string name="logout">Logout</string>
 </resources>
