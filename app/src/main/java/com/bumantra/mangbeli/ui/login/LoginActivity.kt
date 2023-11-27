@@ -1,9 +1,11 @@
 package com.bumantra.mangbeli.ui.login
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.ActivityLoginBinding
+import com.bumantra.mangbeli.ui.signup.SignUpActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -14,6 +16,10 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.btnLoginActivity.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 }
