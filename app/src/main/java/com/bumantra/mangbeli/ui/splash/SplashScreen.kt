@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.bumantra.mangbeli.databinding.ActivitySplashScreenBinding
-import com.bumantra.mangbeli.ui.MainActivity
+import com.bumantra.mangbeli.ui.login.LoginActivity
 
 
 @SuppressLint("CustomSplashScreen")
@@ -25,7 +25,7 @@ class SplashScreen : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (!isFinishing) {
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
             }

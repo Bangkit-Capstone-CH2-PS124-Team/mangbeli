@@ -40,4 +40,10 @@
     <string name="logout">Logout</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="action_bar_maps">Lokasi Pedagang</string>
+    <string name="title_signup">Register</string>
+    <string name="description_signup">Selamat datang di MangBeli Silahkan Registrasi</string>
+    <string name="name">Name</string>
+    <string name="confirmpassword">Confirm Password</string>
+    <string name="pembeli">Pembeli</string>
+    <string name="pedagang">Pedagang</string>
 </resources>
