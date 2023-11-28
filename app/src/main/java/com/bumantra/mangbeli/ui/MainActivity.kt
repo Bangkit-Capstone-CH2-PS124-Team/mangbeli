@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewPager.adapter = viewPagerAdapter
 
-        setUpindicator(0)
+        setUpIndicator(0)
         binding.viewPager.addOnPageChangeListener(viewListener)
     }
 
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun setUpindicator(position: Int) {
+    private fun setUpIndicator(position: Int) {
         dots = Array(3) { TextView(this) }
         binding.indicator.removeAllViews()
 
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPageSelected(position: Int) {
-            setUpindicator(position)
+            setUpIndicator(position)
 //            binding.btnBack.visibility = if (position > 0) View.VISIBLE else View.INVISIBLE
             binding.btnSkip.visibility = if (position > 0) View.INVISIBLE else View.VISIBLE
             binding.btnNext.text = if (position == 2) getString(R.string.menu) else getString(R.string.next_btn)
