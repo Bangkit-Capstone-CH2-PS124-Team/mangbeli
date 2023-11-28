@@ -1,5 +1,6 @@
 package com.bumantra.mangbeli.ui.home
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumantra.mangbeli.databinding.ItemListHomeBinding
 import com.bumantra.mangbeli.model.Vendor
+import com.bumantra.mangbeli.ui.detail.DetailActivity
 import com.bumptech.glide.Glide
 
 class HomeAdapter : ListAdapter<Vendor, HomeAdapter.VendorViewHolder>(DIFF_CALLBACK) {
@@ -38,6 +40,18 @@ class HomeAdapter : ListAdapter<Vendor, HomeAdapter.VendorViewHolder>(DIFF_CALLB
         val vendor = getItem(position) as Vendor
         holder.binding.imgVendor.loadImage(vendor.photoUrl)
         holder.bind(vendor)
+
+        holder.itemView.setOnClickListener {
+            val contextIntent = holder.itemView.context
+            val intent = Intent(contextIntent, DetailActivity::class.java)
+            intent.putExtra("id", vendor.id)
+            // delete the intent below when data is already apply
+            intent.putExtra("photoUrl", vendor.photoUrl)
+            intent.putExtra("vendorName", vendor.vendorName)
+            intent.putExtra("name", vendor.name)
+            intent.putStringArrayListExtra("products", ArrayList(vendor.products))
+            contextIntent.startActivity(intent)
+        }
     }
 
     companion object {

@@ -15,6 +15,10 @@
         android:theme="@style/Theme.MangBeli"
         tools:targetApi="31">
         <activity
+            android:name=".ui.detail.DetailActivity"
+            android:parentActivityName=".ui.home.HomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.MenuActivity"
             android:exported="false" />
         <activity
@@ -40,6 +44,7 @@
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
+
             android:label="@string/title_activity_home" />
         <activity
             android:name=".ui.MainActivity"

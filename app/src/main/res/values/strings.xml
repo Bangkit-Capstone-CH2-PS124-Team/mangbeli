@@ -47,9 +47,9 @@
     <string name="pembeli">Pembeli</string>
     <string name="pedagang">Pedagang</string>
     <string name="description1">Selamat datang di MangBeli, aplikasi yang memudahkan kamu untuk menemukan dan berinteraksi dengan pedagang keliling di sekitar.</string>
-    <string name="description2" >Pilih peran Anda di MangBeli: pembeli yang ingin menikmati makanan enak atau pedagang keliling yang ingin meraih lebih banyak pelanggan.</string>
-    <string name= "description3" >Mari mulai dengan MangBeli! Daftar sekarang untuk menikmati berbagai fitur, mulai dari pelacakan pedagang keliling hingga notifikasisaat pedagang favoritmu sudah dekat. </string>
-    <string name= "description4" >Selamat datang di MangBeli, tempat di mana pengalaman jajan menjadi lebih mudah dan lebih menyenangkan. Disini kamu bisa menemukan pedagang keliling di sekitarmu,</string>
+    <string name="description2">Pilih peran Anda di MangBeli: pembeli yang ingin menikmati makanan enak atau pedagang keliling yang ingin meraih lebih banyak pelanggan.</string>
+    <string name="description3">Mari mulai dengan MangBeli! Daftar sekarang untuk menikmati berbagai fitur, mulai dari pelacakan pedagang keliling hingga notifikasisaat pedagang favoritmu sudah dekat. </string>
+    <string name="description4">Selamat datang di MangBeli, tempat di mana pengalaman jajan menjadi lebih mudah dan lebih menyenangkan. Disini kamu bisa menemukan pedagang keliling di sekitarmu,</string>
     <string name="next_btn">Berikutnya > </string>
     <string name="menu">Menu > </string>
     <string name="skip">Skip ></string>
@@ -57,4 +57,13 @@
     <string name="menu_screen_image">menu image</string>
     <string name="register">Register</string>
     <string name="onboarding_screen_image">onboarding image</string>
+    <string name="vendor_name">Vendor Name</string>
+    <string name="detail_pedagang">Detail Pedagang</string>
+    <string name="cta_fab_desc">Klik untuk memanggil pedagang</string>
+    <string name="title_alert_detail">Panggil Pedagang</string>
+    <string name="desc_alert_detail">Apakah kamu yakin ingin memanggil pedagang untuk sampai dilokasimu?</string>
+    <string name="toast_alert_detail">"Pedagang telah diberitahu, tunggu sebentar ya! "</string>
+    <string name="toast_alert_detail_cancel">Kamu tidak jadi memanggil pedagang</string>
+    <string name="yes">Ya</string>
+    <string name="cancel">Batal</string>
 </resources>

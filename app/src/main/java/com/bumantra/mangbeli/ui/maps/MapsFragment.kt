@@ -55,7 +55,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             markerOptions.position(it)
             markerOptions.title("${it.latitude} : ${it.longitude}")
             mMap.clear()
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 16f))
             mMap.addMarker(markerOptions)
         }
 
