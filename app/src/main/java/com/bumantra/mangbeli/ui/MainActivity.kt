@@ -22,10 +22,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
-        binding.btnBack.visibility = View.INVISIBLE
+//        binding.btnBack.visibility = View.INVISIBLE
         val isFirstInstall = getSharedPreferences("PREFS", MODE_PRIVATE).getBoolean("isFirstInstall", true)
 
-        // Jika ini adalah instalasi pertama kali, tampilkan halaman ini
         if (isFirstInstall) {
             setupFirstInstall()
         } else {
@@ -34,28 +33,31 @@ class MainActivity : AppCompatActivity() {
 
     }
     private fun setupFirstInstall() {
-        binding.btnBack.setOnClickListener {
-            if (getitem(0) > 0) {
-                binding.viewPager.setCurrentItem(getitem(-1), true)
-                binding.btnNext.text = getString(R.string.next)
-            }
-        }
-
+//        binding.btnBack.setOnClickListener {
+//            if (getitem(0) > 0) {
+//                binding.viewPager.setCurrentItem(getitem(-1), true)
+//                binding.btnNext.text = getString(R.string.next_btn)
+//            }
+//        }
 
         binding.btnNext.setOnClickListener {
+
             if (getitem(0) == 1) {
                 binding.btnNext.text = getString(R.string.menu)
             }
-
+            if(getitem(0) < 1 ){
+                binding.btnSkip.visibility = View.INVISIBLE
+            }
             if (getitem(0) < 2) {
                 binding.viewPager.setCurrentItem(getitem(1), true)
             } else {
                 val i = Intent(this@MainActivity, MenuActivity::class.java)
                 startActivity(i)
                 finish()
-                getSharedPreferences("PREFS", MODE_PRIVATE).edit().putBoolean("isFirstInstall", false).apply()
+//                getSharedPreferences("PREFS", MODE_PRIVATE).edit().putBoolean("isFirstInstall", false).apply()
             }
         }
+
 
 
         binding.btnSkip.setOnClickListener {
@@ -106,7 +108,9 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPageSelected(position: Int) {
             setUpindicator(position)
-            binding.btnBack.visibility = if (position > 0) View.VISIBLE else View.INVISIBLE
+//            binding.btnBack.visibility = if (position > 0) View.VISIBLE else View.INVISIBLE
+            binding.btnSkip.visibility = if (position > 0) View.INVISIBLE else View.VISIBLE
+            binding.btnNext.text = if (position == 2) getString(R.string.menu) else getString(R.string.next_btn)
         }
 
         override fun onPageScrollStateChanged(state: Int) {

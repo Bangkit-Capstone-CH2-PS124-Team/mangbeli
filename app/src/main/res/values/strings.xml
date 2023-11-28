@@ -21,7 +21,7 @@
     <string name="input">Input</string>
     <string name="password">Password</string>
     <string name="login">LOGIN</string>
-    <string name="or">OR</string>
+    <string name="or">Or login with</string>
     <string name="sign_in_with_google">Sign In With Google</string>
     <string name="profile">Profile</string>
     <string name="suka">Suka :</string>
@@ -49,11 +49,12 @@
     <string name="description1">Selamat datang di MangBeli, aplikasi yang memudahkan kamu untuk menemukan dan berinteraksi dengan pedagang keliling di sekitar.</string>
     <string name="description2" >Pilih peran Anda di MangBeli: pembeli yang ingin menikmati makanan enak atau pedagang keliling yang ingin meraih lebih banyak pelanggan.</string>
     <string name= "description3" >Mari mulai dengan MangBeli! Daftar sekarang untuk menikmati berbagai fitur, mulai dari pelacakan pedagang keliling hingga notifikasisaat pedagang favoritmu sudah dekat. </string>
-    <string name="next">Next</string>
-    <string name="menu">Menu</string>
+    <string name= "description4" >Selamat datang di MangBeli, tempat di mana pengalaman jajan menjadi lebih mudah dan lebih menyenangkan. Disini kamu bisa menemukan pedagang keliling di sekitarmu,</string>
+    <string name="next_btn">Berikutnya > </string>
+    <string name="menu">Menu > </string>
     <string name="skip">Skip</string>
     <string name="back">Back</string>
     <string name="menu_screen_image">menu image</string>
-    <string name="register">REGISTER</string>
+    <string name="register">Register</string>
     <string name="onboarding_screen_image">onboarding image</string>
 </resources>
