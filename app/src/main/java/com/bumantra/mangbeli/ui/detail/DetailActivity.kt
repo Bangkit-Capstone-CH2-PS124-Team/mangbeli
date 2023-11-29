@@ -7,16 +7,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.ActivityDetailBinding
+import com.bumantra.mangbeli.utils.VectorToBitmap
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var mMap: GoogleMap
+    private var name: String? = null
+    private var vendorName: String? = null
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -30,8 +36,10 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         // val id = intent.getStringExtra("id") ?: ""
 
         // Dummy implementation, it should replace when repository or data is done
-        val name = intent.getStringExtra("name")
-        val vendorName = intent.getStringExtra("vendorName")
+        name = intent.getStringExtra("name")
+        vendorName = intent.getStringExtra("vendorName")
+        latitude = intent.getDoubleExtra("latitude", 0.0)
+        longitude = intent.getDoubleExtra("longitude", 0.0)
         val photoUrl = intent.getStringExtra("photoUrl") ?: ""
         val products = intent.getStringArrayListExtra("products")
 
@@ -57,14 +65,16 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isMapToolbarEnabled = true
         mMap.uiSettings.isCompassEnabled = true
 
-        mMap.setOnMapClickListener {
-            val markerOptions = MarkerOptions()
-            markerOptions.position(it)
-            markerOptions.title("${it.latitude} : ${it.longitude}")
-            mMap.clear()
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 16f))
-            mMap.addMarker(markerOptions)
-        }
+        val currentLocation = LatLng(latitude, longitude)
+        val iconConverter = VectorToBitmap()
+        mMap.addMarker(
+            MarkerOptions()
+                .position(currentLocation)
+                .title(vendorName)
+                .snippet(name)
+                .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart,  resources))
+        )
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
     }
 
     private fun ImageView.loadImage(url: String) {

@@ -8,15 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.FragmentMapsBinding
-import com.bumantra.mangbeli.model.VendorsData.vendors
 import com.bumantra.mangbeli.utils.VectorToBitmap
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.bumantra.mangbeli.model.VendorsData.vendors
+import com.google.android.gms.maps.model.LatLngBounds
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
@@ -62,8 +62,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         vendors.forEach { data ->
             val latLng = LatLng(data.latitude, data.longitude)
             mMap.addMarker(
-                MarkerOptions().position(latLng).title(data.vendorName).snippet(data.name)
-                    .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
+                MarkerOptions().position(latLng).title(data.vendorName).snippet(data.name).icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart,  resources))
             )
             boundsBuilder.include(latLng)
         }

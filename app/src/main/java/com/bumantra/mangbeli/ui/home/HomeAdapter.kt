@@ -56,6 +56,8 @@ class HomeAdapter : ListAdapter<Vendor, HomeAdapter.VendorViewHolder>(DIFF_CALLB
             intent.putExtra("photoUrl", vendor.photoUrl)
             intent.putExtra("vendorName", vendor.vendorName)
             intent.putExtra("name", vendor.name)
+            intent.putExtra("latitude", vendor.latitude)
+            intent.putExtra("longitude", vendor.longitude)
             intent.putStringArrayListExtra("products", ArrayList(vendor.products))
             contextIntent.startActivity(intent)
         }
