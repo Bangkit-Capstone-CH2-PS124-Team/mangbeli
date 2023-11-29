@@ -1,6 +1,6 @@
-package com.bumantra.mangbeli.data.network
+package com.bumantra.mangbeli.data.remote.network
 
-import com.bumantra.mangbeli.data.response.RegisterResponse
+import com.bumantra.mangbeli.data.remote.response.RegisterResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST

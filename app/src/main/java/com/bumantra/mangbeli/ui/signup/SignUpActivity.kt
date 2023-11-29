@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.bumantra.mangbeli.R
-import com.bumantra.mangbeli.data.response.ErrorResponse
+import com.bumantra.mangbeli.data.remote.response.ErrorResponse
 import com.bumantra.mangbeli.databinding.ActivitySignUpBinding
 import com.bumantra.mangbeli.ui.ViewModelFactory
 import com.bumantra.mangbeli.ui.login.LoginActivity

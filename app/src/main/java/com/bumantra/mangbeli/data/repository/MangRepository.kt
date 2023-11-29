@@ -1,7 +1,7 @@
 package com.bumantra.mangbeli.data.repository
 
-import com.bumantra.mangbeli.data.network.ApiService
-import com.bumantra.mangbeli.data.response.RegisterResponse
+import com.bumantra.mangbeli.data.remote.network.ApiService
+import com.bumantra.mangbeli.data.remote.response.RegisterResponse
 
 class MangRepository(
     private val apiService: ApiService

@@ -1,4 +1,4 @@
-package com.bumantra.mangbeli.data.response
+package com.bumantra.mangbeli.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 

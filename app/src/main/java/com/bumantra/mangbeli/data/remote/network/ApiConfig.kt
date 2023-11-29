@@ -1,4 +1,4 @@
-package com.bumantra.mangbeli.data.network
+package com.bumantra.mangbeli.data.remote.network
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
