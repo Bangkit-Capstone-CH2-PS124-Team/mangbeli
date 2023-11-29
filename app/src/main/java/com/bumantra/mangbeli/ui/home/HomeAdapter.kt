@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.ItemListHomeBinding
 import com.bumantra.mangbeli.model.Vendor
 import com.bumantra.mangbeli.ui.detail.DetailActivity
@@ -19,9 +20,15 @@ class HomeAdapter : ListAdapter<Vendor, HomeAdapter.VendorViewHolder>(DIFF_CALLB
         private val name = binding.tvItemName
         private val distance = binding.tvItemDistance
         fun bind(vendor: Vendor) {
+            val location = binding.root.context.getString(
+                R.string.vendor_location_format,
+                vendor.latitude.toString(),
+                vendor.longitude.toString()
+            )
+
             vendorName.text = vendor.vendorName
             name.text = vendor.name
-            distance.text = vendor.distance
+            distance.text = location
 
         }
 

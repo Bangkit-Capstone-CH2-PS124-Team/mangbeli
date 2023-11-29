@@ -4,7 +4,8 @@ data class Vendor(
     val id: String,
     val vendorName: String,
     val name: String,
-    val distance: String?,
+    val latitude: Double,
+    val longitude: Double,
     val photoUrl: String,
     val products: List<String>
 )

@@ -74,4 +74,6 @@
     <string name="positive_dialog_btn_text">Lanjut</string>
     <string name="error">Error</string>
     <string name="sign_up_error">Try Again</string>
+    <string name="vendor_location_format">%s, %s</string>
+    <string name="tes_aja">Tes aja</string>
 </resources>
