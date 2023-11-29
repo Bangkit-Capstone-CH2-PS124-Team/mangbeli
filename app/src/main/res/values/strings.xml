@@ -66,4 +66,12 @@
     <string name="toast_alert_detail_cancel">Kamu tidak jadi memanggil pedagang</string>
     <string name="yes">Ya</string>
     <string name="cancel">Batal</string>
+    <string name="name_is_required">Name is required</string>
+    <string name="email_is_required">Email is required</string>
+    <string name="password_is_required">Password is required</string>
+    <string name="success">Success</string>
+    <string name="success_account_created">User Created</string>
+    <string name="positive_dialog_btn_text">Lanjut</string>
+    <string name="error">Error</string>
+    <string name="sign_up_error">Try Again</string>
 </resources>
