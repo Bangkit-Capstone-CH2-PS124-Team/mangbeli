@@ -34,7 +34,24 @@ class HomeFragment : Fragment() {
         }
 
         showRecyclerView()
+        setUpSearchBar()
+
+
         return root
+    }
+
+    private fun setUpSearchBar() {
+        with(binding) {
+            searchView.setupWithSearchBar(searchBar)
+            searchView
+                .editText
+                .setOnEditorActionListener { _, _, _ ->
+                    searchBar.setText(searchView.text)
+                    searchView.hide()
+                    searchView.clearFocus()
+                    false
+                }
+        }
     }
 
     private fun showRecyclerView() {
