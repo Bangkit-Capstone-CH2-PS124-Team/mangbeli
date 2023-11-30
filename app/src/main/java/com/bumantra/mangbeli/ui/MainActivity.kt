@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 val i = Intent(this@MainActivity, MenuActivity::class.java)
                 startActivity(i)
                 finish()
-//                getSharedPreferences("PREFS", MODE_PRIVATE).edit().putBoolean("isFirstInstall", false).apply()
+             getSharedPreferences("PREFS", MODE_PRIVATE).edit().putBoolean("isFirstInstall", false).apply()
             }
         }
 
@@ -108,7 +108,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPageSelected(position: Int) {
             setUpIndicator(position)
-//            binding.btnBack.visibility = if (position > 0) View.VISIBLE else View.INVISIBLE
             binding.btnSkip.visibility = if (position > 0) View.INVISIBLE else View.VISIBLE
             binding.btnNext.text = if (position == 2) getString(R.string.menu) else getString(R.string.next_btn)
         }
