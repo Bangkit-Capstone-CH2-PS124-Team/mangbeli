@@ -16,10 +16,12 @@ import kotlinx.coroutines.flow.map
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 class UserPref private constructor( private val dataStore: DataStore<Preferences>) {
 
-    suspend fun saveToken(token: String?) {
+    suspend fun saveToken(token: String?, email: String, role : String) {
         if (token != null) {
             dataStore.edit { preferences ->
                 preferences[TOKEN_KEY] = token
+                preferences[EMAIL_KEY] = email
+                preferences[ROLE_KEY] = role
                 preferences[IS_LOGIN_KEY] = true
             }
         } else {
@@ -32,6 +34,7 @@ class UserPref private constructor( private val dataStore: DataStore<Preferences
             User(
                 preferences[TOKEN_KEY] ?: " ",
                 preferences[EMAIL_KEY] ?: "",
+                preferences[ROLE_KEY] ?: "",
                 preferences[IS_LOGIN_KEY] ?: false
             )
         }
@@ -51,6 +54,7 @@ class UserPref private constructor( private val dataStore: DataStore<Preferences
         val TOKEN_KEY = stringPreferencesKey("token")
         val EMAIL_KEY = stringPreferencesKey("email")
         val IS_LOGIN_KEY = booleanPreferencesKey("isLogin")
+        val ROLE_KEY = stringPreferencesKey("role")
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPref {
             return INSTANCE ?: synchronized(this) {

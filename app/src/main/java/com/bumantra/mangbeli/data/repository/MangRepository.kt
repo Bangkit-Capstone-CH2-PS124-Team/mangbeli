@@ -13,9 +13,9 @@ class MangRepository(
     private val apiService: ApiService
 ) {
 
-    private suspend fun saveToken(token: String) {
-        userPref.saveToken(token)
-        Log.e("TokenError", token)
+    private suspend fun saveToken(token: String, email: String, role: String) {
+        userPref.saveToken(token, email, role)
+        Log.e("TokenError","$token + $email")
     }
     fun getSession(): Flow<User> {
         return userPref.getSession()
@@ -36,7 +36,7 @@ class MangRepository(
             val loginResult = loginResponse.loginResult
 
             if (loginResult != null) {
-                saveToken(loginResult.token)
+                saveToken(loginResult.token, email, loginResult.role)
                 return loginResult
             } else {
                 userPref.logout()

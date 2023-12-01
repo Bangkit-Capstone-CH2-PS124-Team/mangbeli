@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
 
 
         viewModel.getSession().observe(viewLifecycleOwner) { user ->
-            if (!user.isLogin) {
+            if (user.token.isEmpty()) {
                 startActivity(Intent(requireContext(), MenuActivity::class.java))
                 requireActivity().finish()
             }
