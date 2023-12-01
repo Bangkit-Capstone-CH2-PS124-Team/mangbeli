@@ -8,6 +8,7 @@ import com.bumantra.mangbeli.data.repository.MangRepository
 import com.bumantra.mangbeli.di.Injection
 import com.bumantra.mangbeli.ui.home.HomeViewModel
 import com.bumantra.mangbeli.ui.login.LoginViewModel
+import com.bumantra.mangbeli.ui.profile.ProfileViewModel
 import com.bumantra.mangbeli.ui.signup.SignUpViewModel
 
 class ViewModelFactory(private val repository: MangRepository) : ViewModelProvider.NewInstanceFactory() {
@@ -23,6 +24,9 @@ class ViewModelFactory(private val repository: MangRepository) : ViewModelProvid
             }
             modelClass.isAssignableFrom(SignUpViewModel::class.java) -> {
                 SignUpViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
+                ProfileViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
