@@ -4,13 +4,19 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumantra.mangbeli.R
+import com.bumantra.mangbeli.data.local.pref.SettingsPref
+import com.bumantra.mangbeli.data.local.pref.dataStore
 import com.bumantra.mangbeli.databinding.ActivityHomeBinding
 import com.bumantra.mangbeli.ui.ViewModelFactory
+import com.bumantra.mygithubusers.ui.settings.SettingViewModel
+import com.bumantra.mygithubusers.ui.settings.SettingViewModelFactory
 
 class HomeActivity : AppCompatActivity() {
 
@@ -29,6 +35,17 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         val navView: BottomNavigationView = binding.navView
+
+        val pref = SettingsPref.getInstance(applicationContext.dataStore)
+        val settingViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingViewModel::class.java]
+
+        settingViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         viewModel.getSession().observe(this) { user ->
             userRole = user.role

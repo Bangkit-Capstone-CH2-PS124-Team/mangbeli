@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/suka"
                 android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
-                android:textColor="@color/md_theme_light_tertiary" />
+                android:textColor="?attr/colorTertiary" />
 
             <TextView
                 android:id="@+id/tv_favorite_user"
@@ -76,7 +76,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/location_profile"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:textColor="@color/md_theme_light_tertiary"
+            android:textColor="?attr/colorTertiary"
             app:layout_constraintStart_toStartOf="@+id/img_profile"
             app:layout_constraintTop_toBottomOf="@+id/img_profile" />
 
@@ -160,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="@string/reset_btn"
-                android:textColor="@color/md_theme_light_error" />
+                android:textColor="?attr/colorError" />
 
             <Button
                 android:id="@+id/btn_save"

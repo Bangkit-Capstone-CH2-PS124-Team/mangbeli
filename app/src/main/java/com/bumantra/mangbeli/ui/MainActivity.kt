@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
             proceedToNextActivity()
         }
 
+
+
     }
     private fun setupFirstInstall() {
 //        binding.btnBack.setOnClickListener {

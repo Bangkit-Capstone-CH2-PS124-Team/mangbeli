@@ -95,43 +95,18 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-        app:layout_constraintStart_toStartOf="@+id/text_settings"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_languanges"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/desc_languange"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
-
-
-    </LinearLayout>
 
     <Button
         android:id="@+id/btn_logout"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="wrap_content"
-        android:backgroundTint="@color/md_theme_light_error"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/md_theme_light_error"
         android:text="@string/logout"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
 
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="?attr/materialCardViewOutlinedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_margin="8dp"
-    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             tools:text="VendorName"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:textColor="@color/md_theme_light_primary"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintStart_toEndOf="@+id/img_vendor"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,8 +69,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/md_theme_light_primary" />
+            app:tint="?attr/colorPrimary" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>
