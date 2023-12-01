@@ -14,7 +14,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://story-api.dicoding.dev/v1/")
+                .baseUrl("https://mangbeli-auth-1-vb76nyymeq-et.a.run.app/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

@@ -34,7 +34,15 @@ class SignUpActivity : AppCompatActivity() {
                 val name = binding.nameEditText.text.toString()
                 val email = binding.emailEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
-                registerSet(name, email, password)
+                val confPassword = binding.confpasswordEditText.text.toString()
+                val role = when {
+                    binding.radioButton1.isChecked -> "user"
+                    binding.radioButton2.isChecked -> "vendor"
+                    else -> {
+                        "user"
+                    }
+                }
+                registerSet(name, email, password, confPassword, role)
             }
         }
     }
@@ -42,6 +50,8 @@ class SignUpActivity : AppCompatActivity() {
         name: String,
         email: String,
         password: String,
+        confPassword: String,
+        role: String
     ) {
         binding.apply {
             if (name.isEmpty()) {
@@ -60,12 +70,17 @@ class SignUpActivity : AppCompatActivity() {
                 passwordEditText.requestFocus()
                 return
             }
+            if (password !=  confPassword) {
+                confpasswordEditText.error = getString(R.string.confirpassword_is_required)
+                confpasswordEditText.requestFocus()
+                return
+            }
             showLoading(true)
             btnSignup.isEnabled = false
 
             lifecycleScope.launch {
                 try {
-                    viewModel.register(name, email, password)
+                    viewModel.register(name, email, password, confPassword, role)
                     runOnUiThread {
                         showSuccessDialog(email)
                         showLoading(false)

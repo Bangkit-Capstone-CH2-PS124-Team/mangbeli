@@ -76,4 +76,8 @@
     <string name="sign_up_error">Try Again</string>
     <string name="vendor_location_format">%s, %s</string>
     <string name="tes_aja">Tes aja</string>
+    <string name="title_home_buyer_around">Apakah ada pembelian di lokasi kamu?</string>
+    <string name="title_home_mark_buyer">(Tandai pembelian)</string>
+    <string name="ya">Ya</string>
+    <string name="confirpassword_is_required">password harus sama</string>
 </resources>

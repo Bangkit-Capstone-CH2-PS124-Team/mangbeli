@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.pedagang.homepedagang.HomePedagangFragment">
+
+    <TextView
+        android:id="@+id/text_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_home_vendor_around"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="16dp"
+        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/google_map_pembeli"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="273dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_profile" />
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+           android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="20dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/google_map_pembeli">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/google_map_detail">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_home_buyer_around"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_home_mark_buyer"
+                android:textColor="@color/md_theme_light_outline"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:text="@string/ya" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/google_map_tandai"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="296dp"
+                android:layout_height="178dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

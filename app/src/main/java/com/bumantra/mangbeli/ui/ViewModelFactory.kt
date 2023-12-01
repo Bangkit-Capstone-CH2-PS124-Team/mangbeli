@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bumantra.mangbeli.data.repository.MangRepository
 import com.bumantra.mangbeli.di.Injection
+import com.bumantra.mangbeli.ui.home.HomeViewModel
 import com.bumantra.mangbeli.ui.login.LoginViewModel
 import com.bumantra.mangbeli.ui.signup.SignUpViewModel
 
@@ -14,6 +15,9 @@ class ViewModelFactory(private val repository: MangRepository) : ViewModelProvid
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
+            modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
+                HomeViewModel(repository) as T
+            }
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                 LoginViewModel(repository) as T
             }

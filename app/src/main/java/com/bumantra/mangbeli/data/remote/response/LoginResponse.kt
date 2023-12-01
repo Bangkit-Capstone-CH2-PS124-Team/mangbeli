@@ -22,6 +22,6 @@ data class LoginResult(
 	@field:SerializedName("userId")
 	val userId: String? = null,
 
-	@field:SerializedName("token")
+	@field:SerializedName("accessToken")
 	val token: String
 )

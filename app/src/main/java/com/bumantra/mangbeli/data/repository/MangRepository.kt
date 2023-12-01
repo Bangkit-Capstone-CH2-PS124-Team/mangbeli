@@ -1,9 +1,12 @@
 package com.bumantra.mangbeli.data.repository
 
+import android.util.Log
 import com.bumantra.mangbeli.data.local.pref.UserPref
 import com.bumantra.mangbeli.data.remote.network.ApiService
 import com.bumantra.mangbeli.data.remote.response.LoginResult
 import com.bumantra.mangbeli.data.remote.response.RegisterResponse
+import com.bumantra.mangbeli.model.User
+import kotlinx.coroutines.flow.Flow
 
 class MangRepository(
     private val userPref: UserPref,
@@ -12,13 +15,18 @@ class MangRepository(
 
     private suspend fun saveToken(token: String) {
         userPref.saveToken(token)
+        Log.e("TokenError", token)
     }
-
-    suspend fun register(name: String, email: String, password: String): RegisterResponse {
+    fun getSession(): Flow<User> {
+        return userPref.getSession()
+    }
+    suspend fun register(name: String, email: String, password: String, confPassword : String, role : String): RegisterResponse {
         return apiService.register(
                 name,
                 email,
-                password
+                password,
+                confPassword,
+                role
             )
     }
 
@@ -38,9 +46,9 @@ class MangRepository(
             throw e
         }
     }
-//    suspend fun logout() {
-//        userPref.logout()
-//    }
+    suspend fun logout() {
+        userPref.logout()
+    }
     companion object {
         @Volatile
         private var instance: MangRepository? = null
