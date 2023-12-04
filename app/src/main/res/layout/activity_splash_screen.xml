@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/imageViewLogo"
-        android:layout_width="398dp"
-        android:layout_height="345dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/logo_mangbeli"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
