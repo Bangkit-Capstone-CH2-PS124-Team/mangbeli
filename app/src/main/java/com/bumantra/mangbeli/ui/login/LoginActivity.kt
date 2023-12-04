@@ -3,6 +3,7 @@ package com.bumantra.mangbeli.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -12,12 +13,19 @@ import com.bumantra.mangbeli.data.remote.response.ErrorResponse
 import com.bumantra.mangbeli.databinding.ActivityLoginBinding
 import com.bumantra.mangbeli.ui.ViewModelFactory
 import com.bumantra.mangbeli.ui.home.HomeActivity
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 class LoginActivity : AppCompatActivity() {
 
+    private val contract = FirebaseAuthUIActivityResultContract()
+    private val signInLauncher = registerForActivityResult(contract) {
+        onSignInResult(it) }
     private lateinit var binding: ActivityLoginBinding
     private val viewModel by viewModels<LoginViewModel> {
         ViewModelFactory.getInstance(this)
@@ -32,6 +40,9 @@ class LoginActivity : AppCompatActivity() {
                 val email = binding.edtEmail.text.toString()
                 val password = binding.edtPassword.text.toString()
                 loginSet(email, password)
+            }
+            googleSignInButton.setOnClickListener {
+                mulaiLogin()
             }
         }
     }
@@ -69,6 +80,27 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    private fun mulaiLogin() {
+        val providers = arrayListOf(AuthUI.IdpConfig.GoogleBuilder().build())
+        val intent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .build()
+        signInLauncher.launch(intent)
+    }
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) { val response = result.idpResponse
+        if (result.resultCode == RESULT_OK) {
+            val nama = FirebaseAuth.getInstance().currentUser?.displayName
+            lifecycleScope.launch {
+                runOnUiThread {
+                    showSuccessDialog(nama.toString())
+                    showLoading(false)
+                }
+            }
+            Log.i("LOGIN", "$nama berhasil login") } else {
+
+            Log.i("LOGIN", "Login gagal: ${response?.error?.errorCode}") }
     }
     private fun showSuccessDialog(email: String) {
         AlertDialog.Builder(this).apply {
