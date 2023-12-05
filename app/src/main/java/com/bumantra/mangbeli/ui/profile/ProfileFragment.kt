@@ -1,8 +1,5 @@
 package com.bumantra.mangbeli.ui.profile
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.FragmentProfileBinding
 import com.bumantra.mangbeli.ui.ViewModelFactory
+import com.bumantra.mangbeli.utils.LocationHelper
+import com.bumantra.mangbeli.utils.UserLocationManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -51,16 +48,14 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         profileViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
-
-        val mapFragment = childFragmentManager
-            .findFragmentById(R.id.google_map_profile) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        getUserLocation()
+
+        initMap()
+
 
         return root
     }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -86,68 +81,56 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
     }
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            when {
-                permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
-                    // Precise location access granted.
-                    getUserLocation()
-                }
+    private fun onPermissionDenied() {
+        Toast.makeText(
+            requireContext(),
+            "Location permission denied",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 
-                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
-                    // Only approximate location access granted.
-                    getUserLocation()
-                }
+    private fun initMap() {
+        // Initialize map
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.google_map_profile) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
-                else -> {
-                    // No location access granted.
-                }
+        // Request location permissions and get user location
+        LocationHelper.requestLocationPermissions(
+            this,
+            {
+                getUserLocation()
+            },
+            {
+                onPermissionDenied()
             }
-        }
-
-
-    private fun checkPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this.requireContext(),
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
+        )
     }
 
     private fun getUserLocation() {
-        if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
-            checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-        ) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    currentLat = location.latitude.toFloat()
-                    currentLog = location.longitude.toFloat()
-                    Log.d("Profile Fuse", "getUserLocation: $currentLat, $currentLog")
-                    currentLat?.let { lat ->
-                        currentLog?.let { log ->
-                            profileViewModel.updateCurrentLocation(lat, log)
-                        }
-                    }
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Location tidak ada, yuk dicoba lagi",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+        LocationHelper.getLastKnownLocation(
+            fusedLocationClient,
+            { location ->
+                currentLat = location.latitude.toFloat()
+                currentLog = location.longitude.toFloat()
 
+                currentLat?.let { lat ->
+                    currentLog?.let { log ->
+                        UserLocationManager.setCurrentLocation(lat, log)
+                        profileViewModel.updateCurrentLocation(lat, log)
+                    }
                 }
+            },
+            {
+                Toast.makeText(
+                    requireContext(),
+                    "Location not available, please try again",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } else {
-            requestPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-        }
+        )
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
