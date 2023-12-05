@@ -57,6 +57,8 @@ class SettingsFragment : Fragment() {
             requireActivity().finish()
         }
 
+
+
         return root
     }
 

@@ -92,9 +92,10 @@ class LoginActivity : AppCompatActivity() {
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) { val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             val nama = FirebaseAuth.getInstance().currentUser?.displayName
+            val token = FirebaseAuth.getInstance().currentUser?.getIdToken(true)
             lifecycleScope.launch {
                 runOnUiThread {
-                    showSuccessDialog(nama.toString())
+                    showSuccessDialog(nama.toString() + token.toString())
                     showLoading(false)
                 }
             }

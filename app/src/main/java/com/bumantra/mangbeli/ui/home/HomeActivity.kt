@@ -54,8 +54,6 @@ class HomeActivity : AppCompatActivity() {
 
             // Inflate navGraph
             val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
-            navGraph.setStartDestination(R.id.navigation_home)
-
             // Set startDestination based on userRole
             when (userRole) {
                 "user" -> {
@@ -79,6 +77,32 @@ class HomeActivity : AppCompatActivity() {
             ).build()
             setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
+
+            navView.setOnNavigationItemSelectedListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.navigation_home -> {
+                        when (userRole) {
+                            "user" -> navController.navigate(R.id.navigation_home)
+                            "vendor" -> navController.navigate(R.id.navigation_home_pedagang)
+                            else -> navController.navigate(R.id.navigation_home)
+                        }
+                        true
+                    }
+                     R.id.navigation_maps -> {
+                            navController.navigate(R.id.navigation_maps)
+                            true
+                     }
+                     R.id.navigation_profile -> {
+                            navController.navigate(R.id.navigation_profile)
+                            true
+                     }
+                     R.id.navigation_settings -> {
+                            navController.navigate(R.id.navigation_settings)
+                            true
+                     }
+                    else -> false
+                }
+            }
         }
     }
 }
