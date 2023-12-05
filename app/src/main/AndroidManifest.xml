@@ -22,7 +22,8 @@
         <receiver
             android:name=".ui.maps.GeofenceBroadcastReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true"
+            tools:ignore="ExportedReceiver" />
 
         <activity
             android:name=".ui.detail.DetailActivity"
