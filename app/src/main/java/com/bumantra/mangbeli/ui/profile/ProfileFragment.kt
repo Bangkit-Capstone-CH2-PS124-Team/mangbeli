@@ -11,9 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.FragmentProfileBinding
-import com.bumantra.mangbeli.ui.ViewModelFactory
 import com.bumantra.mangbeli.utils.LocationHelper
-import com.bumantra.mangbeli.utils.UserLocationManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -36,9 +34,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -73,9 +69,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
     private fun updateMapLocation(latitude: Float, longitude: Float) {
         val currentLocation = LatLng(latitude.toDouble(), longitude.toDouble())
         mMap.addMarker(
-            MarkerOptions()
-                .position(currentLocation)
-                .title(binding.tvNameUser.text.toString())
+            MarkerOptions().position(currentLocation).title(binding.tvNameUser.text.toString())
         )
         Log.d("Profile", "onMapReady: $currentLat, $currentLog")
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
@@ -83,9 +77,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
     private fun onPermissionDenied() {
         Toast.makeText(
-            requireContext(),
-            "Location permission denied",
-            Toast.LENGTH_SHORT
+            requireContext(), "Location permission denied", Toast.LENGTH_SHORT
         ).show()
     }
 
@@ -96,38 +88,28 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         // Request location permissions and get user location
-        LocationHelper.requestLocationPermissions(
-            this,
-            {
-                getUserLocation()
-            },
-            {
-                onPermissionDenied()
-            }
-        )
+        LocationHelper.requestLocationPermissions(this, {
+            getUserLocation()
+        }, {
+            onPermissionDenied()
+        })
     }
 
     private fun getUserLocation() {
-        LocationHelper.getLastKnownLocation(
-            fusedLocationClient,
-            { location ->
-                currentLat = location.latitude.toFloat()
-                currentLog = location.longitude.toFloat()
+        LocationHelper.getLastKnownLocation(fusedLocationClient, { location ->
+            currentLat = location.latitude.toFloat()
+            currentLog = location.longitude.toFloat()
 
-                currentLat?.let { lat ->
-                    currentLog?.let { log ->
-                        profileViewModel.updateCurrentLocation(lat, log)
-                    }
+            currentLat?.let { lat ->
+                currentLog?.let { log ->
+                    profileViewModel.updateCurrentLocation(lat, log)
                 }
-            },
-            {
-                Toast.makeText(
-                    requireContext(),
-                    "Location not available, please try again",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
-        )
+        }, {
+            Toast.makeText(
+                requireContext(), "Location not available, please try again", Toast.LENGTH_SHORT
+            ).show()
+        })
     }
 
 
