@@ -34,14 +34,15 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             if (geofencingTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofencingTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
                 val geofenceTransitionString =
                     when (geofencingTransition) {
-                        Geofence.GEOFENCE_TRANSITION_ENTER -> "Masuk area"
-                        Geofence.GEOFENCE_TRANSITION_DWELL -> "Dalam area"
+                        Geofence.GEOFENCE_TRANSITION_ENTER -> "sedang mendekat nih!"
+                        Geofence.GEOFENCE_TRANSITION_DWELL -> "sedang dalam area kamu!"
                         else -> "Invalid bos"
                     }
 
                 val triggerGeofences = geofencingEvent.triggeringGeofences
                 triggerGeofences.forEach { geofence ->
-                    val geofenceTransitionDetails = "$geofenceTransitionString ${geofence.requestId}"
+                    val vendorId = geofence.requestId
+                    val geofenceTransitionDetails = "$vendorId $geofenceTransitionString"
                     Log.d(TAG, "onReceive: $geofenceTransitionDetails")
                     sendNotification(context, geofenceTransitionDetails)
                 }
@@ -57,7 +58,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(geofenceTransitionDetails)
-            .setContentText("Ada banyak pedagang nih!")
+            .setContentText("Hehehe siapa yang laper nih?")
             .setSmallIcon(R.drawable.baseline_notifications_active_24)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

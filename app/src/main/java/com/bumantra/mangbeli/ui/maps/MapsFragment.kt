@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,7 +26,6 @@ import com.bumantra.mangbeli.model.VendorsData.vendors
 import com.bumantra.mangbeli.ui.profile.ProfileViewModel
 import com.bumantra.mangbeli.ui.profile.ProfileViewModelFactory
 import com.bumantra.mangbeli.utils.LocationHelper
-import com.bumantra.mangbeli.utils.UserLocationManager
 import com.bumantra.mangbeli.utils.VectorToBitmap
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Geofence
@@ -62,16 +62,29 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_MUTABLE)
         } else {
-            PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(
+                requireContext(),
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
         }
     }
 
     private val requestNotificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted : Boolean ->
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                Toast.makeText(requireContext(), "Notification permission granted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Notification permission granted",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                Toast.makeText(requireContext(), "Notification permission rejected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Notification permission rejected",
+                    Toast.LENGTH_SHORT
+                ).show()
 
             }
         }
@@ -113,23 +126,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             currentLat = it.first
             currentLog = it.second
             addUserLocation(currentLat, currentLog)
+            addManyMarker(it)
         }
 
-        addManyMarker()
-
-        addGeofence()
+//        addManyMarker()
 
     }
 
     @SuppressLint("MissingPermission", "VisibleForTests")
-    private fun addGeofence() {
-        geofencingClient = LocationServices.getGeofencingClient(requireContext())
-        Log.d("GeofenceMaps", "addGeofence: ${currentLat.toDouble()}, ${currentLog.toDouble()}")
+    private fun addGeofence(vendorId: String, latLng: LatLng) {
+
+        Log.d("GeofenceMaps", "addGeofence: ${latLng.latitude}, ${latLng.longitude}")
         val geofence = Geofence.Builder()
-            .setRequestId("User")
+            .setRequestId(vendorId)
             .setCircularRegion(
-                currentLat.toDouble(),
-                currentLog.toDouble(),
+                latLng.latitude,
+                latLng.longitude,
                 geofenceRadius.toFloat()
             )
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
@@ -146,10 +158,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             addOnCompleteListener {
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Geofencing added", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Geofencing added", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     addOnFailureListener {
-                        Toast.makeText(requireContext(), "Geofencing not added, ${it.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Geofencing not added, ${it.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                     }
                 }
@@ -174,6 +191,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 requestBackgroundLocationPermission()
             }
         )
+        geofencingClient = LocationServices.getGeofencingClient(requireContext())
     }
 
     private fun requestBackgroundLocationPermission() {
@@ -248,8 +266,35 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun addManyMarker() {
+    private fun addManyMarker(userLocation: Pair<Float, Float>) {
         val iconConverter = VectorToBitmap()
+        val maxDistance = 1000.0
+
+        vendors.forEach { data ->
+            val latLng = LatLng(data.latitude, data.longitude)
+            val distance = calculateDistance(
+                userLocation.first.toDouble(),
+                userLocation.second.toDouble(),
+                data.latitude,
+                data.longitude
+            )
+
+            if (distance <= maxDistance) {
+                mMap.addMarker(
+                    MarkerOptions().position(latLng).title(data.vendorName).snippet(data.name)
+                        .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
+                )
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                addGeofence(data.vendorName, latLng)
+            } else {
+                mMap.addMarker(
+                    MarkerOptions().position(latLng).title(data.vendorName).snippet(data.name)
+                        .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
+                )
+            }
+        }
+
+        /*
         vendors.forEach { data ->
             val latLng = LatLng(data.latitude, data.longitude)
             mMap.addMarker(
@@ -257,10 +302,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                     .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
             )
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-
+            addGeofence(data.id, latLng)
         }
+         */
     }
 
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(lat1, lon1, lat2, lon2, results)
+        return results[0]
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
