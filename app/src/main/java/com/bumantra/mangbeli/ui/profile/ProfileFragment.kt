@@ -32,7 +32,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
     private var currentLat: Float? = null
     private var currentLog: Float? = null
     private val profileViewModel by viewModels<ProfileViewModel> {
-        ViewModelFactory.getInstance(requireActivity())
+        ProfileViewModelFactory.getInstance(requireActivity())
     }
 
     override fun onCreateView(
@@ -116,7 +116,6 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
                 currentLat?.let { lat ->
                     currentLog?.let { log ->
-                        UserLocationManager.setCurrentLocation(lat, log)
                         profileViewModel.updateCurrentLocation(lat, log)
                     }
                 }

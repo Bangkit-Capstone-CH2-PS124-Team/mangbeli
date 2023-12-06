@@ -10,16 +10,20 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumantra.mangbeli.R
 import com.bumantra.mangbeli.databinding.FragmentMapsBinding
 import com.bumantra.mangbeli.model.VendorsData.vendors
+import com.bumantra.mangbeli.ui.profile.ProfileViewModel
+import com.bumantra.mangbeli.ui.profile.ProfileViewModelFactory
 import com.bumantra.mangbeli.utils.LocationHelper
 import com.bumantra.mangbeli.utils.UserLocationManager
 import com.bumantra.mangbeli.utils.VectorToBitmap
@@ -46,6 +50,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var currentLat: Float = 0F
     private var currentLog: Float = 0F
+    private val profileViewModel by viewModels<ProfileViewModel> {
+        ProfileViewModelFactory.getInstance(requireActivity())
+    }
 
     private val binding get() = _binding!!
 
@@ -102,8 +109,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mMap.uiSettings.isCompassEnabled = true
 
 
+        profileViewModel.currentLocation.observe(viewLifecycleOwner) {
+            currentLat = it.first
+            currentLog = it.second
+            addUserLocation(currentLat, currentLog)
+        }
+
         addManyMarker()
-        addUserLocation()
+
         addGeofence()
 
     }
@@ -111,8 +124,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     @SuppressLint("MissingPermission", "VisibleForTests")
     private fun addGeofence() {
         geofencingClient = LocationServices.getGeofencingClient(requireContext())
+        Log.d("GeofenceMaps", "addGeofence: ${currentLat.toDouble()}, ${currentLog.toDouble()}")
         val geofence = Geofence.Builder()
-            .setRequestId("Rumah")
+            .setRequestId("User")
             .setCircularRegion(
                 currentLat.toDouble(),
                 currentLog.toDouble(),
@@ -191,7 +205,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
                 currentLat.let { lat ->
                     currentLog.let { log ->
-                        UserLocationManager.setCurrentLocation(lat, log)
+                        profileViewModel.updateCurrentLocation(lat, log)
+                        Log.d("Maps", "getUserLocation: $lat,$log")
                     }
                 }
             },
@@ -213,11 +228,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         ).show()
     }
 
-    private fun addUserLocation() {
-        val currentLocation = UserLocationManager.getCurrentLocation()
-        val lat = currentLocation.first.toDouble()
-        val log = currentLocation.second.toDouble()
-        val userdummyLocation = LatLng(lat, log)
+    private fun addUserLocation(lat: Float, log: Float) {
+        val userdummyLocation = LatLng(lat.toDouble(), log.toDouble())
         mMap.addMarker(
             MarkerOptions()
                 .position(userdummyLocation)
