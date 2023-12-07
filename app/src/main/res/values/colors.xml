@@ -64,4 +64,6 @@
     <color name="black">#FF000000</color>
     <color name="grey_200">#FFEEEEEE</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="error_text_color">#FF0000</color>
+
 </resources>

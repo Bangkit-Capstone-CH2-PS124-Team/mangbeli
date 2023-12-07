@@ -7,30 +7,35 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.bumantra.mangbeli.ui.home.HomeFragment"
+        android:name="com.capstone.mangbeli.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_maps"
-        android:name="com.bumantra.mangbeli.ui.maps.MapsFragment"
+        android:name="com.capstone.mangbeli.ui.maps.MapsFragment"
         android:label="@string/title_maps"
         tools:layout="@layout/fragment_maps" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.bumantra.mangbeli.ui.profile.ProfileFragment"
+        android:name="com.capstone.mangbeli.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.bumantra.mangbeli.ui.settings.SettingsFragment"
+        android:name="com.capstone.mangbeli.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/navigation_home_pedagang"
-        android:name="com.bumantra.mangbeli.ui.pedagang.homepedagang.HomePedagangFragment"
+        android:name="com.capstone.mangbeli.ui.pedagang.homepedagang.HomePedagangFragment"
         android:label="fragment_home_pedagang"
         tools:layout="@layout/fragment_home_pedagang" />
+    <fragment
+        android:id="@+id/navigation_profile_pedagang"
+        android:name="com.capstone.mangbeli.ui.pedagang.profile.ProfilePedagangFragment"
+        android:label="fragment_profile_pedagang"
+        tools:layout="@layout/fragment_profile_pedagang" />
 </navigation>
