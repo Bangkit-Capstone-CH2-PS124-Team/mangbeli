@@ -79,6 +79,15 @@
     <string name="title_home_mark_buyer">(Tandai pembelian)</string>
     <string name="ya">Ya</string>
     <string name="confirpassword_is_required">password harus sama</string>
+    <string name="minimal_8_characters">Minimal 8 Karakter</string>
+    <string name="email_example">contoh@gmail.ocm</string>
+    <string name="invalid_format">format tidak valid</string>
+    <string name="dont_have_account">Tidak punya akun? </string>
+    <string name="name_hint">Nama</string>
+    <string name="name_vendor">Vendor Name</string>
+    <string name="list_vendor">List Pedagang</string>
+    <string name="btn_cancel">Batal</string>
+    <string name="price_range">Rentang Harga</string>
 
 
 </resources>

@@ -13,6 +13,7 @@ import com.bumantra.mangbeli.data.remote.response.ErrorResponse
 import com.bumantra.mangbeli.databinding.ActivityLoginBinding
 import com.bumantra.mangbeli.ui.ViewModelFactory
 import com.bumantra.mangbeli.ui.home.HomeActivity
+import com.bumantra.mangbeli.ui.signup.SignUpActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -25,11 +26,13 @@ class LoginActivity : AppCompatActivity() {
 
     private val contract = FirebaseAuthUIActivityResultContract()
     private val signInLauncher = registerForActivityResult(contract) {
-        onSignInResult(it) }
+        onSignInResult(it)
+    }
     private lateinit var binding: ActivityLoginBinding
     private val viewModel by viewModels<LoginViewModel> {
         ViewModelFactory.getInstance(this)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -43,6 +46,9 @@ class LoginActivity : AppCompatActivity() {
             }
             googleSignInButton.setOnClickListener {
                 mulaiLogin()
+            }
+            btnToRegister.setOnClickListener {
+                startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
             }
         }
     }
@@ -81,6 +87,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun mulaiLogin() {
         val providers = arrayListOf(AuthUI.IdpConfig.GoogleBuilder().build())
         val intent = AuthUI.getInstance()
@@ -89,7 +96,9 @@ class LoginActivity : AppCompatActivity() {
             .build()
         signInLauncher.launch(intent)
     }
-    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) { val response = result.idpResponse
+
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             val nama = FirebaseAuth.getInstance().currentUser?.displayName
             val token = FirebaseAuth.getInstance().currentUser?.getIdToken(true)
@@ -99,14 +108,16 @@ class LoginActivity : AppCompatActivity() {
                     showLoading(false)
                 }
             }
-            Log.i("LOGIN", "$nama berhasil login") } else {
-
-            Log.i("LOGIN", "Login gagal: ${response?.error?.errorCode}") }
+            Log.i("LOGIN", "$nama berhasil login")
+        } else {
+            Log.i("LOGIN", "Login gagal: ${response?.error?.errorCode}")
+        }
     }
+
     private fun showSuccessDialog(email: String) {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.success))
-            setMessage( resources.getString(R.string.success) + email)
+            setMessage(resources.getString(R.string.success) + email)
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
                 startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                 finish()
@@ -115,6 +126,7 @@ class LoginActivity : AppCompatActivity() {
             show()
         }
     }
+
     private fun showfailedDialog(errorMessage: String) {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.error))
@@ -126,7 +138,8 @@ class LoginActivity : AppCompatActivity() {
             show()
         }
     }
-    private fun showLoading(isLoading: Boolean){
+
+    private fun showLoading(isLoading: Boolean) {
         binding.loadingProgressBar.isVisible = isLoading
     }
 

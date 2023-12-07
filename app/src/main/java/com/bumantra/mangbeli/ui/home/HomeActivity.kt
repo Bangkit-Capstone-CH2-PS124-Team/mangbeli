@@ -94,7 +94,13 @@ class HomeActivity : AppCompatActivity() {
                      }
                      R.id.navigation_profile -> {
                             navController.navigate(R.id.navigation_profile)
-                            true
+                         when (userRole) {
+                             "user" -> navController.navigate(R.id.navigation_profile)
+                             "vendor" -> navController.navigate(R.id.navigation_profile_pedagang)
+                             else -> navController.navigate(R.id.navigation_home)
+                         }
+                         true
+
                      }
                      R.id.navigation_settings -> {
                             navController.navigate(R.id.navigation_settings)

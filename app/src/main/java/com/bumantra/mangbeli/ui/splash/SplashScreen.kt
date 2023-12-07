@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumantra.mangbeli.data.local.pref.SettingsPref
 import com.bumantra.mangbeli.data.local.pref.dataStore
 import com.bumantra.mangbeli.databinding.ActivitySplashScreenBinding
-import com.bumantra.mangbeli.ui.MenuActivity
+import com.bumantra.mangbeli.ui.MainActivity
 import com.bumantra.mangbeli.ui.ViewModelFactory
 import com.bumantra.mangbeli.ui.home.HomeActivity
 import com.bumantra.mangbeli.ui.home.HomeViewModel
@@ -54,7 +54,7 @@ class SplashScreen : AppCompatActivity() {
                 }, splashDisplayLength.toLong())
             }else{
                 Handler(Looper.getMainLooper()).postDelayed({
-                    val mainIntent = Intent(this@SplashScreen, MenuActivity::class.java)
+                    val mainIntent = Intent(this@SplashScreen, MainActivity::class.java)
                     startActivity(mainIntent)
                     finish()
                 }, splashDisplayLength.toLong())

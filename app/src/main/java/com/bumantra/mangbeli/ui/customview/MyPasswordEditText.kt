@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
+import com.bumantra.mangbeli.R
 
 class MyPasswordEditText : AppCompatEditText {
     constructor(context: Context) : super(context) {
@@ -32,8 +33,10 @@ class MyPasswordEditText : AppCompatEditText {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.toString().length < 6) {
-                    error = "Minimal 6 characters"
+                if (s.toString().length < 8) {
+                    setError(context.getString(R.string.minimal_8_characters))
+                } else {
+                    setError(null)
                 }
             }
 
@@ -45,8 +48,9 @@ class MyPasswordEditText : AppCompatEditText {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        hint = "Minimal 6 characters"
+        hint = context.getString(R.string.minimal_8_characters)
         textAlignment = View.TEXT_ALIGNMENT_VIEW_START
         paddingRight
     }
+
 }
