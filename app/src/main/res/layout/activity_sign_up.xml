@@ -104,7 +104,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp">
 
-                <com.bumantra.mangbeli.ui.customview.MyEmailEditText
+                <com.capstone.mangbeli.ui.customview.MyEmailEditText
                     android:id="@+id/emailEditText"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -135,7 +135,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp">
 
-                <com.bumantra.mangbeli.ui.customview.MyPasswordEditText
+                <com.capstone.mangbeli.ui.customview.MyPasswordEditText
                     android:id="@+id/passwordEditText"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -166,7 +166,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp">
 
-                <com.bumantra.mangbeli.ui.customview.MyPasswordEditText
+                <com.capstone.mangbeli.ui.customview.MyPasswordEditText
                     android:id="@+id/confpasswordEditText"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"

@@ -73,10 +73,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp">
 
-                <com.bumantra.mangbeli.ui.customview.MyEmailEditText
+                <com.capstone.mangbeli.ui.customview.MyEmailEditText
                     android:id="@+id/edt_email"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_marginBottom="10dp"
                     android:inputType="textEmailAddress"
                     android:paddingHorizontal="8dp"
@@ -99,7 +99,7 @@
                 android:layout_marginHorizontal="20dp"
                 app:passwordToggleEnabled="true">
 
-                <com.bumantra.mangbeli.ui.customview.MyPasswordEditText
+                <com.capstone.mangbeli.ui.customview.MyPasswordEditText
                     android:id="@+id/edt_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -171,5 +171,7 @@
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="15dp" />
+
+
 
 </LinearLayout>

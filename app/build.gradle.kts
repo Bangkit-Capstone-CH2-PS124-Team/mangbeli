@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bumantra.mangbeli"
+    namespace = "com.capstone.mangbeli"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.bumantra.mangbeli"
+        applicationId = "com.capstone.mangbeli"
         minSdk = 21
         targetSdk = 33
         versionCode = 1

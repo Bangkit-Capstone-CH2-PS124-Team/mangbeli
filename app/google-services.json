@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:535600905030:android:9d4c45899ba9bcd99b4347",
         "android_client_info": {
-          "package_name": "com.bumantra.mangbeli"
+          "package_name": "com.capstone.mangbeli"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "535600905030-pacvjh7sshmmla3j8um09e1g2b3imvkg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bumantra.mangbeli",
+            "package_name": "com.capstone.mangbeli",
             "certificate_hash": "11e15a2f822da4c2310f7479d032a14cd628f662"
           }
         },
