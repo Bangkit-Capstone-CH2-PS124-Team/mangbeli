@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -23,22 +24,22 @@ object LocationHelper {
             fragment.registerForActivityResult(
                 ActivityResultContracts.RequestMultiplePermissions()
             ) { permissions ->
-                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
-                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-                ) {
-                    onSuccess.invoke()
-                    // Check if background location permission is granted
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                        permissions[Manifest.permission.ACCESS_BACKGROUND_LOCATION] != true
-                    ) {
-                        // Background location permission not granted
-                        onNeedBackgroundPermission.invoke()
-                    } else {
-                        // All required permissions granted
+                Log.d("PermissionDebug", "PermissionsResult: $permissions")
+                when {
+                    permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
+                        // Precise location access granted.
+                        // Sekarang kita dapat memeriksa izin ACCESS_BACKGROUND_LOCATION
+                        checkBackgroundPermission(fragment, onNeedBackgroundPermission, onSuccess)
+                    }
+
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                        // Only approximate location access granted.
                         onSuccess.invoke()
                     }
-                } else {
-                    onPermissionDenied.invoke()
+                    else -> {
+                        Log.d("PermissionDebug", "Permission denied")
+                        onPermissionDenied.invoke()
+                    }
                 }
             }
 
@@ -47,16 +48,34 @@ object LocationHelper {
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
-        // Add background location permission for Android 10 (Q) and above
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        }
-
         if (arePermissionsGranted(fragment.requireContext(), permissions)) {
             // All required permissions already granted
+            Log.d("PermissionDebug", "All required permissions already granted")
             onSuccess.invoke()
         } else {
+            Log.d("PermissionDebug", "Requesting permissions: $permissions")
             requestPermissionLauncher.launch(permissions.toTypedArray())
+        }
+    }
+
+    private fun checkBackgroundPermission(
+        fragment: Fragment,
+        onNeedBackgroundPermission: () -> Unit,
+        onSuccess: () -> Unit
+    ) {
+        // Memeriksa izin ACCESS_BACKGROUND_LOCATION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            ContextCompat.checkSelfPermission(
+                fragment.requireContext(),
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permintaan izin ACCESS_BACKGROUND_LOCATION jika belum diberikan
+            onNeedBackgroundPermission.invoke()
+        } else {
+            // Jika izin ACCESS_BACKGROUND_LOCATION sudah diberikan atau perangkat tidak menjalankan Android 10 (Q) atau versi di atasnya,
+            // maka kita dapat melanjutkan ke onSuccess
+            onSuccess.invoke()
         }
     }
 

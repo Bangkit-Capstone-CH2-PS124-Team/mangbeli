@@ -64,6 +64,7 @@
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
             <Button
+                android:id="@+id/btn_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

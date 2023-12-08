@@ -11,6 +11,6 @@ interface UserDao {
     suspend fun insertLocation(location: UserEntity)
 
     @Query("SELECT * FROM user ORDER BY id DESC LIMIT 1")
-    suspend fun getLastLocation(): UserEntity?
+    fun getLastLocation(): UserEntity
 }
 

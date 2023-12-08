@@ -1,7 +1,6 @@
 package com.capstone.mangbeli.ui.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,8 +26,6 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private var currentLat: Float? = null
-    private var currentLog: Float? = null
     private val profileViewModel by viewModels<ProfileViewModel> {
         ProfileViewModelFactory.getInstance(requireActivity())
     }
@@ -66,50 +63,52 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
     }
 
-    private fun updateMapLocation(latitude: Float, longitude: Float) {
-        val currentLocation = LatLng(latitude.toDouble(), longitude.toDouble())
+    private fun updateMapLocation(latitude: Double, longitude: Double) {
+        val currentLocation = LatLng(latitude, longitude)
         mMap.addMarker(
             MarkerOptions().position(currentLocation).title(binding.tvNameUser.text.toString())
         )
-        Log.d("Profile", "onMapReady: $currentLat, $currentLog")
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
     }
 
-    private fun onPermissionDenied() {
-        Toast.makeText(
-            requireContext(), "Location permission denied", Toast.LENGTH_SHORT
-        ).show()
-    }
 
     private fun initMap() {
         // Initialize map
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.google_map_profile) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        LocationHelper.requestLocationPermissions(
+            this,
+            {
+                getUserLocation()
+            },
+            {
+                onPermissionDenied()
+            }
+        )
 
-        // Request location permissions and get user location
-        LocationHelper.requestLocationPermissions(this, {
-            getUserLocation()
-        }, {
-            onPermissionDenied()
-        })
     }
 
     private fun getUserLocation() {
-        LocationHelper.getLastKnownLocation(fusedLocationClient, { location ->
-            currentLat = location.latitude.toFloat()
-            currentLog = location.longitude.toFloat()
-
-            currentLat?.let { lat ->
-                currentLog?.let { log ->
-                    profileViewModel.updateCurrentLocation(lat, log)
-                }
+        LocationHelper.getLastKnownLocation(
+            fusedLocationClient,
+            { location ->
+                profileViewModel.updateCurrentLocation(location.latitude, location.longitude)
+            },
+            {
+                Toast.makeText(
+                    requireContext(),
+                    "Location not available, please try again",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        }, {
-            Toast.makeText(
-                requireContext(), "Location not available, please try again", Toast.LENGTH_SHORT
-            ).show()
-        })
+        )
+    }
+
+    private fun onPermissionDenied() {
+        Toast.makeText(
+            requireContext(), "Location permission denied", Toast.LENGTH_SHORT
+        ).show()
     }
 
 

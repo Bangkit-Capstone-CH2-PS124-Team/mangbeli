@@ -1,4 +1,4 @@
-package com.capstone.mangbeli.ui.profile
+package com.capstone.mangbeli.ui.pedagang.homepedagang
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,12 +8,7 @@ import com.capstone.mangbeli.data.local.entity.UserEntity
 import com.capstone.mangbeli.data.repository.LocationRepository
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val locationRepository: LocationRepository): ViewModel() {
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "Rifando"
-    }
-    val text: LiveData<String> = _text
+class HomeVendorViewModel(private val locationRepository: LocationRepository): ViewModel() {
 
     private val _currentLocation = MutableLiveData<Pair<Double, Double>>()
     val currentLocation: LiveData<Pair<Double, Double>> get()  = _currentLocation
@@ -27,6 +22,6 @@ class ProfileViewModel(private val locationRepository: LocationRepository): View
         }
     }
 
-    suspend fun getLastLocation() = locationRepository.getLastLocation()
+    fun getLastLocation(): UserEntity = locationRepository.getLastLocation()
 
 }

@@ -9,7 +9,7 @@ class LocationRepository(private val database: UserDatabase) {
         userLocationDao.insertLocation(location)
     }
 
-    suspend fun getLastLocation(): UserEntity? {
+    fun getLastLocation(): UserEntity {
         return userLocationDao.getLastLocation()
     }
 

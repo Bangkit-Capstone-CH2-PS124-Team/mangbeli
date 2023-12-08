@@ -90,6 +90,11 @@ class HomeActivity : AppCompatActivity() {
                     }
                      R.id.navigation_maps -> {
                             navController.navigate(R.id.navigation_maps)
+                         when (userRole) {
+                             "user" -> navController.navigate(R.id.navigation_maps)
+                             "vendor" -> navController.navigate(R.id.navigation_profile_pedagang)
+                             else -> navController.navigate(R.id.navigation_maps)
+                         }
                             true
                      }
                      R.id.navigation_profile -> {
@@ -97,7 +102,7 @@ class HomeActivity : AppCompatActivity() {
                          when (userRole) {
                              "user" -> navController.navigate(R.id.navigation_profile)
                              "vendor" -> navController.navigate(R.id.navigation_profile_pedagang)
-                             else -> navController.navigate(R.id.navigation_home)
+                             else -> navController.navigate(R.id.navigation_profile)
                          }
                          true
 
