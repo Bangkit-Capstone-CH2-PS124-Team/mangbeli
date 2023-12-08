@@ -27,6 +27,6 @@ class ProfileViewModel(private val locationRepository: LocationRepository): View
         }
     }
 
-    suspend fun getLastLocation() = locationRepository.getLastLocation()
+    fun getLastLocation() = locationRepository.getLastLocation()
 
 }
