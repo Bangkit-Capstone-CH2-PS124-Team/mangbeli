@@ -88,7 +88,4 @@
     <string name="list_vendor">List Pedagang</string>
     <string name="btn_cancel">Batal</string>
     <string name="price_range">Rentang Harga</string>
-    <string name="enable_location">Aktifkan Lokasi</string>
-
-
 </resources>

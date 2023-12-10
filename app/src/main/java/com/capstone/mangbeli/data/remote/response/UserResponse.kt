@@ -22,10 +22,10 @@ data class DataUser(
 	@field:SerializedName("role")
 	val role: String? = null,
 
-	@field:SerializedName("no_hp")
+	@field:SerializedName("noHp")
 	val noHp: String? = null,
 
-	@field:SerializedName("image_url")
+	@field:SerializedName("imageUrl")
 	val imageUrl: String? = null,
 
 	@field:SerializedName("latitude")

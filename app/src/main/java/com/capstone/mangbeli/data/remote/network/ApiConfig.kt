@@ -1,5 +1,6 @@
 package com.capstone.mangbeli.data.remote.network
 
+import com.capstone.mangbeli.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,11 +24,13 @@ class ApiConfig {
                 .addInterceptor(authInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://mangbeli-auth-1-vb76nyymeq-et.a.run.app/")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
             return retrofit.create(ApiService::class.java)
         }
+
+        private const val BASE_URL = BuildConfig.BASE_URL
     }
 }

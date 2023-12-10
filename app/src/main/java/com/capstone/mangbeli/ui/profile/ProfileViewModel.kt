@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.capstone.mangbeli.data.local.entity.UserEntity
 import com.capstone.mangbeli.data.repository.MangRepository
 import com.capstone.mangbeli.model.UserProfile
+import okhttp3.MultipartBody
 
 class ProfileViewModel(private val userRepository: MangRepository) : ViewModel() {
 
@@ -22,4 +23,6 @@ class ProfileViewModel(private val userRepository: MangRepository) : ViewModel()
         userRepository.updateLocation(latitude, longitude)
 
     fun updateUserProfile(updateUser: UserProfile) = userRepository.updateUserProfile(updateUser)
+
+    fun uploadImage(imageFile: MultipartBody.Part) = userRepository.uploadImage(imageFile)
 }

@@ -1,11 +1,14 @@
 package com.capstone.mangbeli.ui.profile
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +20,9 @@ import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result.Error
 import com.capstone.mangbeli.utils.Result.Loading
 import com.capstone.mangbeli.utils.Result.Success
+import com.capstone.mangbeli.utils.loadImage
+import com.capstone.mangbeli.utils.reduceFileImage
+import com.capstone.mangbeli.utils.uriToFile
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,6 +31,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 
 class ProfileFragment : Fragment(), OnMapReadyCallback {
 
@@ -35,6 +44,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
     private val profileViewModel by viewModels<ProfileViewModel> {
         ViewModelFactory.getInstance(requireActivity())
     }
+    private var currentImageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -49,8 +59,13 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         initMap()
         initProfile()
         onSubmit()
+        onImageClicked()
 
         return root
+    }
+
+    private fun onImageClicked() {
+        binding.imgProfile.setOnClickListener { startGallery() }
     }
 
     private fun onSubmit() {
@@ -59,7 +74,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
             val listFavorite = inputString?.split(", ")?.map { it.trim() }
             val updateUser = UserProfile(
                 name = binding.edtName.text.toString(),
-                no_hp = binding.edtNoHp.text.toString(),
+                noHp = binding.edtNoHp.text.toString(),
                 favorite = listFavorite
             )
             profileViewModel.updateUserProfile(updateUser).observe(viewLifecycleOwner) { result ->
@@ -85,6 +100,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
                     }
 
+
                     is Error -> {
                         setVisibility(binding.profileProgressBar, false)
                         Toast.makeText(
@@ -96,6 +112,74 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
             }
+        }
+    }
+
+    private fun startGallery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            currentImageUri = uri
+            showImage()
+            onUploadImage()
+        } else {
+            Log.d("AddStory", "Tidak ada gambar yang dipilih")
+        }
+    }
+    private fun onUploadImage() {
+        currentImageUri?.let { uri ->
+            val image = uriToFile(uri, requireContext()).reduceFileImage()
+            val requestImg = image.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "image",
+                image.name,
+                requestImg
+            )
+            profileViewModel.uploadImage(multipartBody).observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Loading -> {
+                        Log.d("ProfileFragment", "uploadImage: Loading")
+                        setVisibility(binding.profileProgressBar, true)
+                    }
+
+                    is Success -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        val userData = result.data.message
+                        AlertDialog.Builder(requireContext()).apply {
+                            setTitle("Update Image Profile berhasil")
+                            setMessage(userData)
+                            setPositiveButton("Lanjut") { _, _ ->
+                                initProfile()
+                            }
+                            create()
+                            show()
+                        }
+
+                    }
+
+
+                    is Error -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        Toast.makeText(
+                            requireContext(),
+                            "Error ${result.error} : Cek internet anda!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.d("ProfileFragment", "uploadImage: ${result.error}")
+                    }
+                }
+            }
+        }
+
+    }
+    private fun showImage() {
+        currentImageUri?.let {
+            Log.d("Image", "showImage: $it")
+            binding.imgProfile.setImageURI(it)
         }
     }
 
@@ -166,18 +250,18 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
                 is Success -> {
                     setVisibility(binding.profileProgressBar, false)
                     val userData = result.data
-                    val listFavorite = userData?.favorite?.joinToString(", ")
-                    if (userData != null) {
-                        Log.d("ProfileFragment", "Get Data: $userData")
-                        with(binding) {
-                            tvNameUser.text = userData.name
-                            tvEmailUser.text = userData.email
-                            tvFavoriteUser.text = listFavorite
-                            edtName.setText(userData.name)
-                            edtNoHp.setText(userData.noHp)
-                            edtFavorite.setText(listFavorite)
-                        }
+                    val listFavorite = userData.favorite?.joinToString(", ")
+                    Log.d("ProfileFragment", "Get Data: $userData")
+                    with(binding) {
+                        imgProfile.loadImage(userData.imageUrl.toString())
+                        tvNameUser.text = userData.name
+                        tvEmailUser.text = userData.email
+                        tvFavoriteUser.text = listFavorite
+                        edtName.setText(userData.name)
+                        edtNoHp.setText(userData.noHp)
+                        edtFavorite.setText(listFavorite)
                     }
+
 
                 }
 

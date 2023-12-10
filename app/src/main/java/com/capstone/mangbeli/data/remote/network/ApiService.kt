@@ -1,18 +1,22 @@
 package com.capstone.mangbeli.data.remote.network
 
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
+import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
 import com.capstone.mangbeli.data.remote.response.LoginResponse
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.data.remote.response.UserResponse
 import com.capstone.mangbeli.model.LocationUpdate
 import com.capstone.mangbeli.model.UserProfile
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 interface ApiService {
 
@@ -45,4 +49,10 @@ interface ApiService {
     suspend fun updateUserProfile(
         @Body userProfile: UserProfile
     ): ErrorResponse
+
+    @Multipart
+    @POST("/user/profile/upload")
+    suspend fun uploadImage(
+        @Part image: MultipartBody.Part
+    ): ImageUploadResponse
 }
