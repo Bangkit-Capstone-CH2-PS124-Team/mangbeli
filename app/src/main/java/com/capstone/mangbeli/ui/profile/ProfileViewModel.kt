@@ -3,7 +3,6 @@ package com.capstone.mangbeli.ui.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.capstone.mangbeli.data.local.entity.UserEntity
 import com.capstone.mangbeli.data.repository.MangRepository
 import com.capstone.mangbeli.model.UserProfile
 import okhttp3.MultipartBody
