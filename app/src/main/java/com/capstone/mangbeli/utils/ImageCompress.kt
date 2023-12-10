@@ -1,19 +1,13 @@
 package com.capstone.mangbeli.utils
 
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
 import android.widget.ImageView
-import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
-import com.capstone.mangbeli.BuildConfig
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -26,15 +20,6 @@ private const val MAXIMAL_SIZE = 1000000
 private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
 private val timeStamp: String = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
 
-
-fun getImageUriForPreQ(context: Context): Uri {
-    val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    val imageFile = File(filesDir, "/MyCamera/$timeStamp.jpg")
-    if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
-    return FileProvider.getUriForFile(
-        context, "${BuildConfig.APPLICATION_ID}.fileprovider", imageFile
-    )
-}
 
 fun createCustomTempFile(context: Context): File {
     val filesDir = context.externalCacheDir
