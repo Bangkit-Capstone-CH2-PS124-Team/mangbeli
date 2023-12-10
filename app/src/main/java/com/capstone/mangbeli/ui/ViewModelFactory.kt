@@ -8,6 +8,7 @@ import com.capstone.mangbeli.data.repository.MangRepository
 import com.capstone.mangbeli.di.Injection
 import com.capstone.mangbeli.ui.home.HomeViewModel
 import com.capstone.mangbeli.ui.login.LoginViewModel
+import com.capstone.mangbeli.ui.profile.ProfileViewModel
 import com.capstone.mangbeli.ui.signup.SignUpViewModel
 
 class ViewModelFactory(private val repository: MangRepository) :
@@ -26,6 +27,9 @@ class ViewModelFactory(private val repository: MangRepository) :
 
             modelClass.isAssignableFrom(SignUpViewModel::class.java) -> {
                 SignUpViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
+                ProfileViewModel(repository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

@@ -5,17 +5,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.mangbeli.data.repository.LocationRepository
 import com.capstone.mangbeli.di.Injection
+import com.capstone.mangbeli.ui.maps.MapsViewModel
 import com.capstone.mangbeli.ui.pedagang.homepedagang.HomeVendorViewModel
 
 @Suppress("UNCHECKED_CAST")
 class ProfileViewModelFactory(private val locationRepository: LocationRepository) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            return ProfileViewModel(locationRepository) as T
-        }
         if (modelClass.isAssignableFrom(HomeVendorViewModel::class.java)) {
             return HomeVendorViewModel(locationRepository) as T
+        }
+        if (modelClass.isAssignableFrom(MapsViewModel::class.java)) {
+            return MapsViewModel(locationRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

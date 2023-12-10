@@ -1,11 +1,18 @@
 package com.capstone.mangbeli.data.repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.data.local.pref.UserPref
 import com.capstone.mangbeli.data.remote.network.ApiService
+import com.capstone.mangbeli.data.remote.response.DataUser
+import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.LoginResult
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
+import com.capstone.mangbeli.model.LocationUpdate
 import com.capstone.mangbeli.model.User
+import com.capstone.mangbeli.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 
 class MangRepository(
@@ -49,6 +56,40 @@ class MangRepository(
     suspend fun logout() {
         userPref.logout()
     }
+
+    fun getUserProfile(): LiveData<Result<DataUser?>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getUserProfile().dataUser
+            Log.d("MangRepository", "getUserProfile: $response")
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
+    fun updateLocation(latitude: Double, longitude: Double): LiveData<Result<ErrorResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val locationUpdate = LocationUpdate(latitude, longitude)
+            val response = apiService.updateLocation(locationUpdate)
+            Log.d("MangRepository", "getUserProfile: $response")
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+    fun updateUserProfile(userData: UserProfile): LiveData<Result<ErrorResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.updateUserProfile(userData)
+            Log.d("MangRepository", "getUserProfile: $response")
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
     companion object {
         @Volatile
         private var instance: MangRepository? = null

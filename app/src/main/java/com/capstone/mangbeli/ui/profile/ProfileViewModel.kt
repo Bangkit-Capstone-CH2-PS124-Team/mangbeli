@@ -3,30 +3,23 @@ package com.capstone.mangbeli.ui.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.capstone.mangbeli.data.local.entity.UserEntity
-import com.capstone.mangbeli.data.repository.LocationRepository
-import kotlinx.coroutines.launch
+import com.capstone.mangbeli.data.repository.MangRepository
+import com.capstone.mangbeli.model.UserProfile
 
-class ProfileViewModel(private val locationRepository: LocationRepository): ViewModel() {
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "Rifando"
-    }
-    val text: LiveData<String> = _text
+class ProfileViewModel(private val userRepository: MangRepository) : ViewModel() {
 
     private val _currentLocation = MutableLiveData<Pair<Double, Double>>()
-    val currentLocation: LiveData<Pair<Double, Double>> get()  = _currentLocation
+    val currentLocation: LiveData<Pair<Double, Double>> get() = _currentLocation
 
     fun updateCurrentLocation(lat: Double, log: Double) {
         _currentLocation.value = Pair(lat, log)
-
-        val locationEntity = UserEntity(latitude = lat, longitude = log)
-        viewModelScope.launch {
-            locationRepository.insertLocation(locationEntity)
-        }
     }
 
-    fun getLastLocation() = locationRepository.getLastLocation()
+    fun getUserProfile() = userRepository.getUserProfile()
 
+    fun updateLocation(latitude: Double, longitude: Double) =
+        userRepository.updateLocation(latitude, longitude)
+
+    fun updateUserProfile(updateUser: UserProfile) = userRepository.updateUserProfile(updateUser)
 }

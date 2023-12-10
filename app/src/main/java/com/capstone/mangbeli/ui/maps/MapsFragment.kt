@@ -10,11 +10,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentMapsBinding
 import com.capstone.mangbeli.model.VendorsData.vendors
-import com.capstone.mangbeli.ui.profile.ProfileViewModel
 import com.capstone.mangbeli.ui.profile.ProfileViewModelFactory
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.VectorToBitmap
@@ -37,7 +35,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private val geofenceRadius = 100.0
     private lateinit var geofencingClient: GeofencingClient
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val profileViewModel by viewModels<ProfileViewModel> {
+    private val mapsViewModel by viewModels<MapsViewModel> {
         ProfileViewModelFactory.getInstance(requireActivity())
     }
 
@@ -48,8 +46,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val mapsViewModel =
-            ViewModelProvider(this)[MapsViewModel::class.java]
 
         _binding = FragmentMapsBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -72,7 +68,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             uiSettings.isCompassEnabled = true
         }
 
-        profileViewModel.currentLocation.observe(viewLifecycleOwner) {
+        mapsViewModel.currentLocation.observe(viewLifecycleOwner) {
             addUserLocation(it.first, it.second)
             addManyMarker(it)
         }
@@ -101,7 +97,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         LocationHelper.getLastKnownLocation(
             fusedLocationClient,
             { location ->
-                profileViewModel.updateCurrentLocation(location.latitude, location.longitude)
+                mapsViewModel.updateCurrentLocation(location.latitude, location.longitude)
             },
             {
                 Toast.makeText(

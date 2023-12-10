@@ -87,6 +87,7 @@
     <string name="list_vendor">List Vendor</string>
     <string name="btn_cancel">Cancal</string>
     <string name="price_range">Price_range</string>
+    <string name="enable_location">Enable Location</string>
 
 
 </resources>
