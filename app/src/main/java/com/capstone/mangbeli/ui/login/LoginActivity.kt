@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -11,13 +13,15 @@ import androidx.lifecycle.lifecycleScope
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.databinding.ActivityLoginBinding
+import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
+import com.capstone.mangbeli.ui.role.AddRoleActivity
 import com.capstone.mangbeli.ui.signup.SignUpActivity
+import com.capstone.mangbeli.utils.Result
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -69,21 +73,38 @@ class LoginActivity : AppCompatActivity() {
             showLoading(true)
             btnLoginActivity.isEnabled = false
 
-            lifecycleScope.launch {
-                try {
-                    viewModel.login(email, password)
-                    ViewModelFactory.refreshInstance()
-                    runOnUiThread {
-                        showSuccessDialog(email)
-                        showLoading(false)
+            viewModel.login(email, password).observe(this@LoginActivity) {result ->
+                when (result) {
+                    is Result.Loading -> {
+                        binding.loadingProgressBar.visibility = View.VISIBLE
                     }
-                } catch (e: HttpException) {
-                    val jsonInString = e.response()?.errorBody()?.string()
-                    val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
-                    val errorMessage = errorBody.message
-                    runOnUiThread {
-                        errorMessage?.let { showfailedDialog(it) }
-                        showLoading(false)
+                    is Result.Success -> {
+                        binding.loadingProgressBar.visibility = View.GONE
+                        val userData = result.data
+                        AlertDialog.Builder(this@LoginActivity).apply {
+                            setTitle("Login berhasil")
+                            setMessage(userData.role)
+                            setPositiveButton("Lanjut") { _, _ ->
+                                if (userData.role != null ) {
+                                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                                    startActivity(intent)
+                                } else {
+                                    val intent = Intent(this@LoginActivity, AddRoleActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }
+                            create()
+                            show()
+                        }
+                    }
+                    is Result.Error -> {
+                        binding.loadingProgressBar.visibility = View.GONE
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Error ${result.error} : Cek internet anda!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.d("LoginActivity", "onCreate: ${result.error}")
                     }
                 }
             }
@@ -99,36 +120,30 @@ class LoginActivity : AppCompatActivity() {
         signInLauncher.launch(intent)
     }
 
-
-
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             val nama = FirebaseAuth.getInstance().currentUser?.displayName
-            val account = GoogleSignIn.getLastSignedInAccount(this)
-            val idToken = account?.idToken.orEmpty() //
+            val token = FirebaseAuth.getInstance().currentUser?.getIdToken(true)
             lifecycleScope.launch {
                 runOnUiThread {
-                    showSuccessDialog(nama.toString() + idToken)
+                    showSuccessDialog(nama.toString() + token.toString())
                     showLoading(false)
                 }
             }
-            Log.i("LOGIN", " $idToken berhasil login")
+            Log.i("LOGIN", "$nama berhasil login")
         } else {
             Log.i("LOGIN", "Login gagal: ${response?.error?.errorCode}")
         }
     }
-
 
     private fun showSuccessDialog(email: String) {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.success))
             setMessage(resources.getString(R.string.success) + email)
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
-                Intent(this@LoginActivity, HomeActivity::class.java).also {
-                    startActivity(it)
-                    finish()
-                }
+                startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                finish()
             }
             create()
             show()

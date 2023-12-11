@@ -16,7 +16,7 @@ import com.capstone.mangbeli.ui.MainActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
 import com.capstone.mangbeli.ui.home.HomeViewModel
-import com.capstone.mygithubusers.ui.settings.SettingViewModel
+import com.capstone.mangbeli.ui.settings.SettingViewModel
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
 
 

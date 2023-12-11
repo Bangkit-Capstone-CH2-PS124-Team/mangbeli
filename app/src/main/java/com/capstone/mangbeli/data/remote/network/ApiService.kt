@@ -3,6 +3,7 @@ package com.capstone.mangbeli.data.remote.network
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
 import com.capstone.mangbeli.data.remote.response.LoginResponse
+import com.capstone.mangbeli.data.remote.response.RefreshTokenResponse
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.data.remote.response.UserResponse
 import com.capstone.mangbeli.model.LocationUpdate
@@ -12,6 +13,7 @@ import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -37,6 +39,8 @@ interface ApiService {
 
     @GET("/user/profile")
     suspend fun getUserProfile(): UserResponse
+    @GET("/token")
+    suspend fun refreshAccessToken(@Header("Cookie") cookie: String): RefreshTokenResponse
 
     @PATCH("/location")
     suspend fun updateLocation(

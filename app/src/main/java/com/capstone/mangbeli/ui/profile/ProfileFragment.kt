@@ -129,6 +129,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
             onUploadImage()
         } else {
             Log.d("AddStory", "Tidak ada gambar yang dipilih")
+
         }
     }
     private fun onUploadImage() {
@@ -140,6 +141,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
                 image.name,
                 requestImg
             )
+            Log.d("CekImageUpload", "onUploadImage: $multipartBody")
             profileViewModel.uploadImage(multipartBody).observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is Loading -> {

@@ -16,7 +16,6 @@ import com.capstone.mangbeli.databinding.FragmentSettingsBinding
 import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeViewModel
-import com.capstone.mygithubusers.ui.settings.SettingViewModel
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
 
 class SettingsFragment : Fragment() {

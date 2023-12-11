@@ -16,6 +16,7 @@ import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.utils.Result
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import okhttp3.MultipartBody
 import retrofit2.HttpException
 
@@ -24,9 +25,9 @@ class MangRepository(
     private val apiService: ApiService
 ) {
 
-    suspend fun saveToken(token: String, email: String, role: String) {
+    private suspend fun saveToken(token: String, email: String, role: String) {
         userPref.saveToken(token, email, role)
-        Log.e("TokenError", "$token + $email")
+        Log.e("TokenError", token)
     }
 
     fun getSession(): Flow<User> {
@@ -47,22 +48,57 @@ class MangRepository(
         )
     }
 
-    suspend fun login(email: String, password: String): LoginResult {
+    fun login(email: String, password: String): LiveData<Result<LoginResult>> = liveData {
+        emit(Result.Loading)
         try {
-            val loginResponse = apiService.login(email, password)
-            val loginResult = loginResponse.loginResult
-
-            if (loginResult != null) {
-                saveToken(loginResult.token, email, loginResult.role)
-                return loginResult
-            } else {
-                userPref.logout()
-                throw Exception(loginResponse.message)
+            val response = apiService.login(email, password).loginResult
+            if (response != null) {
+                Log.d("MangRepository", "getLoginResponse: $response")
+                if (response.email != null) {
+                saveToken(response.token,response.email,response.role)
+                }
+                emit(Result.Success(response))
             }
-        } catch (e: Exception) {
-            throw e
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
+                // Token expired, coba refresh token
+                try {
+                    val newToken = refreshAccessToken()
+                    // Coba login kembali setelah berhasil refresh token
+                    val newResponse = apiService.login(email, password).loginResult
+                    if (newResponse != null && (newResponse.email != null)) {
+                        saveToken(newResponse.token, newResponse.email, newResponse.role)
+                        emit(Result.Success(newResponse))
+                    }
+                } catch (refreshException: Exception) {
+                    // Gagal refresh token, lakukan sesuatu (misalnya, logout)
+                    emit(Result.Error("Failed to refresh token"))
+                }
+            }
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            Log.d("Repository", "register user: $errorMessage ")
+            emit(Result.Error(errorMessage.toString()))
         }
     }
+    suspend fun refreshAccessToken(): String {
+        val refreshToken = userPref.getSession().firstOrNull()?.token ?: ""
+        val cookie = "refreshToken=$refreshToken"
+
+        val response = apiService.refreshAccessToken(cookie)
+
+        if (response.error) {
+            // Handle error, misalnya logout user karena refresh token tidak valid
+            userPref.logout()
+            throw IllegalStateException("Failed to refresh access token")
+        }
+
+        val newAccessToken = response.accessToken
+        userPref.refreshAccessToken(newAccessToken)
+        return newAccessToken
+    }
+
 
     suspend fun logout() {
         userPref.logout()
@@ -80,6 +116,9 @@ class MangRepository(
             val jsonInString = e.response()?.errorBody()?.string()
             val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
             val errorMessage = errorBody.message
+            if (e.code() == 401) {
+                refreshAccessToken()
+            }
             emit(Result.Error(errorMessage.toString()))
         }
     }

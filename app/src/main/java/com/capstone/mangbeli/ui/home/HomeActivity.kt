@@ -15,7 +15,7 @@ import com.capstone.mangbeli.data.local.pref.SettingsPref
 import com.capstone.mangbeli.data.local.pref.dataStore
 import com.capstone.mangbeli.databinding.ActivityHomeBinding
 import com.capstone.mangbeli.ui.ViewModelFactory
-import com.capstone.mygithubusers.ui.settings.SettingViewModel
+import com.capstone.mangbeli.ui.settings.SettingViewModel
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
 
 class HomeActivity : AppCompatActivity() {
