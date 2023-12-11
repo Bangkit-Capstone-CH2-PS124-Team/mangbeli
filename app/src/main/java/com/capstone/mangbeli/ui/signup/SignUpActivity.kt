@@ -35,14 +35,14 @@ class SignUpActivity : AppCompatActivity() {
                 val email = binding.emailEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
                 val confPassword = binding.confpasswordEditText.text.toString()
-                val role = when {
-                    binding.radioButton1.isChecked -> "user"
-                    binding.radioButton2.isChecked -> "vendor"
-                    else -> {
-                        "user"
-                    }
-                }
-                registerSet(name, email, password, confPassword, role)
+//                val role = when {
+//                    binding.radioButton1.isChecked -> "user"
+//                    binding.radioButton2.isChecked -> "vendor"
+//                    else -> {
+//                        "user"
+//                    }
+//                }
+                registerSet(name, email, password, confPassword)
             }
         }
     }
@@ -51,7 +51,7 @@ class SignUpActivity : AppCompatActivity() {
         email: String,
         password: String,
         confPassword: String,
-        role: String
+//        role: String
     ) {
         binding.apply {
             if (name.isEmpty()) {
@@ -80,7 +80,7 @@ class SignUpActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 try {
-                    viewModel.register(name, email, password, confPassword, role)
+                    viewModel.register(name, email, password, confPassword)
                     runOnUiThread {
                         showSuccessDialog(email)
                         showLoading(false)

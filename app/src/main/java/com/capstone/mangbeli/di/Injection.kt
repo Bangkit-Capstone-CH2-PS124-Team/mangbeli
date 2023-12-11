@@ -24,4 +24,7 @@ object Injection {
         val locationDatabase = UserDatabase.getDatabase(context)
         return LocationRepository.getInstance(locationDatabase)
     }
+    fun refreshRepository() {
+        MangRepository.refreshInstance()
+    }
 }

@@ -74,6 +74,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
             val listFavorite = inputString?.split(", ")?.map { it.trim() }
             val updateUser = UserProfile(
                 name = binding.edtName.text.toString(),
+                role = "user",
                 noHp = binding.edtNoHp.text.toString(),
                 favorite = listFavorite
             )
@@ -249,6 +250,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
                 is Success -> {
                     setVisibility(binding.profileProgressBar, false)
+                    ViewModelFactory.refreshInstance()
                     val userData = result.data
                     val listFavorite = userData.favorite?.joinToString(", ")
                     Log.d("ProfileFragment", "Get Data: $userData")

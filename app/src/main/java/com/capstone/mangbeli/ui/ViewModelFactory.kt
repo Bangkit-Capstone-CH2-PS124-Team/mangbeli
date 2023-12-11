@@ -9,6 +9,7 @@ import com.capstone.mangbeli.di.Injection
 import com.capstone.mangbeli.ui.home.HomeViewModel
 import com.capstone.mangbeli.ui.login.LoginViewModel
 import com.capstone.mangbeli.ui.profile.ProfileViewModel
+import com.capstone.mangbeli.ui.role.AddRoleViewModel
 import com.capstone.mangbeli.ui.signup.SignUpViewModel
 
 class ViewModelFactory(private val repository: MangRepository) :
@@ -23,6 +24,9 @@ class ViewModelFactory(private val repository: MangRepository) :
 
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                 LoginViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(AddRoleViewModel::class.java) -> {
+                AddRoleViewModel(repository) as T
             }
 
             modelClass.isAssignableFrom(SignUpViewModel::class.java) -> {
@@ -49,5 +53,10 @@ class ViewModelFactory(private val repository: MangRepository) :
             }
             return INSTANCE as ViewModelFactory
         }
+        fun refreshInstance() {
+            INSTANCE = null
+            Injection.refreshRepository()
+        }
     }
+
 }

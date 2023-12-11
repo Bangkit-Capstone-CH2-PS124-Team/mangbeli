@@ -22,6 +22,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MangBeli"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.role.DataDiriActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.role.AddFavFoodActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.role.AddRoleActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".ui.maps.GeofenceBroadcastReceiver"
             android:enabled="true"

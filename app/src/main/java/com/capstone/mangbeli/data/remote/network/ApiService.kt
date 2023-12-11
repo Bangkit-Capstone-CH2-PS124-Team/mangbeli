@@ -25,8 +25,7 @@ interface ApiService {
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("password") password: String,
-        @Field("confPassword") confPassword: String,
-        @Field("role") role: String
+        @Field("confPassword") confPassword: String
     ): RegisterResponse
 
     @FormUrlEncoded

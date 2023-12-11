@@ -17,6 +17,7 @@ import com.capstone.mangbeli.ui.signup.SignUpActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -71,6 +72,7 @@ class LoginActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     viewModel.login(email, password)
+                    ViewModelFactory.refreshInstance()
                     runOnUiThread {
                         showSuccessDialog(email)
                         showLoading(false)
@@ -97,30 +99,36 @@ class LoginActivity : AppCompatActivity() {
         signInLauncher.launch(intent)
     }
 
+
+
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             val nama = FirebaseAuth.getInstance().currentUser?.displayName
-            val token = FirebaseAuth.getInstance().currentUser?.getIdToken(true)
+            val account = GoogleSignIn.getLastSignedInAccount(this)
+            val idToken = account?.idToken.orEmpty() //
             lifecycleScope.launch {
                 runOnUiThread {
-                    showSuccessDialog(nama.toString() + token.toString())
+                    showSuccessDialog(nama.toString() + idToken)
                     showLoading(false)
                 }
             }
-            Log.i("LOGIN", "$nama berhasil login")
+            Log.i("LOGIN", " $idToken berhasil login")
         } else {
             Log.i("LOGIN", "Login gagal: ${response?.error?.errorCode}")
         }
     }
+
 
     private fun showSuccessDialog(email: String) {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.success))
             setMessage(resources.getString(R.string.success) + email)
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
-                startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
-                finish()
+                Intent(this@LoginActivity, HomeActivity::class.java).also {
+                    startActivity(it)
+                    finish()
+                }
             }
             create()
             show()

@@ -24,7 +24,7 @@ class MangRepository(
     private val apiService: ApiService
 ) {
 
-    private suspend fun saveToken(token: String, email: String, role: String) {
+    suspend fun saveToken(token: String, email: String, role: String) {
         userPref.saveToken(token, email, role)
         Log.e("TokenError", "$token + $email")
     }
@@ -37,15 +37,13 @@ class MangRepository(
         name: String,
         email: String,
         password: String,
-        confPassword: String,
-        role: String
+        confPassword: String
     ): RegisterResponse {
         return apiService.register(
             name,
             email,
             password,
-            confPassword,
-            role
+            confPassword
         )
     }
 
@@ -133,6 +131,9 @@ class MangRepository(
             instance ?: synchronized(this) {
                 instance ?: MangRepository(userPref, apiService)
             }.also { instance = it }
+        fun refreshInstance() {
+            instance = null
+        }
     }
 
 }

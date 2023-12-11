@@ -46,7 +46,7 @@ class SplashScreen : AppCompatActivity() {
         }
 
         viewModel.getSession().observe(this){ user ->
-            if (user.isLogin){
+            if (user.isLogin != null){
                 Handler(Looper.getMainLooper()).postDelayed({
                     val mainIntent = Intent(this@SplashScreen, HomeActivity::class.java)
                     startActivity(mainIntent)

@@ -37,6 +37,7 @@ class UserPref private constructor( private val dataStore: DataStore<Preferences
                 preferences[ROLE_KEY] ?: "",
                 preferences[IS_LOGIN_KEY] ?: false
             )
+
         }
     }
 

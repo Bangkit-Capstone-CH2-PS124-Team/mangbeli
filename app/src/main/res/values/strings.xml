@@ -87,5 +87,14 @@
     <string name="list_vendor">List Vendor</string>
     <string name="btn_cancel">Cancal</string>
     <string name="price_range">Price_range</string>
-    <string name="enable_location">Enable Location</string>
+    <string name="enable_location">enable Location</string>
+    <string name="choose_your_role">Choose Your Role</string>
+    <string name="description_pembeli">pembeli</string>
+    <string name="start">START</string>
+    <string name="get_started">GET STARTED</string>
+    <string name="already_have_account">I ALREADY HAVE ACCOUNT</string>
+    <string name="add_fav_food">What Your Favorite Food?</string>
+    <string name="fill_your_personal_data">Fill Your Personal Data</string>
+    <string name="bubur">Bubur</string>
+    <string name="image_food">image Food</string>
 </resources>

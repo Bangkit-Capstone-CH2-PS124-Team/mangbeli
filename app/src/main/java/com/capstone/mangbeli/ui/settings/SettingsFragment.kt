@@ -53,6 +53,7 @@ class SettingsFragment : Fragment() {
 
         binding.btnLogout.setOnClickListener {
             viewModel.logout()
+            ViewModelFactory.refreshInstance()
             startActivity(Intent(requireContext(), MenuActivity::class.java))
             requireActivity().finish()
         }
