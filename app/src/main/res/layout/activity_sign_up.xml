@@ -82,8 +82,6 @@
                     android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:autofillHints="Name"
-                    android:hint="@string/name"
                     android:inputType="text"
                     tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 

@@ -32,6 +32,10 @@ class ViewModelFactory(private val repository: MangRepository) :
             modelClass.isAssignableFrom(SignUpViewModel::class.java) -> {
                 SignUpViewModel(repository) as T
             }
+            modelClass.isAssignableFrom(AddRoleViewModel::class.java) -> {
+                AddRoleViewModel(repository) as T
+            }
+
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel(repository) as T
             }

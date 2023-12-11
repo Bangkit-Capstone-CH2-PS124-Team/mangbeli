@@ -11,9 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.capstone.mangbeli.R
-import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.databinding.ActivityLoginBinding
-import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
 import com.capstone.mangbeli.ui.role.AddRoleActivity
@@ -23,9 +21,8 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -73,38 +70,33 @@ class LoginActivity : AppCompatActivity() {
             showLoading(true)
             btnLoginActivity.isEnabled = false
 
-            viewModel.login(email, password).observe(this@LoginActivity) {result ->
+            viewModel.login(email, password).observe(this@LoginActivity) { result ->
                 ViewModelFactory.refreshInstance()
                 when (result) {
                     is Result.Loading -> {
                         binding.loadingProgressBar.visibility = View.VISIBLE
                     }
+
                     is Result.Success -> {
                         binding.loadingProgressBar.visibility = View.GONE
                         val userData = result.data
-                        AlertDialog.Builder(this@LoginActivity).apply {
-                            setTitle("Login berhasil")
-                            setMessage(userData.role)
-                            setPositiveButton("Lanjut") { _, _ ->
-                                if (userData.role != null ) {
-                                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                                    startActivity(intent)
-                                } else {
-                                    val intent = Intent(this@LoginActivity, AddRoleActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }
-                            create()
-                            show()
+                        if (userData.role != null) {
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            val intent = Intent(this@LoginActivity, AddRoleActivity::class.java)
+                            startActivity(intent)
+                            finish()
                         }
                     }
+
                     is Result.Error -> {
                         binding.loadingProgressBar.visibility = View.GONE
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Error ${result.error} : Cek internet anda!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        runOnUiThread {
+                            showfailedDialog(result.error)
+                            showLoading(false)
+                        }
                         Log.d("LoginActivity", "onCreate: ${result.error}")
                     }
                 }
@@ -142,8 +134,10 @@ class LoginActivity : AppCompatActivity() {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.success))
             setMessage(resources.getString(R.string.success) + email)
+
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
                 startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                binding.btnLoginActivity.isEnabled = true
                 finish()
             }
             create()
@@ -153,8 +147,20 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showfailedDialog(errorMessage: String) {
         AlertDialog.Builder(this).apply {
-            setTitle(getString(R.string.error))
-            setMessage(errorMessage)
+            if (errorMessage == "Email is not registered") {
+                setTitle(getString(R.string.error))
+                setMessage(getString(R.string.email_not_registered))
+            } else if (errorMessage == "Wrong Password") {
+                setTitle(getString(R.string.error))
+                setMessage(getString(R.string.wrong_password))
+            } else if (errorMessage == "Password must be at least 8 characters") {
+                setTitle(getString(R.string.error))
+                setMessage(getString(R.string.minimal_8_characters))
+            } else {
+                setTitle(getString(R.string.error))
+                setMessage(errorMessage)
+            }
+            binding.btnLoginActivity.isEnabled = true
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
                 binding.btnLoginActivity.isEnabled = true
             }

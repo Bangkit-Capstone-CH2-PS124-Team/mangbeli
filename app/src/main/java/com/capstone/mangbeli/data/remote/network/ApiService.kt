@@ -9,6 +9,7 @@ import com.capstone.mangbeli.data.remote.response.UserResponse
 import com.capstone.mangbeli.data.remote.response.VendorsResponse
 import com.capstone.mangbeli.model.LocationUpdate
 import com.capstone.mangbeli.model.UserProfile
+import com.capstone.mangbeli.model.VendorProfile
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -63,6 +64,11 @@ interface ApiService {
     @PATCH("/user/profile")
     suspend fun updateUserProfile(
         @Body userProfile: UserProfile
+    ): ErrorResponse
+
+    @PATCH("/vendor/profile")
+    suspend fun updateVendorProfile(
+        @Body vendorProfile: VendorProfile
     ): ErrorResponse
 
     @Multipart

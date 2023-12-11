@@ -98,5 +98,14 @@
     <string name="fill_your_personal_data">Isi data Diri</string>
     <string name="bubur">Bubur</string>
     <string name="image_food">image Food</string>
+    <string name="list_product_hint">List Produk</string>
+    <string name="minimum_price">Minimal Harga</string>
+    <string name="maksimum_price">Maksimal Harga</string>
+    <string name="minimum_sapi">Minimal Harga : </string>
+    <string name="maksimum">Maksimal Harga : </string>
+    <string name="email_not_registered">Email tidak terdaftar silahkan coba lagi</string>
+    <string name="wrong_password">Password salah</string>
+    <string name="name_product_hint">Nama Produk</string>
+
 
 </resources>

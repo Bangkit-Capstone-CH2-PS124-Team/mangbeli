@@ -78,7 +78,7 @@
     <string name="title_home_mark_buyer">(Mark purchase)</string>
     <string name="ya">Yes</string>
     <string name="confirpassword_is_required">Password must match</string>
-    <string name="minimal_8_characters">Minimal 8 characters</string>
+    <string name="minimal_8_characters">Password must be at least 8 characters</string>
     <string name="email_example">example@gmail.ocm</string>
     <string name="invalid_format">Invalid Format</string>
     <string name="dont_have_account">Don\'t Have Account? </string>
@@ -97,4 +97,12 @@
     <string name="fill_your_personal_data">Fill Your Personal Data</string>
     <string name="bubur">Bubur</string>
     <string name="image_food">image Food</string>
+    <string name="list_product_hint">List Product</string>
+    <string name="minimum_price">Minimal Harga : </string>
+    <string name="maksimum_price">Maksimal Harga : </string>
+    <string name="minimum_sapi">Minimal Harga : </string>
+    <string name="maksimum">Maksimal Harga : </string>
+    <string name="email_not_registered">Email Not Registered</string>
+    <string name="wrong_password">Wrong Password</string>
+    <string name="name_product_hint">Name Product</string>
 </resources>

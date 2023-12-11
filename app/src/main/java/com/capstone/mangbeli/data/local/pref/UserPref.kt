@@ -24,21 +24,28 @@ class UserPref private constructor( private val dataStore: DataStore<Preferences
                 preferences[ROLE_KEY] = role
                 preferences[IS_LOGIN_KEY] = true
             }
-            Log.d("USER-PREF", "saveToken: $TOKEN_KEY")
+            Log.d("USERPREF", "saveToken: ${TOKEN_KEY}")
         } else {
             Log.e("TokenError", "Token is null in the login response")
+        }
+    }
+    suspend fun saveRole(role: String) {
+        dataStore.edit { preferences ->
+            preferences[ROLE_KEY] = role
         }
     }
 
     fun getSession(): Flow<User> {
         return dataStore.data.map { preferences ->
-            Log.d("USERPREF", "saveToken: $TOKEN_KEY")
+            Log.d("USERPREF", "saveToken: ${TOKEN_KEY}")
             User(
                 preferences[TOKEN_KEY] ?: " ",
                 preferences[EMAIL_KEY] ?: "",
                 preferences[ROLE_KEY] ?: "",
                 preferences[IS_LOGIN_KEY] ?: false
             )
+
+
         }
     }
 
@@ -47,6 +54,8 @@ class UserPref private constructor( private val dataStore: DataStore<Preferences
             preferences.clear()
         }
     }
+
+
 
     companion object {
         @Volatile
