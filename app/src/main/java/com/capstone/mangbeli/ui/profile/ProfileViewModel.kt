@@ -20,6 +20,8 @@ class ProfileViewModel(private val userRepository: MangRepository) : ViewModel()
 
     fun updateLocation(latitude: Double, longitude: Double) =
         userRepository.updateLocation(latitude, longitude)
+    fun deleteLocation() =
+        userRepository.deleteLocation()
 
     fun updateUserProfile(updateUser: UserProfile) = userRepository.updateUserProfile(updateUser)
 

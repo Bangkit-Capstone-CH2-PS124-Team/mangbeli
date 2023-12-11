@@ -16,12 +16,15 @@ import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentProfileBinding
 import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.ui.ViewModelFactory
+import com.capstone.mangbeli.utils.ButtonUtils
+import com.capstone.mangbeli.utils.EditTextUtils
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result.Error
 import com.capstone.mangbeli.utils.Result.Loading
 import com.capstone.mangbeli.utils.Result.Success
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.reduceFileImage
+import com.capstone.mangbeli.utils.setVisibility
 import com.capstone.mangbeli.utils.uriToFile
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -45,6 +48,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         ViewModelFactory.getInstance(requireActivity())
     }
     private var currentImageUri: Uri? = null
+    private var isEdited = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -60,6 +64,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         initProfile()
         onSubmit()
         onImageClicked()
+        onChangeEditText()
 
         return root
     }
@@ -78,6 +83,9 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
                 noHp = binding.edtNoHp.text.toString(),
                 favorite = listFavorite
             )
+            isEdited = false
+            ButtonUtils.enableButtonIfEdited(binding.btnReset, isEdited)
+            ButtonUtils.enableButtonIfEdited(binding.btnSave, isEdited)
             profileViewModel.updateUserProfile(updateUser).observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is Loading -> {
@@ -132,6 +140,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
         }
     }
+
     private fun onUploadImage() {
         currentImageUri?.let { uri ->
             val image = uriToFile(uri, requireContext()).reduceFileImage()
@@ -179,6 +188,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         }
 
     }
+
     private fun showImage() {
         currentImageUri?.let {
             Log.d("Image", "showImage: $it")
@@ -196,6 +206,27 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
             } else {
                 // User mematikan lokasi
                 setVisibility(binding.googleMapProfile, false)
+                deleteLocation()
+            }
+        }
+    }
+
+    private fun deleteLocation() {
+        profileViewModel.deleteLocation().observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Loading -> {
+                    Log.d("ProfileFragment", "deleteLocation: $result")
+                }
+
+                is Success -> {
+                    val response = result.data.message
+                    Log.d("ProfileFragment", "deleteLocation: $response")
+                    Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show()
+                }
+
+                is Error -> {
+                    Log.d("ProfileFragment", "deleteLocation: ${result.error}")
+                }
             }
         }
     }
@@ -257,7 +288,12 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
                     val listFavorite = userData.favorite?.joinToString(", ")
                     Log.d("ProfileFragment", "Get Data: $userData")
                     with(binding) {
-                        imgProfile.loadImage(userData.imageUrl.toString())
+                        Log.d("Profile", "initProfile: ${imgProfile.drawable}")
+                        if (imgProfile.drawable == null) {
+                            imgProfile.setImageResource(R.drawable.ic_account_circle_24)
+                        } else {
+                            imgProfile.loadImage(userData.imageUrl.toString())
+                        }
                         tvNameUser.text = userData.name
                         tvEmailUser.text = userData.email
                         tvFavoriteUser.text = listFavorite
@@ -282,6 +318,29 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun onChangeEditText() {
+        EditTextUtils.setupTextWatcher(
+            binding.edtName,
+            binding.edtNoHp,
+            binding.edtFavorite
+        ) {
+            isEdited = true
+            ButtonUtils.enableButtonIfEdited(binding.btnReset, isEdited)
+            ButtonUtils.enableButtonIfEdited(binding.btnSave, isEdited)
+        }
+
+        ButtonUtils.enableButtonIfEdited(binding.btnReset, isEdited)
+        ButtonUtils.enableButtonIfEdited(binding.btnSave, isEdited)
+
+        binding.btnReset.setOnClickListener {
+            binding.edtName.text = null
+            binding.edtNoHp.text = null
+            binding.edtFavorite.text = null
+            isEdited = false
+            ButtonUtils.enableButtonIfEdited(binding.btnReset, isEdited)
+            ButtonUtils.enableButtonIfEdited(binding.btnSave, isEdited)
+        }
+    }
     private fun getUserLocation() {
         LocationHelper.getLastKnownLocation(
             fusedLocationClient,
@@ -327,10 +386,6 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         Toast.makeText(
             requireContext(), "Location permission denied", Toast.LENGTH_SHORT
         ).show()
-    }
-
-    private fun setVisibility(view: View, isVisible: Boolean) {
-        view.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
 

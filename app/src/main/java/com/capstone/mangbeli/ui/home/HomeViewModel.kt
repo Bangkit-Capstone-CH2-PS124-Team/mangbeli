@@ -26,4 +26,7 @@ class HomeViewModel (private val repository: MangRepository) : ViewModel() {
             repository.logout()
         }
     }
+
+    fun getAllVendor(size: Int = 10, location: Int = 0) =
+        repository.getAllVendor(size, location)
 }

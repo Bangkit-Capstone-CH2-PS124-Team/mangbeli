@@ -83,6 +83,12 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
 
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    implementation("com.auth0.android:jwtdecode:2.0.2")
+
     //google
     implementation("com.google.android.gms:play-services-auth:19.2.0")
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")

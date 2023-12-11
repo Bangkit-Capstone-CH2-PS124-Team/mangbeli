@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
@@ -80,4 +81,8 @@ fun ImageView.loadImage(url: String) {
     Glide.with(this)
         .load(url)
         .into(this)
+}
+
+fun setVisibility(view: View, isVisible: Boolean) {
+    view.visibility = if (isVisible) View.VISIBLE else View.GONE
 }
