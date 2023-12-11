@@ -74,6 +74,7 @@ class LoginActivity : AppCompatActivity() {
             btnLoginActivity.isEnabled = false
 
             viewModel.login(email, password).observe(this@LoginActivity) {result ->
+                ViewModelFactory.refreshInstance()
                 when (result) {
                     is Result.Loading -> {
                         binding.loadingProgressBar.visibility = View.VISIBLE
