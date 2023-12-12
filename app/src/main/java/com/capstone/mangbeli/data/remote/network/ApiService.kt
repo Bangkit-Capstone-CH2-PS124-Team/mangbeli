@@ -3,6 +3,7 @@ package com.capstone.mangbeli.data.remote.network
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
 import com.capstone.mangbeli.data.remote.response.LoginResponse
+import com.capstone.mangbeli.data.remote.response.ProfileVendorResponse
 import com.capstone.mangbeli.data.remote.response.RefreshTokenResponse
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.data.remote.response.UserResponse
@@ -43,6 +44,9 @@ interface ApiService {
 
     @GET("/user/profile")
     suspend fun getUserProfile(): UserResponse
+
+    @GET("/vendor/profile")
+    suspend fun getVendorProfile(): ProfileVendorResponse
 
     @GET("/vendors")
     suspend fun getVendors(

@@ -6,8 +6,10 @@ import androidx.lifecycle.liveData
 import com.capstone.mangbeli.data.local.pref.UserPref
 import com.capstone.mangbeli.data.remote.network.ApiService
 import com.capstone.mangbeli.data.remote.response.DataUser
+import com.capstone.mangbeli.data.remote.response.DataVendor
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
+import com.capstone.mangbeli.data.remote.response.ListVendorsItem
 import com.capstone.mangbeli.data.remote.response.LoginResult
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.data.remote.response.VendorsResponse
@@ -90,6 +92,23 @@ class MangRepository(
         emit(Result.Loading)
         try {
             val response = apiService.getUserProfile().dataUser
+            if (response != null) {
+                Log.d("MangRepository", "getUserProfile: $response")
+                emit(Result.Success(response))
+            }
+        } catch (e: HttpException) {
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            emit(Result.Error(errorMessage.toString()))
+        }
+    }
+
+
+    fun getVendorProfile(): LiveData<Result<DataVendor>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getVendorProfile().dataVendor
             if (response != null) {
                 Log.d("MangRepository", "getUserProfile: $response")
                 emit(Result.Success(response))

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.pedagang.profile.ProfilePedagangFragment">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:context=".ui.pedagang.profile.ProfilePedagangFragment">
+
+        <!-- Your existing layout content goes here -->
 
         <TextView
             android:id="@+id/profile_text_view"
@@ -35,6 +38,52 @@
             tools:ignore="ImageContrastCheck" />
 
         <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/enable_location"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="?attr/colorTertiary" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/google_map_profile"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/img_profile"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
+        <ProgressBar
+            android:id="@+id/profileProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,14 +98,14 @@
                 android:id="@+id/edl_name"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:hint="@string/name_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="50dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,124 +113,158 @@
                 android:id="@+id/edl_name_vendor"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:hint="@string/name_vendor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_name_vendor"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="50dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/edl_email"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="20dp"
-            android:hint="@string/email_hint"
-            app:layout_constraintEnd_toEndOf="@+id/img_profile"
-            app:layout_constraintHorizontal_bias="0.551"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edl_no_hp"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="16dp"
             android:hint="@string/no_hp_hint"
             app:layout_constraintEnd_toEndOf="@+id/img_profile"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/edl_email">
+            app:layout_constraintTop_toBottomOf="@+id/google_map_profile">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_no_hp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="50dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/edl_additional1"
+            android:id="@+id/edl_list_product"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="20dp"
-            android:hint="@string/list_vendor"
+            android:hint="@string/list_product_hint"
             app:layout_constraintEnd_toEndOf="@+id/img_profile"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
             app:layout_constraintTop_toBottomOf="@+id/edl_no_hp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_additional1"
+                android:id="@+id/edt_list_product"
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/edl_additional2"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="20dp"
-            android:hint="@string/price_range"
-            app:layout_constraintEnd_toEndOf="@+id/img_profile"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/edl_additional1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_additional2"
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/range_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginVertical="10dp"
-            android:layout_marginEnd="15dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="10dp"
+            android:text="@string/price_range"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edl_additional2">
+            app:layout_constraintHorizontal_bias="0.055"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edl_list_product" />
 
-            <Button
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="@string/btn_cancel"
-                android:textColor="?attr/colorError" />
+        <TextView
+        android:id="@+id/maksimum_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/maksimum_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/range_text_view" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/save_btn" />
+    <com.google.android.material.slider.Slider
+        android:id="@+id/maksimum_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:stepSize="1000"
+        android:value="1000"
+        android:valueFrom="1000"
+        android:valueTo="100000"
+        app:labelBehavior="withinBounds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/maksimum_text_view"
+        app:thumbColor="@color/white"
+        app:thumbElevation="8dp"
+        app:thumbRadius="12dp"
+        app:trackColorActive="@color/white"
+        app:trackColorInactive="@color/white"
+        app:trackHeight="2dp" />
 
 
-        </LinearLayout>
+    <TextView
+        android:id="@+id/minimum_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/minimum_price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/maksimum_slider" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/minimum_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:stepSize="1000"
+            android:value="1000"
+            android:valueFrom="1000"
+            android:valueTo="100000"
+            app:labelBehavior="withinBounds"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/minimum_text_view"
+            app:thumbColor="@color/white"
+            app:thumbElevation="8dp"
+            app:thumbRadius="12dp"
+            app:trackColorActive="@color/white"
+            app:trackColorInactive="@color/white"
+            app:trackHeight="2dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginVertical="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/minimum_slider">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="@string/btn_cancel"
+            android:textColor="?attr/colorError" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save_btn" />
+
+
+    </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>
-

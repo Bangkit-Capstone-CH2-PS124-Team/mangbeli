@@ -2,13 +2,10 @@ package com.capstone.mangbeli.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class VendorsResponse(
+data class ProfileVendorResponse(
 
-	@field:SerializedName("listVendors")
-	val listVendors: List<ListVendorsItem?>? = null,
-
-	@field:SerializedName("rofileResult")
-	val dataProfile: ListVendorsItem? = null,
+	@field:SerializedName("dataVendor")
+	val dataVendor: DataVendor? = null,
 
 	@field:SerializedName("error")
 	val error: Boolean? = null,
@@ -17,25 +14,16 @@ data class VendorsResponse(
 	val message: String? = null
 )
 
-data class ListVendorsItem(
+data class DataVendor(
 
-	@field:SerializedName("no_hp")
-	val noHp: String? = null,
-
-	@field:SerializedName("image_url")
-	val imageUrl: String? = null,
+	@field:SerializedName("createdAt")
+	val createdAt: String? = null,
 
 	@field:SerializedName("nameVendor")
 	val nameVendor: String? = null,
 
 	@field:SerializedName("minPrice")
 	val minPrice: Int? = null,
-
-	@field:SerializedName("latitude")
-	val latitude: Double? = null,
-
-	@field:SerializedName("name")
-	val name: String? = null,
 
 	@field:SerializedName("vendorId")
 	val vendorId: String? = null,
@@ -49,6 +37,6 @@ data class ListVendorsItem(
 	@field:SerializedName("products")
 	val products: List<String>? = null,
 
-	@field:SerializedName("longitude")
-	val longitude: Double? = null
+	@field:SerializedName("updatedAt")
+	val updatedAt: String? = null
 )

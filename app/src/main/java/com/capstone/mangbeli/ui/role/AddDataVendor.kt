@@ -1,21 +1,17 @@
 package com.capstone.mangbeli.ui.role
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.ActivityAddDataVendorBinding
-import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.model.VendorProfile
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
 import com.capstone.mangbeli.utils.Result
-import com.google.android.material.slider.Slider
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -68,17 +64,16 @@ class AddDataVendor : AppCompatActivity() {
     private fun setAction() {
         binding.btnNext.setOnClickListener {
             val nama = binding.nameVendorEditText.text.toString()
-            val noHp = binding.edtNoHp.text.toString()
-            val inputString = binding.favEditText.text
+            val inputString = binding.productEditText.text
             val products = inputString?.split(", ")?.map { it.trim() }
-            val updateUser = VendorProfile(
+            val updateVendor = VendorProfile(
                 nameVendor = nama,
-                noHp = noHp,
                 products = products,
                 minPrice = binding.minimumSlider.value.toInt(),
                 maxPrice =binding.maksimumSlider.value.toInt()
             )
-            viewModel.updateVendorProfile(updateUser).observe(this@AddDataVendor) { result ->
+
+            viewModel.updateVendorProfile(updateVendor).observe(this@AddDataVendor) { result ->
                 when (result) {
                     is Result.Loading -> {
                         Log.d("ProfileFragment", "initProfile: Loading")
@@ -90,7 +85,6 @@ class AddDataVendor : AppCompatActivity() {
                     }
 
                     is Result.Error -> {
-                        // Tampilkan pesan kesalahan kepada pengguna
                         Toast.makeText(
                             this@AddDataVendor,
                             "Error ${result.error}: Cek koneksi internet anda!",
@@ -100,7 +94,7 @@ class AddDataVendor : AppCompatActivity() {
                     }
                 }
             }
-            Toast.makeText(this@AddDataVendor, "Data berhasil disimpan $updateUser", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@AddDataVendor, "Data berhasil disimpan $updateVendor", Toast.LENGTH_SHORT).show()
         }
     }
 }
