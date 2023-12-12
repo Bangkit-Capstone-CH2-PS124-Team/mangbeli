@@ -9,7 +9,6 @@ import com.capstone.mangbeli.data.remote.response.DataUser
 import com.capstone.mangbeli.data.remote.response.DataVendor
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
-import com.capstone.mangbeli.data.remote.response.ListVendorsItem
 import com.capstone.mangbeli.data.remote.response.LoginResult
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.data.remote.response.VendorsResponse
@@ -53,17 +52,20 @@ class MangRepository(
             confPassword
         )
     }
-    fun getAllVendor(size: Int = 10, location: Int = 0): LiveData<Result<VendorsResponse>> =
+
+    fun getAllVendor(size: Int = 10, location: Int = 1, isLocationNotEnable: Int = 1, search: String = "", filter: String = ""): LiveData<Result<VendorsResponse>> =
         liveData {
             emit(Result.Loading)
             try {
-                val response = apiService.getVendors(size, location)
-                Log.d("Repo", "getAllVendor: $response")
+                val response = apiService.getVendors(size, location, isLocationNotEnable, search, filter)
+                Log.d("Repo", "getAllVendor: ${response.listVendors}")
                 emit(Result.Success(response))
             } catch (e: HttpException) {
                 emit(Result.Error(e.message().toString()))
             }
         }
+
+
     fun login(email: String, password: String): LiveData<Result<LoginResult>> = liveData {
         emit(Result.Loading)
         try {
@@ -71,7 +73,7 @@ class MangRepository(
             if (response != null) {
                 Log.d("MangRepository", "getLoginResponse: $response")
                 if (response.email != null) {
-                saveToken(response.token,response.email,response.role)
+                    saveToken(response.token, response.email, response.role)
                 }
                 emit(Result.Success(response))
             }
@@ -121,6 +123,19 @@ class MangRepository(
         }
     }
 
+    fun getDetailVendor(id: String): LiveData<Result<DataVendor>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getDetailVendor(id).dataVendor
+            if (response != null) {
+                    Log.d("Repo", "getDetailVendor: $response")
+                emit(Result.Success(response))
+            }
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
     fun updateLocation(latitude: Double, longitude: Double): LiveData<Result<ErrorResponse>> =
         liveData {
             emit(Result.Loading)
@@ -133,6 +148,7 @@ class MangRepository(
                 emit(Result.Error(e.message.toString()))
             }
         }
+
     fun deleteLocation(): LiveData<Result<ErrorResponse>> =
         liveData {
             emit(Result.Loading)
@@ -144,6 +160,7 @@ class MangRepository(
                 emit(Result.Error(e.message.toString()))
             }
         }
+
     fun updateUserProfile(userData: UserProfile): LiveData<Result<ErrorResponse>> = liveData {
         emit(Result.Loading)
         try {
@@ -154,6 +171,7 @@ class MangRepository(
             emit(Result.Error(e.message.toString()))
         }
     }
+
     fun updateVendorProfile(userData: VendorProfile): LiveData<Result<ErrorResponse>> = liveData {
         emit(Result.Loading)
         try {
@@ -188,6 +206,7 @@ class MangRepository(
             instance ?: synchronized(this) {
                 instance ?: MangRepository(userPref, apiService)
             }.also { instance = it }
+
         fun refreshInstance() {
             instance = null
         }

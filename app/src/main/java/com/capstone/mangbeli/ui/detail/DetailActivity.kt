@@ -1,14 +1,24 @@
 package com.capstone.mangbeli.ui.detail
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.ActivityDetailBinding
+import com.capstone.mangbeli.ui.ViewModelFactory
+import com.capstone.mangbeli.utils.Result.Error
+import com.capstone.mangbeli.utils.Result.Loading
+import com.capstone.mangbeli.utils.Result.Success
 import com.capstone.mangbeli.utils.VectorToBitmap
-import com.bumptech.glide.Glide
+import com.capstone.mangbeli.utils.setVisibility
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,6 +33,11 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var vendorName: String? = null
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+    private var noHp: String = ""
+    private val viewModel by viewModels<DetailViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -33,27 +48,79 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        // val id = intent.getStringExtra("id") ?: ""
-
-        // Dummy implementation, it should replace when repository or data is done
-        name = intent.getStringExtra("name")
-        vendorName = intent.getStringExtra("vendorName")
-        latitude = intent.getDoubleExtra("latitude", 0.0)
-        longitude = intent.getDoubleExtra("longitude", 0.0)
+        val id = intent.getStringExtra("id") ?: ""
+        val name = intent.getStringExtra("name") ?: ""
         val photoUrl = intent.getStringExtra("photoUrl") ?: ""
-        val products = intent.getStringArrayListExtra("products")
+        noHp = intent.getStringExtra("noHp") ?: ""
+        val currentLatitude = intent.getStringExtra("latitude")?.toDouble() ?: 0.0
+        val currentLongitude = intent.getStringExtra("longitude")?.toDouble() ?: 0.0
+        latitude = currentLatitude
+        longitude = currentLongitude
+        Log.d("Detail", "Get Id: $id")
+
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.google_map_detail) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         // Dummy implementation, it should replace when repository or data is done
-        binding.tvSellerName.text = name
-        binding.tvVendorName.text = vendorName
-        binding.tvProducts.text = products?.joinToString(", ")
-        binding.imgDetailProfile.loadImage(photoUrl)
-        binding.fab.setOnClickListener {
-            showAlert()
+        initDetail(id, name, photoUrl)
+
+
+    }
+
+    private fun initDetail(id: String, name: String, photoUrl: String) {
+        viewModel.getDetailVendor(id).observe(this) { result ->
+            when (result) {
+                is Loading -> {
+                    setVisibility(binding.detailProgressBar, false)
+
+                }
+
+                is Success -> {
+                    setVisibility(binding.detailProgressBar, false)
+                    val response = result.data
+                    with(binding) {
+                        tvSellerName.text = name
+                        tvVendorName.text = response.nameVendor ?: "Pedagang"
+                        tvProducts.text = response.products?.joinToString(", ")
+                        if (photoUrl.isEmpty()) {
+                            imgDetailProfile.setImageResource(R.drawable.gobaklogo)
+                        } else {
+                            imgDetailProfile.loadImage(photoUrl)
+                        }
+                        fab.setOnClickListener {
+                            showAlert()
+                        }
+                        binding.fabWhatsapp.setOnClickListener {
+                            intentWhatsapp()
+                        }
+                    }
+                }
+
+                is Error -> {
+                    setVisibility(binding.detailProgressBar, false)
+                    Toast.makeText(
+                        this,
+                        "Error : ${result.error} ",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.d("DetailActivity", "Error: ${result.error}")
+                }
+            }
+        }
+    }
+
+    private fun intentWhatsapp() {
+        val message = "Hello, this is a WhatsApp message."
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse("https://api.whatsapp.com/send?phone=$noHp&text=$message")
+
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            // Handle the case where WhatsApp is not installed on the device
+            Toast.makeText(this, "WhatsApp not installed.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -72,7 +139,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 .position(currentLocation)
                 .title(vendorName)
                 .snippet(name)
-                .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart,  resources))
+                .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
         )
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
     }

@@ -27,6 +27,7 @@ class HomeViewModel (private val repository: MangRepository) : ViewModel() {
         }
     }
 
-    fun getAllVendor(size: Int = 10, location: Int = 0) =
-        repository.getAllVendor(size, location)
+    fun getAllVendor(size: Int = 10, location: Int = 1, search: String = "", filter: String ="") =
+        repository.getAllVendor(size, location, search = search, filter = filter)
+
 }

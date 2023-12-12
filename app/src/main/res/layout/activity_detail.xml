@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.detail.DetailActivity">
 
+    <ProgressBar
+        android:id="@+id/detailProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/google_map_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_detail_profile"
         android:layout_width="120dp"
@@ -78,5 +86,17 @@
         android:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabWhatsapp"
+        style="@style/Widget.Material3.FloatingActionButton.Tertiary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/cta_fab_desc"
+        android:src="@drawable/whatsapp"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/fab"
+        app:layout_constraintEnd_toStartOf="@+id/fab" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

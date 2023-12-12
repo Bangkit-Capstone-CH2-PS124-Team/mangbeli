@@ -1,5 +1,6 @@
 package com.capstone.mangbeli.data.remote.network
 
+import com.capstone.mangbeli.data.remote.response.DetailVendorResponse
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
 import com.capstone.mangbeli.data.remote.response.LoginResponse
@@ -48,10 +49,17 @@ interface ApiService {
     @GET("/vendor/profile")
     suspend fun getVendorProfile(): ProfileVendorResponse
 
+    @GET("/vendor")
+    suspend fun getDetailVendor(@Query("vendorId") vendorId: String): DetailVendorResponse
+
     @GET("/vendors")
     suspend fun getVendors(
         @Query("size") size: Int?,
         @Query("location") location: Int?,
+        @Query("null") isEnable: Int?,
+        @Query("search") search: String?,
+        @Query("filter") filter: String?
+
     ): VendorsResponse
 
     @GET("/token")

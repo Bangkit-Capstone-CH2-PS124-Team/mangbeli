@@ -7,22 +7,31 @@ data class VendorsResponse(
 	@field:SerializedName("listVendors")
 	val listVendors: List<ListVendorsItem?>? = null,
 
-	@field:SerializedName("rofileResult")
+	@field:SerializedName("profileResult")
 	val dataProfile: ListVendorsItem? = null,
+
+	@field:SerializedName("totalPages")
+	val totalPages: Int? = null,
 
 	@field:SerializedName("error")
 	val error: Boolean? = null,
 
 	@field:SerializedName("message")
-	val message: String? = null
+	val message: String? = null,
+
+	@field:SerializedName("currentPage")
+	val currentPage: Int? = null
 )
 
 data class ListVendorsItem(
 
-	@field:SerializedName("no_hp")
+	@field:SerializedName("noHp")
 	val noHp: String? = null,
 
-	@field:SerializedName("image_url")
+	@field:SerializedName("distance")
+	val distance: String? = null,
+
+	@field:SerializedName("imageUrl")
 	val imageUrl: String? = null,
 
 	@field:SerializedName("nameVendor")
@@ -47,7 +56,7 @@ data class ListVendorsItem(
 	val userId: String? = null,
 
 	@field:SerializedName("products")
-	val products: List<String>? = null,
+	val products: List<String?>? = null,
 
 	@field:SerializedName("longitude")
 	val longitude: Double? = null

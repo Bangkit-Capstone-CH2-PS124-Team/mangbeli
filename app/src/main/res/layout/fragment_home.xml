@@ -41,18 +41,14 @@
             android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
         <TextView
+            android:id="@+id/sortBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sort_by"
             android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-            android:textColor="?attr/colorPrimary" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/set_sort_by"
-            android:src="@drawable/baseline_more_vert_24"
-            app:tint="?attr/colorPrimary" />
+            android:textColor="?attr/colorPrimary"
+            app:drawableEndCompat="@drawable/baseline_more_vert_24"
+            app:drawableTint="?attr/colorPrimary" />
 
 
     </LinearLayout>

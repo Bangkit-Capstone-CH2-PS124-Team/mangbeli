@@ -1,6 +1,7 @@
 package com.capstone.mangbeli.ui.home
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -18,18 +19,12 @@ class HomeAdapter : ListAdapter<ListVendorsItem, HomeAdapter.VendorViewHolder>(D
         RecyclerView.ViewHolder(binding.root) {
         private val vendorName = binding.tvItemNameVendor
         private val name = binding.tvItemName
-        private val distance = binding.tvItemDistance
+        private val products = binding.tvItemDistance
         fun bind(vendor: ListVendorsItem) {
-            val location = binding.root.context.getString(
-                R.string.vendor_location_format,
-                vendor.latitude.toString(),
-                vendor.longitude.toString()
-            )
 
-            vendorName.text = vendor.nameVendor
+            vendorName.text = vendor.nameVendor ?: "Pedagang"
             name.text = vendor.name
-            distance.text = location
-
+            products.text = vendor.products?.joinToString(", ")
         }
 
     }
@@ -46,23 +41,25 @@ class HomeAdapter : ListAdapter<ListVendorsItem, HomeAdapter.VendorViewHolder>(D
     override fun onBindViewHolder(holder: VendorViewHolder, position: Int) {
         val vendor = getItem(position) as ListVendorsItem
         val image = vendor.imageUrl
+        Log.d("TestImage", "onBindViewHolder: $image")
         if (image != null) {
             holder.binding.imgVendor.loadImage(image)
+        } else {
+            holder.binding.imgVendor.setImageResource(R.drawable.gobaklogo)
         }
         holder.bind(vendor)
 
         holder.itemView.setOnClickListener {
             val contextIntent = holder.itemView.context
             val intent = Intent(contextIntent, DetailActivity::class.java)
-            intent.putExtra("id", vendor.userId)
-            // delete the intent below when data is already apply
-            intent.putExtra("photoUrl", vendor.imageUrl)
-            intent.putExtra("vendorName", vendor.nameVendor)
-            intent.putExtra("name", vendor.name)
-            intent.putExtra("latitude", vendor.latitude)
-            intent.putExtra("longitude", vendor.longitude)
-            intent.putStringArrayListExtra("products",
-                vendor.products?.let { it1 -> ArrayList(it1) })
+            intent.apply {
+                putExtra("id", vendor.vendorId)
+                putExtra("photoUrl", vendor.imageUrl)
+                putExtra("name", vendor.name)
+                putExtra("latitude", vendor.latitude)
+                putExtra("longitude", vendor.longitude)
+                putExtra("noHp", vendor.noHp)
+            }
             contextIntent.startActivity(intent)
         }
     }

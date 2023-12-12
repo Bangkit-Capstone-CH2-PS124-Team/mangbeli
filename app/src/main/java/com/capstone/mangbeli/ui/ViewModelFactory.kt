@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.mangbeli.data.repository.MangRepository
 import com.capstone.mangbeli.di.Injection
+import com.capstone.mangbeli.ui.detail.DetailViewModel
 import com.capstone.mangbeli.ui.home.HomeViewModel
 import com.capstone.mangbeli.ui.login.LoginViewModel
 import com.capstone.mangbeli.ui.pedagang.profile.ProfileVendorViewModel
@@ -42,6 +43,9 @@ class ViewModelFactory(private val repository: MangRepository) :
             }
             modelClass.isAssignableFrom(ProfileVendorViewModel::class.java) -> {
                 ProfileVendorViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel(repository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
