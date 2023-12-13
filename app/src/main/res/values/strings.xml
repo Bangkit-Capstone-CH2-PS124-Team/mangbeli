@@ -26,7 +26,7 @@
     <string name="location_profile">Location</string>
     <string name="email_hint">Email</string>
     <string name="no_hp_hint">Phone</string>
-    <string name="list_favorite_hint">List of favorite foods</string>
+    <string name="list_favorite_hint">Favorite foods</string>
     <string name="reset_btn">Reset</string>
     <string name="save_btn">Save</string>
     <string name="list_of_favorit_user">List of favorite, Bakso, Ketoprak, Mie Ayam, Nasi Goreng</string>
@@ -87,7 +87,7 @@
     <string name="list_vendor">List Vendor</string>
     <string name="btn_cancel">Cancal</string>
     <string name="price_range">Price_range</string>
-    <string name="enable_location">enable Location</string>
+    <string name="enable_location">Enable Location</string>
     <string name="choose_your_role">Choose Your Role</string>
     <string name="description_pembeli">pembeli</string>
     <string name="start">START</string>

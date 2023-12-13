@@ -27,7 +27,7 @@
     <string name="location_profile">Lokasi</string>
     <string name="email_hint">Email</string>
     <string name="no_hp_hint">No.HP</string>
-    <string name="list_favorite_hint">Daftar favorit makanan</string>
+    <string name="list_favorite_hint">Favorit makanan</string>
     <string name="reset_btn">Reset</string>
     <string name="save_btn">Simpan</string>
     <string name="list_of_favorit_user">Daftar favorit, Bakso, Ketoprak, Mie Ayam, Nasi Goreng</string>

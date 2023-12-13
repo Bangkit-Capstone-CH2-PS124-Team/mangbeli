@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import java.util.Locale
 
 class ProfileFragment : Fragment(), OnMapReadyCallback {
 
@@ -200,11 +201,13 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         binding.switchLocation.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // User menyalakan lokasi
+                setVisibility(binding.cardView, true)
                 setVisibility(binding.googleMapProfile, true)
                 updateLocation(latitude, longitude)
                 updateMapLocation(latitude, longitude)
             } else {
                 // User mematikan lokasi
+                setVisibility(binding.cardView, false)
                 setVisibility(binding.googleMapProfile, false)
                 deleteLocation()
             }
@@ -294,7 +297,11 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
                         } else {
                             imgProfile.loadImage(userData.imageUrl.toString())
                         }
-                        tvNameUser.text = userData.name
+                        tvNameUser.text = userData.name.toString().replaceFirstChar {
+                            if (it.isLowerCase())
+                                it.titlecase(Locale.getDefault())
+                            else it.toString()
+                        }
                         tvEmailUser.text = userData.email
                         tvFavoriteUser.text = listFavorite
                         edtName.setText(userData.name)

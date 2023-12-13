@@ -91,6 +91,7 @@ class MangRepository(
     }
 
     fun getUserProfile(): LiveData<Result<DataUser>> = liveData {
+
         emit(Result.Loading)
         try {
             val response = apiService.getUserProfile().dataUser
