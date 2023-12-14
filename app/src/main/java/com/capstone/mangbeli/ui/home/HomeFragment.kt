@@ -92,11 +92,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun scrollToTop() {
-        binding?.rvHomeUser?.scrollToPosition(0)
-    }
-
-
     private fun smoothScrollToTop() {
         val smoothScroller = object : LinearSmoothScroller(binding?.rvHomeUser?.context) {
             override fun getVerticalSnapPreference(): Int {
