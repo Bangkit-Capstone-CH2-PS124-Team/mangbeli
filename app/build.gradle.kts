@@ -89,6 +89,10 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
     implementation("com.auth0.android:jwtdecode:2.0.2")
 
+    // Paging
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.room:room-paging:2.6.0-rc01")
+
     //google
     implementation("com.google.android.gms:play-services-auth:19.2.0")
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")

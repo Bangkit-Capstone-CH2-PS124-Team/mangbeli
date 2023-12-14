@@ -10,45 +10,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/linearProfile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="16dp"
-            android:orientation="horizontal"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_vendor"
+            android:layout_width="320dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            android:background="?attr/colorSecondaryContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/img_profile"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:contentDescription="@string/profile"
-                android:scaleType="centerCrop"
-                android:src="@drawable/gobaklogo"
-                app:layout_constraintBottom_toBottomOf="@id/linear_layout_profile"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/circularImageView"
-                tools:ignore="ImageContrastCheck" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageView"
+            tools:ignore="ImageContrastCheck" />
 
             <LinearLayout
-                android:id="@+id/linear_layout_profile"
-                android:layout_width="match_parent"
+                android:id="@+id/linearProfile"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:gravity="center"
                 android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 android:orientation="vertical">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/profile"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bakso"
+                    app:shapeAppearanceOverlay="@style/circularImageView"
+                    app:strokeWidth="2dp"
+                    tools:ignore="ImageContrastCheck" />
+
 
                 <TextView
                     android:id="@+id/tv_name_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                     android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
@@ -61,23 +65,22 @@
                     android:layout_marginBottom="8dp"
                     android:text="@string/email"
                     android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/suka"
                     android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorTertiary" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_favorite_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/list_of_favorit_user"
+                    android:textAlignment="center"
+                    android:maxLines="2"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
             </LinearLayout>
-        </LinearLayout>
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
@@ -87,6 +90,7 @@
             app:layout_constraintEnd_toEndOf="@+id/linearProfile"
             app:layout_constraintStart_toStartOf="@+id/linearProfile"
             app:layout_constraintTop_toBottomOf="@id/linearProfile" />
+
         <ProgressBar
             android:id="@+id/profileProgressBar"
             android:layout_width="wrap_content"
@@ -100,10 +104,12 @@
             android:id="@+id/materialCardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-            app:layout_constraintEnd_toEndOf="@+id/linearProfile"
-            app:layout_constraintStart_toStartOf="@+id/linearProfile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider">
 
             <LinearLayout
@@ -167,7 +173,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:hint="@string/name_hint"
-            app:layout_constraintEnd_toEndOf="@+id/linearProfile"
+            app:layout_constraintEnd_toEndOf="@+id/materialCardView"
             app:layout_constraintStart_toStartOf="@+id/materialCardView"
             app:layout_constraintTop_toBottomOf="@+id/materialCardView"
             app:shapeAppearance="@style/circularImageView"

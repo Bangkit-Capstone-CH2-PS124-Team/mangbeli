@@ -52,11 +52,13 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val name = intent.getStringExtra("name") ?: ""
         val photoUrl = intent.getStringExtra("photoUrl") ?: ""
         noHp = intent.getStringExtra("noHp") ?: ""
-        val currentLatitude = intent.getStringExtra("latitude")?.toDouble() ?: 0.0
-        val currentLongitude = intent.getStringExtra("longitude")?.toDouble() ?: 0.0
+        val currentLatitude = intent.getDoubleExtra("latitude", 0.0)
+        val currentLongitude = intent.getDoubleExtra("longitude", 0.0)
         latitude = currentLatitude
         longitude = currentLongitude
         Log.d("Detail", "Get Id: $id")
+        Log.d("DetailLatitude", "Get Lat: $currentLatitude")
+        Log.d("DetailLongitude", "Get Long: $currentLongitude")
 
 
         val mapFragment = supportFragmentManager
@@ -91,6 +93,11 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                         fab.setOnClickListener {
                             showAlert()
+                        }
+                        if (noHp.isEmpty()) {
+                            setVisibility(binding.fabWhatsapp, false)
+                        } else {
+                            setVisibility(binding.fabWhatsapp, false)
                         }
                         binding.fabWhatsapp.setOnClickListener {
                             intentWhatsapp()

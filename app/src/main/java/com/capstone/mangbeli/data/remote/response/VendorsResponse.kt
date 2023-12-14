@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class VendorsResponse(
 
 	@field:SerializedName("listVendors")
-	val listVendors: List<ListVendorsItem?>? = null,
+	val listVendors: List<ListVendorsItem> = emptyList(),
 
 	@field:SerializedName("profileResult")
 	val dataProfile: ListVendorsItem? = null,

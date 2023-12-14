@@ -3,7 +3,14 @@ package com.capstone.mangbeli.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.capstone.mangbeli.data.VendorRemoteMediator
+import com.capstone.mangbeli.data.local.entity.VendorEntity
 import com.capstone.mangbeli.data.local.pref.UserPref
+import com.capstone.mangbeli.data.local.room.VendorDatabase
 import com.capstone.mangbeli.data.remote.network.ApiService
 import com.capstone.mangbeli.data.remote.response.DataUser
 import com.capstone.mangbeli.data.remote.response.DataVendor
@@ -11,7 +18,6 @@ import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
 import com.capstone.mangbeli.data.remote.response.LoginResult
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
-import com.capstone.mangbeli.data.remote.response.VendorsResponse
 import com.capstone.mangbeli.model.LocationUpdate
 import com.capstone.mangbeli.model.User
 import com.capstone.mangbeli.model.UserProfile
@@ -23,6 +29,7 @@ import okhttp3.MultipartBody
 import retrofit2.HttpException
 
 class MangRepository(
+    private val vendorDatabase: VendorDatabase,
     private val userPref: UserPref,
     private val apiService: ApiService
 ) {
@@ -53,17 +60,21 @@ class MangRepository(
         )
     }
 
-    fun getAllVendor(size: Int = 10, location: Int = 1, isLocationNotEnable: Int = 1, search: String = "", filter: String = ""): LiveData<Result<VendorsResponse>> =
-        liveData {
-            emit(Result.Loading)
-            try {
-                val response = apiService.getVendors(size, location, isLocationNotEnable, search, filter)
-                Log.d("Repo", "getAllVendor: ${response.listVendors}")
-                emit(Result.Success(response))
-            } catch (e: HttpException) {
-                emit(Result.Error(e.message().toString()))
+    fun getAllVendors(location: Int = 1, isLocationNotEnable: Int = 1, search: String? = "", filter: String? = ""): Flow<PagingData<VendorEntity>> {
+        @OptIn(ExperimentalPagingApi::class)
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true,
+                jumpThreshold = 1
+            ),
+            remoteMediator = VendorRemoteMediator(apiService, vendorDatabase, location, isLocationNotEnable, search, filter),
+            pagingSourceFactory = {
+                vendorDatabase.vendorDao().getAllVendor()
             }
-        }
+        ).flow
+
+    }
 
 
     fun login(email: String, password: String): LiveData<Result<LoginResult>> = liveData {
@@ -201,11 +212,12 @@ class MangRepository(
         @Volatile
         private var instance: MangRepository? = null
         fun getInstance(
+            vendorDatabase: VendorDatabase,
             userPref: UserPref,
             apiService: ApiService
         ): MangRepository =
             instance ?: synchronized(this) {
-                instance ?: MangRepository(userPref, apiService)
+                instance ?: MangRepository(vendorDatabase,userPref, apiService)
             }.also { instance = it }
 
         fun refreshInstance() {

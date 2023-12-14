@@ -10,7 +10,7 @@
     <string name="title_settings">Pengaturan</string>
     <string name="move_to_item_detail">pindah ke detail item</string>
     <string name="searchbar_hint">Cari Pedagang..</string>
-    <string name="title_home_vendor_around">Pedagang di Sekitarmu..</string>
+    <string name="title_home_vendor_around">Pedagang di Sekitarmu</string>
     <string name="description_logo">Gerobak Logo</string>
     <string name="sort_by">Sort By</string>
     <string name="set_sort_by">atur urutan berdasarkan</string>
@@ -23,7 +23,7 @@
     <string name="or">Atau masuk dengan</string>
     <string name="sign_in_with_google">Masuk Dengan Google</string>
     <string name="profile">Profil</string>
-    <string name="suka">Suka :</string>
+    <string name="suka">Favorit</string>
     <string name="location_profile">Lokasi</string>
     <string name="email_hint">Email</string>
     <string name="no_hp_hint">No.HP</string>
@@ -106,6 +106,7 @@
     <string name="email_not_registered">Email tidak terdaftar silahkan coba lagi</string>
     <string name="wrong_password">Password salah</string>
     <string name="name_product_hint">Nama Produk</string>
+    <string name="retry">Coba lagi</string>
 
 
 </resources>

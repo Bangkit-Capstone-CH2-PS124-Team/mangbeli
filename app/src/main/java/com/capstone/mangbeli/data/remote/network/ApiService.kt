@@ -54,7 +54,8 @@ interface ApiService {
 
     @GET("/vendors")
     suspend fun getVendors(
-        @Query("size") size: Int?,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 20,
         @Query("location") location: Int?,
         @Query("null") isEnable: Int?,
         @Query("search") search: String?,
