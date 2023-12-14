@@ -7,12 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.PopupMenu
-import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentHomeBinding
 import com.capstone.mangbeli.ui.MenuActivity
@@ -88,36 +87,25 @@ class HomeFragment : Fragment() {
             ).collectLatest {
                 binding?.homeProgressBar?.let { it1 -> setVisibility(it1, false) }
                 homeAdapter.submitData(lifecycle, it)
+                smoothScrollToTop()
             }
         }
     }
 
-    private fun showMenu(v: View, @MenuRes menuRes: Int) {
-        val popup = PopupMenu(requireContext(), v)
-        popup.menuInflater.inflate(menuRes, popup.menu)
+    private fun scrollToTop() {
+        binding?.rvHomeUser?.scrollToPosition(0)
+    }
 
-        popup.setOnDismissListener {
-        }
-        popup.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.option_name -> {
-                    viewModel.setFilterBy("name")
-                }
 
-                R.id.option_min_price -> {
-                    viewModel.setFilterBy("minPrice")
-                }
-
-                R.id.option_max_price -> {
-                    viewModel.setFilterBy("maxPrice")
-                }
-
-                else -> Log.d(TAG, "showMenu: ")
+    private fun smoothScrollToTop() {
+        val smoothScroller = object : LinearSmoothScroller(binding?.rvHomeUser?.context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
             }
-            true
         }
-        // Show the popup menu.
-        popup.show()
+
+        smoothScroller.targetPosition = 0
+        binding?.rvHomeUser?.layoutManager?.startSmoothScroll(smoothScroller)
     }
 
     private fun setUpSearchBar() {
