@@ -46,8 +46,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:maxLines="1"
-                    tools:text="VendorName"
+                    android:maxLines="2"
+                    tools:text="Bakso Manis Bang Utep Ya Bro"
                     android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     android:textStyle="bold" />
 
