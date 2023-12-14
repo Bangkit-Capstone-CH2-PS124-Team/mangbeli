@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.ActivityAddDataVendorBinding
+import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.model.VendorProfile
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
@@ -65,6 +66,7 @@ class AddDataVendor : AppCompatActivity() {
         binding.btnNext.setOnClickListener {
             val nama = binding.nameVendorEditText.text.toString()
             val inputString = binding.productEditText.text
+            val noHp = binding.edtNoHp.text.toString()
             val products = inputString?.split(", ")?.map { it.trim() }
             val updateVendor = VendorProfile(
                 nameVendor = nama,
@@ -72,6 +74,26 @@ class AddDataVendor : AppCompatActivity() {
                 minPrice = binding.minimumSlider.value.toInt(),
                 maxPrice =binding.maksimumSlider.value.toInt()
             )
+            val updateUser = UserProfile(
+                noHp = noHp
+            )
+            viewModel.updateUserProfile(updateUser)
+                .observe(this@AddDataVendor) { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            Log.d("ProfileFragment", "initProfile: Loading")
+                        }
+
+                        is Result.Success -> {
+                            Log.d("ProfileFragment", "initProfile: Success")
+                        }
+
+                        is Result.Error -> {
+
+                            Log.d("DataDiriActivity", "onCreate: ${result.error}")
+                        }
+                    }
+                }
 
             viewModel.updateVendorProfile(updateVendor).observe(this@AddDataVendor) { result ->
                 when (result) {
