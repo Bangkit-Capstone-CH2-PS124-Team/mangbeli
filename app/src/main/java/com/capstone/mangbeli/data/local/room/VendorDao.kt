@@ -15,6 +15,9 @@ interface VendorDao {
     @Query("SELECT * FROM vendor")
     fun getAllVendor(): PagingSource<Int, VendorEntity>
 
+    @Query("SELECT * FROM vendor WHERE latitude IS NOT NULL and longitude IS NOT NULL")
+    suspend fun getMapsAllVendor(): List<VendorEntity>
+
     @Query("DELETE FROM vendor")
     suspend fun deleteAll()
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentMapsBinding
-import com.capstone.mangbeli.model.VendorsData.vendors
-import com.capstone.mangbeli.ui.profile.ProfileViewModelFactory
+import com.capstone.mangbeli.ui.ViewModelFactory
+import com.capstone.mangbeli.utils.CustomInfoWindowAdapter
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.VectorToBitmap
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -36,7 +37,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var geofencingClient: GeofencingClient
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val mapsViewModel by viewModels<MapsViewModel> {
-        ProfileViewModelFactory.getInstance(requireActivity())
+        ViewModelFactory.getInstance(requireActivity())
     }
 
     private val binding get() = _binding!!
@@ -119,14 +120,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun addUserLocation(lat: Double, log: Double) {
-        val userdummyLocation = LatLng(lat, log)
-        mMap.addMarker(
-            MarkerOptions()
-                .position(userdummyLocation)
-        )
+        val userLocation = LatLng(lat, log)
         mMap.addCircle(
             CircleOptions()
-                .center(userdummyLocation)
+                .center(userLocation)
                 .radius(geofenceRadius)
                 .fillColor(0x2200FF00)
                 .strokeColor(Color.CYAN)
@@ -134,34 +131,40 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         )
         mMap.isMyLocationEnabled = true
         mMap.setOnMyLocationClickListener {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userdummyLocation, 18f))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f))
         }
     }
 
     private fun addManyMarker(userLocation: Pair<Double, Double>) {
         val iconConverter = VectorToBitmap()
         val maxDistance = 1000.0
+        mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireContext()))
+        mapsViewModel.vendors.observe(viewLifecycleOwner) { response ->
+            response.forEach { data ->
 
-        vendors.forEach { data ->
-            val latLng = LatLng(data.latitude, data.longitude)
-            val distance = calculateDistance(
-                userLocation.first,
-                userLocation.second,
-                data.latitude,
-                data.longitude
-            )
+                val latLng = LatLng(data.latitude!!, data.longitude!!)
+                val distance = calculateDistance(
+                    userLocation.first,
+                    userLocation.second,
+                    data.latitude,
+                    data.longitude
+                )
 
-            if (distance <= maxDistance) {
-                mMap.addMarker(
-                    MarkerOptions().position(latLng).title(data.vendorName).snippet(data.name)
-                        .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
-                )
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-            } else {
-                mMap.addMarker(
-                    MarkerOptions().position(latLng).title(data.vendorName).snippet(data.name)
-                        .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
-                )
+                if (distance <= maxDistance) {
+                    Log.d("GAMBARBOSQ", "addManyMarker: ${data.imageUrl}")
+                    mMap.addMarker(
+                        MarkerOptions().position(latLng).title(data.nameVendor).snippet(data.name)
+                            .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
+                    )?.tag = data.imageUrl
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                } else {
+                    Log.d("GAMBARBOSQ", "addManyMarker: ${data.imageUrl}")
+                    mMap.addMarker(
+                        MarkerOptions().position(latLng).title(data.nameVendor).snippet(data.name)
+                            .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
+                    )?.tag = data.imageUrl
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                }
             }
         }
     }

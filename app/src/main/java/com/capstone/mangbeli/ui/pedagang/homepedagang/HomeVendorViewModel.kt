@@ -22,6 +22,4 @@ class HomeVendorViewModel(private val locationRepository: LocationRepository): V
         }
     }
 
-    fun getLastLocation(): UserEntity = locationRepository.getLastLocation()
-
 }

@@ -93,14 +93,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun smoothScrollToTop() {
-        val smoothScroller = object : LinearSmoothScroller(binding?.rvHomeUser?.context) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
+        binding?.rvHomeUser?.let { recyclerView ->
+            recyclerView.layoutManager?.let { layoutManager ->
+                val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+
+                smoothScroller.targetPosition = 0
+                layoutManager.startSmoothScroll(smoothScroller)
             }
         }
-
-        smoothScroller.targetPosition = 0
-        binding?.rvHomeUser?.layoutManager?.startSmoothScroll(smoothScroller)
     }
 
     private fun setUpSearchBar() {

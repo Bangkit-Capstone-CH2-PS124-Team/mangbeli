@@ -76,6 +76,7 @@ class MangRepository(
 
     }
 
+    suspend fun getMapsVendors(): List<VendorEntity> = vendorDatabase.vendorDao().getMapsAllVendor()
 
     fun login(email: String, password: String): LiveData<Result<LoginResult>> = liveData {
         emit(Result.Loading)

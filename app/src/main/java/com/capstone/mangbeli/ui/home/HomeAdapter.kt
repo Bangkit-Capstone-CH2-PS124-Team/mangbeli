@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.data.local.entity.VendorEntity
 import com.capstone.mangbeli.databinding.ItemListHomeBinding
 import com.capstone.mangbeli.ui.detail.DetailActivity
+import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.setVisibility
 
 class HomeAdapter : PagingDataAdapter<VendorEntity, HomeAdapter.VendorViewHolder>(DIFF_CALLBACK) {
@@ -85,11 +84,5 @@ class HomeAdapter : PagingDataAdapter<VendorEntity, HomeAdapter.VendorViewHolder
             }
         }
 
-    }
-
-    private fun ImageView.loadImage(url: String) {
-        Glide.with(this)
-            .load(url)
-            .into(this)
     }
 }

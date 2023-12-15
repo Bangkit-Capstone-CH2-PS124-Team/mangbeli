@@ -26,10 +26,10 @@ data class VendorEntity(
     val minPrice: Int? = null,
 
     @field:SerializedName("latitude")
-    val latitude: Double? = null,
+    val latitude: Double?,
 
     @field:SerializedName("longitude")
-    val longitude: Double? = null,
+    val longitude: Double?,
 
     @field:SerializedName("name")
     val name: String? = null,
