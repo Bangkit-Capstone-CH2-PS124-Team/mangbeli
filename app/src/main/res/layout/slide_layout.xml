@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="40dp"
+        android:fontFamily="@font/nunito_semibold"
         android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
         android:text="@string/description1"
         android:textAlignment="center" />

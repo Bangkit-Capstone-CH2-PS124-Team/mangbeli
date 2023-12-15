@@ -20,6 +20,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:text="@string/profile"
+            android:fontFamily="@font/nunito_extrabold"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +32,7 @@
             android:layout_height="120dp"
             android:layout_marginVertical="16dp"
             android:layout_marginEnd="15dp"
-            android:src="@drawable/gobaklogo"
+            android:src="@drawable/logo_mangbeli"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_text_view"
             app:shapeAppearanceOverlay="@style/circularImageView"
@@ -54,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/enable_location"
+                android:fontFamily="@font/nunito_bold"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 android:textColor="?attr/colorTertiary" />
 
@@ -100,6 +102,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
+                app:shapeAppearance="@style/circularImageView"
+                app:startIconDrawable="@drawable/ic_account_circle_24"
                 android:hint="@string/name_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -115,6 +119,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                app:shapeAppearance="@style/circularImageView"
+                app:startIconDrawable="@drawable/ic_account_circle_24"
                 android:hint="@string/name_vendor">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -134,7 +140,9 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="16dp"
             android:hint="@string/no_hp_hint"
+            app:shapeAppearance="@style/circularImageView"
             app:layout_constraintEnd_toEndOf="@+id/img_profile"
+            app:startIconDrawable="@drawable/baseline_phone_24"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
             app:layout_constraintTop_toBottomOf="@+id/google_map_profile">
 
@@ -152,9 +160,12 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="20dp"
             android:hint="@string/list_product_hint"
+            app:shapeAppearance="@style/circularImageView"
             app:layout_constraintEnd_toEndOf="@+id/img_profile"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/edl_no_hp">
+            app:layout_constraintTop_toBottomOf="@+id/edl_no_hp"
+            app:startIconDrawable="@drawable/baseline_fastfood_24"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_list_product"
@@ -169,6 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/price_range"
+            android:fontFamily="@font/nunito_bold"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.055"
@@ -182,6 +194,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
         android:text="@string/maksimum_price"
+            android:fontFamily="@font/nunito_bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/range_text_view" />
@@ -199,7 +212,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/maksimum_text_view"
-        app:thumbColor="@color/white"
+        app:thumbColor="@color/md_theme_dark_onTertiaryContainer"
         app:thumbElevation="8dp"
         app:thumbRadius="12dp"
         app:trackColorActive="@color/white"
@@ -213,6 +226,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/nunito_bold"
         android:text="@string/minimum_price"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/maksimum_slider" />
@@ -230,7 +244,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/minimum_text_view"
-            app:thumbColor="@color/white"
+            app:thumbColor="@color/md_theme_dark_onTertiaryContainer"
             app:thumbElevation="8dp"
             app:thumbRadius="12dp"
             app:trackColorActive="@color/white"
@@ -261,6 +275,8 @@
             android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/md_theme_dark_onTertiaryContainer"
+            android:textColor="@color/black"
             android:text="@string/save_btn" />
 
 

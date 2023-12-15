@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -46,9 +45,9 @@ class LoginActivity : AppCompatActivity() {
                 val password = binding.edtPassword.text.toString()
                 loginSet(email, password)
             }
-            googleSignInButton.setOnClickListener {
-                mulaiLogin()
-            }
+//            googleSignInButton.setOnClickListener {
+//                mulaiLogin()
+//            }
             btnToRegister.setOnClickListener {
                 startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
             }
@@ -147,18 +146,23 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showfailedDialog(errorMessage: String) {
         AlertDialog.Builder(this).apply {
-            if (errorMessage == "Email is not registered") {
-                setTitle(getString(R.string.error))
-                setMessage(getString(R.string.email_not_registered))
-            } else if (errorMessage == "Wrong Password") {
-                setTitle(getString(R.string.error))
-                setMessage(getString(R.string.wrong_password))
-            } else if (errorMessage == "Password must be at least 8 characters") {
-                setTitle(getString(R.string.error))
-                setMessage(getString(R.string.minimal_8_characters))
-            } else {
-                setTitle(getString(R.string.error))
-                setMessage(errorMessage)
+            when (errorMessage) {
+                "Email is not registered" -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(getString(R.string.email_not_registered))
+                }
+                "Wrong Password" -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(getString(R.string.wrong_password))
+                }
+                "Password must be at least 8 characters" -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(getString(R.string.minimal_8_characters))
+                }
+                else -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(errorMessage)
+                }
             }
             binding.btnLoginActivity.isEnabled = true
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->

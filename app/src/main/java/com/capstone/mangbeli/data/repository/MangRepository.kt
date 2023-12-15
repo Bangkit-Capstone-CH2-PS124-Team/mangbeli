@@ -1,8 +1,10 @@
 package com.capstone.mangbeli.data.repository
 
 import android.util.Log
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.capstone.mangbeli.data.local.entity.TokenEntity
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -10,6 +12,8 @@ import androidx.paging.PagingData
 import com.capstone.mangbeli.data.VendorRemoteMediator
 import com.capstone.mangbeli.data.local.entity.VendorEntity
 import com.capstone.mangbeli.data.local.pref.UserPref
+import com.capstone.mangbeli.data.local.room.UserDatabase
+import com.capstone.mangbeli.data.remote.network.ApiConfig
 import com.capstone.mangbeli.data.local.room.VendorDatabase
 import com.capstone.mangbeli.data.remote.network.ApiService
 import com.capstone.mangbeli.data.remote.response.DataUser
@@ -26,6 +30,7 @@ import com.capstone.mangbeli.utils.Result
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
+import okhttp3.Response
 import retrofit2.HttpException
 
 class MangRepository(
@@ -34,7 +39,8 @@ class MangRepository(
     private val apiService: ApiService
 ) {
 
-    private suspend fun saveToken(token: String, email: String, role: String) {
+
+    suspend fun saveToken(token: String, email: String, role: String) {
         userPref.saveToken(token, email, role)
         Log.e("TokenError", token)
     }
@@ -42,6 +48,7 @@ class MangRepository(
     suspend fun saveRole(role: String) {
         userPref.saveRole(role)
     }
+
     fun getSession(): Flow<User> {
         return userPref.getSession()
     }
@@ -52,7 +59,7 @@ class MangRepository(
         password: String,
         confPassword: String
     ): RegisterResponse {
-        return apiService.register(
+        return ApiConfig.getApiService().register(
             name,
             email,
             password,
@@ -119,6 +126,10 @@ class MangRepository(
         }
     }
 
+    suspend fun saveRefreshToken(refreshToken: String, Expired: String) {
+        userPref.saveRefreshToken(refreshToken, Expired)
+        Log.e("sabi", refreshToken)
+    }
 
     fun getVendorProfile(): LiveData<Result<DataVendor>> = liveData {
         emit(Result.Loading)
@@ -141,7 +152,7 @@ class MangRepository(
         try {
             val response = apiService.getDetailVendor(id).dataVendor
             if (response != null) {
-                    Log.d("Repo", "getDetailVendor: $response")
+                Log.d("Repo", "getDetailVendor: $response")
                 emit(Result.Success(response))
             }
         } catch (e: Exception) {
@@ -159,6 +170,31 @@ class MangRepository(
                 emit(Result.Success(response))
             } catch (e: Exception) {
                 emit(Result.Error(e.message.toString()))
+            }
+        }
+
+    fun logoutRefreshToken(refreshToken: String): LiveData<Result<ErrorResponse>> =
+        liveData {
+            emit(Result.Loading)
+            try {
+                val response = apiService.logout("refreshToken=$refreshToken")
+                Log.d("MangRepository", "getUserProfile: $response")
+                emit(Result.Success(response))
+            } catch (e: Exception) {
+                emit(Result.Error(e.message.toString()))
+            }
+        }
+
+    suspend fun callRefreshToken(refreshToken: String): LiveData<Result<ErrorResponse>> =
+        liveData {
+            emit(Result.Loading)
+            try {
+                val response = apiService.refreshToken("refreshToken=$refreshToken")
+                Log.d("MangRepository", "callRefreshToken: $response")
+                // Lakukan sesuatu dengan response yang diterima
+            } catch (e: Exception) {
+                emit(Result.Error(e.message.toString()))
+                Log.d("MangRepository", "callRefreshToken: ${e.message}")
             }
         }
 

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
@@ -13,11 +14,9 @@ import com.capstone.mangbeli.data.local.pref.SettingsPref
 import com.capstone.mangbeli.data.local.pref.dataStore
 import com.capstone.mangbeli.databinding.ActivitySplashScreenBinding
 import com.capstone.mangbeli.ui.MainActivity
-import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
 import com.capstone.mangbeli.ui.home.HomeViewModel
-import com.capstone.mangbeli.ui.role.AddDataVendor
 import com.capstone.mangbeli.ui.settings.SettingViewModel
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
 
@@ -27,6 +26,7 @@ class SplashScreen : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashScreenBinding
     private val splashDisplayLength = 1000
+    private var isUserValid: Boolean? = null
     private val viewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(this)
     }
@@ -46,9 +46,18 @@ class SplashScreen : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
-
-        viewModel.getSession().observe(this){ user ->
-            if (user.isLogin != null){
+        viewModel.getToken()
+        viewModel.userResponse.observe(this@SplashScreen) { user ->
+            ViewModelFactory.refreshInstance()
+            isUserValid = user.refreshToken == " "
+            Log.e("SplashScreen", "onCreate: ${user}")
+            cekSession()
+        }
+    }
+    private fun  cekSession(){
+        isUserValid?.let { isUserValid ->
+            Log.e("SplashScreen", "cekSession: $isUserValid")
+            if (isUserValid){
                 Handler(Looper.getMainLooper()).postDelayed({
                     val mainIntent = Intent(this@SplashScreen, MainActivity::class.java)
                     startActivity(mainIntent)
@@ -56,15 +65,13 @@ class SplashScreen : AppCompatActivity() {
                 }, splashDisplayLength.toLong())
             }else{
                 Handler(Looper.getMainLooper()).postDelayed({
-                    val mainIntent = Intent(this@SplashScreen, MenuActivity::class.java)
+                    val mainIntent = Intent(this@SplashScreen, HomeActivity::class.java)
                     startActivity(mainIntent)
                     finish()
                 }, splashDisplayLength.toLong())
-
             }
         }
     }
-
     override fun onDestroy() {
         Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
         super.onDestroy()

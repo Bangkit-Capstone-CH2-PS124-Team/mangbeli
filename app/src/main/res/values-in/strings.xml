@@ -10,7 +10,7 @@
     <string name="title_settings">Pengaturan</string>
     <string name="move_to_item_detail">pindah ke detail item</string>
     <string name="searchbar_hint">Cari Pedagang..</string>
-    <string name="title_home_vendor_around">Pedagang di Sekitarmu</string>
+    <string name="title_home_vendor_around">Pedagang di Sekitarmu..</string>
     <string name="description_logo">Gerobak Logo</string>
     <string name="sort_by">Sort By</string>
     <string name="set_sort_by">atur urutan berdasarkan</string>
@@ -19,7 +19,7 @@
     <string name="email">Email</string>
     <string name="input">Input</string>
     <string name="password">Password</string>
-    <string name="login">Masuk</string>
+    <string name="login">MASUK</string>
     <string name="or">Atau masuk dengan</string>
     <string name="sign_in_with_google">Masuk Dengan Google</string>
     <string name="profile">Profil</string>
@@ -39,7 +39,7 @@
     <string name="logout">Keluar</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="action_bar_maps">Lokasi Pedagang</string>
-    <string name="title_signup">Daftar</string>
+    <string name="title_signup">DAFTAR</string>
     <string name="description_signup">Selamat datang di MangBeli</string>
     <string name="name">Nama</string>
     <string name="confirmpassword">Konfirmasi password</string>
@@ -80,7 +80,7 @@
     <string name="ya">Ya</string>
     <string name="confirpassword_is_required">password harus sama</string>
     <string name="minimal_8_characters">Minimal 8 Karakter</string>
-    <string name="email_example">contoh@gmail.ocm</string>
+    <string name="email_example">contoh@gmail.com</string>
     <string name="invalid_format">format tidak valid</string>
     <string name="dont_have_account">Tidak punya akun? </string>
     <string name="name_hint">Nama</string>
@@ -106,6 +106,7 @@
     <string name="email_not_registered">Email tidak terdaftar silahkan coba lagi</string>
     <string name="wrong_password">Password salah</string>
     <string name="name_product_hint">Nama Produk</string>
+    <string name="whatsapp_login">Masuk Dengan Whatsapp</string>
     <string name="retry">Coba lagi</string>
 
 

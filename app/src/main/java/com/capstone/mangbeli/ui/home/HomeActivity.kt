@@ -1,11 +1,12 @@
 package com.capstone.mangbeli.ui.home
 
+
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
+
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,6 +16,7 @@ import com.capstone.mangbeli.R
 import com.capstone.mangbeli.data.local.pref.SettingsPref
 import com.capstone.mangbeli.data.local.pref.dataStore
 import com.capstone.mangbeli.databinding.ActivityHomeBinding
+
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.settings.SettingViewModel
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
@@ -50,7 +52,6 @@ class HomeActivity : AppCompatActivity() {
 
         viewModel.getSession().observe(this) { user ->
             userRole = user.role
-
             val navController = findNavController(R.id.nav_host_fragment_activity_home)
 
             // Inflate navGraph

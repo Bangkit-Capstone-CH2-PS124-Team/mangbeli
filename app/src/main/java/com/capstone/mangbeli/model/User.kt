@@ -2,7 +2,8 @@ package com.capstone.mangbeli.model
 
 data class User(
     val token: String,
-    val email: String,
-    val role : String,
-    val isLogin: Boolean = false
+    val email: String? = null,
+    val role : String? = null,
+    val expired : String? = null,
+    val refreshToken: String? = null
 )

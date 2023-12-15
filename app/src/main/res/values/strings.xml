@@ -18,7 +18,7 @@
     <string name="email">Email</string>
     <string name="input">Input</string>
     <string name="password">Password</string>
-    <string name="login">Login</string>
+    <string name="login">LOGIN</string>
     <string name="or">Or login with</string>
     <string name="sign_in_with_google">Sign In With Google</string>
     <string name="profile">Profile</string>
@@ -38,7 +38,7 @@
     <string name="logout">Logout</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="action_bar_maps">Vendor Locations</string>
-    <string name="title_signup">Register</string>
+    <string name="title_signup">REGISTER</string>
     <string name="description_signup">Welcome to MangBeli</string>
     <string name="name">Name</string>
     <string name="confirmpassword">Confirm Password</string>
@@ -79,14 +79,14 @@
     <string name="ya">Yes</string>
     <string name="confirpassword_is_required">Password must match</string>
     <string name="minimal_8_characters">Password must be at least 8 characters</string>
-    <string name="email_example">example@gmail.ocm</string>
+    <string name="email_example">example@gmail.com</string>
     <string name="invalid_format">Invalid Format</string>
     <string name="dont_have_account">Don\'t Have Account? </string>
     <string name="name_hint">Name</string>
     <string name="name_vendor">Vendor Name</string>
     <string name="list_vendor">List Vendor</string>
     <string name="btn_cancel">Cancal</string>
-    <string name="price_range">Price_range</string>
+    <string name="price_range">Price range</string>
     <string name="enable_location">Enable Location</string>
     <string name="choose_your_role">Choose Your Role</string>
     <string name="description_pembeli">pembeli</string>
@@ -105,5 +105,6 @@
     <string name="email_not_registered">Email Not Registered</string>
     <string name="wrong_password">Wrong Password</string>
     <string name="name_product_hint">Name Product</string>
-    <string name="retry">Coba lagi</string>
+    <string name="whatsapp_login">Login With Whatsapp</string>
+    <string name="retry">Retry</string>
 </resources>

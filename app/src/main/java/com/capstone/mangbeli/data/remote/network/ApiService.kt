@@ -64,7 +64,7 @@ interface ApiService {
     ): VendorsResponse
 
     @GET("/token")
-    suspend fun refreshToken(@Header("Cookie") cookie: String): RefreshTokenResponse
+    suspend fun refreshToken(@Header("Cookie") refreshToken: String): RefreshTokenResponse
 
     @PATCH("/location")
     suspend fun updateLocation(
@@ -78,6 +78,9 @@ interface ApiService {
     suspend fun updateUserProfile(
         @Body userProfile: UserProfile
     ): ErrorResponse
+
+    @DELETE("/logout")
+    suspend fun logout(@Header("Cookie") refreshToken: String): ErrorResponse
 
     @PATCH("/vendor/profile")
     suspend fun updateVendorProfile(

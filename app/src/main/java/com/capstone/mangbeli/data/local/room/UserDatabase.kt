@@ -4,9 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.capstone.mangbeli.data.local.entity.TokenEntity
 import com.capstone.mangbeli.data.local.entity.UserEntity
 
-@Database(entities = [UserEntity::class], version = 1)
+@Database(
+    entities = [
+        UserEntity::class,
+        TokenEntity::class
+               ],
+    version = 2)
 abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 

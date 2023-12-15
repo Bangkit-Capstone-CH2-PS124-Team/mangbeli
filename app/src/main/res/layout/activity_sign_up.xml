@@ -11,22 +11,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="20dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="57dp"
-            android:layout_height="53dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
+            android:layout_width="68dp"
+            android:layout_height="77dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="15dp"
             android:contentDescription="@string/description_logo"
-            android:src="@drawable/gobaklogo" />
+            android:src="@drawable/logo_mangbeli" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -35,14 +35,15 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
+                android:fontFamily="@font/nunito_extrabold"
                 android:text="@string/title_signup"
-                android:textColor="@color/black"
-                android:textSize="30sp" />
+                android:textSize="35sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:fontFamily="@font/nunito_bold"
                 android:text="@string/description_signup" />
 
         </LinearLayout>
@@ -68,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:fontFamily="@font/nunito_bold"
                 android:text="@string/name"
                 android:textSize="15sp" />
 
@@ -82,6 +84,7 @@
                     android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:hint="@string/name_hint"
                     android:inputType="text"
                     tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
@@ -92,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
+                android:fontFamily="@font/nunito_bold"
                 android:text="@string/email"
                 android:textSize="15sp" />
 
@@ -123,6 +127,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
+                android:fontFamily="@font/nunito_bold"
                 android:text="@string/password" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -154,6 +159,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
+                android:fontFamily="@font/nunito_bold"
                 android:text="@string/confirmpassword" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -186,7 +192,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="15dp"
-                android:text="@string/title_signup" />
+                android:backgroundTint="?attr/colorTertiaryContainer"
+                android:fontFamily="@font/nunito_extrabold"
+                android:letterSpacing="0.1"
+                android:text="@string/title_signup"
+                android:textColor="?attr/colorOnTertiaryContainer" />
 
             <ProgressBar
                 android:id="@+id/loadingProgressBar"

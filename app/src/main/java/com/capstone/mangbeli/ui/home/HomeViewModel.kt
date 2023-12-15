@@ -1,5 +1,6 @@
 package com.capstone.mangbeli.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import androidx.paging.cachedIn
 import com.capstone.mangbeli.data.remote.response.LoginResponse
 import com.capstone.mangbeli.data.repository.MangRepository
 import com.capstone.mangbeli.model.User
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel (private val repository: MangRepository) : ViewModel() {
@@ -17,15 +19,45 @@ class HomeViewModel (private val repository: MangRepository) : ViewModel() {
 
     private var _filterBy = MutableLiveData<String>()
     val filterBy: LiveData<String> = _filterBy
-    fun getSession(): LiveData<User> {
-        return repository.getSession().asLiveData()
-    }
+
+
     private val _response = MutableLiveData<LoginResponse>()
     val response: LiveData<LoginResponse> = _response
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
     }
     val text: LiveData<String> = _text
+    private val _user: MutableLiveData<User> = MutableLiveData()
+    val userResponse: LiveData<User> = _user
+
+    fun getSession(): LiveData<User> {
+        viewModelScope.launch {
+            repository.getSession().collect { values ->
+                _user.postValue(values)
+            }
+        }
+        return userResponse
+        Log.d("coba", "refreshToken: $userResponse")
+    }
+    init {
+        reefreshToken()
+    }
+
+     fun logoutRefreshToken() {
+        viewModelScope.launch {
+            repository.logoutRefreshToken(userResponse.value?.refreshToken.toString())
+        }
+    }
+    fun reefreshToken() {
+        viewModelScope.launch {
+            repository.callRefreshToken(userResponse.value?.refreshToken.toString())
+        }
+    }
+    fun getToken() = viewModelScope.launch {
+        repository.getSession().collect { values ->
+            _user.postValue(values)
+        }
+    }
 
     fun logout() {
         viewModelScope.launch {
