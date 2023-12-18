@@ -30,16 +30,24 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import retrofit2.HttpException
+import java.util.Calendar
 
 class MangRepository(
     private val vendorDatabase: VendorDatabase,
     private val userPref: UserPref,
-    private val apiService: ApiService
+    private val apiService: ApiService,
 ) {
 
 
     suspend fun saveToken(token: String, email: String, role: String) {
-        userPref.saveToken(token, email, role)
+        val calendar = Calendar.getInstance()
+        calendar.time = Calendar.getInstance().time
+
+        // Tambahkan 10 menit
+        calendar.add(Calendar.MINUTE, 10)
+
+        val currentTimePlus10Minutes = calendar.time
+        userPref.saveToken(token, email, role, currentTimePlus10Minutes.toString())
         Log.e("TokenError", token)
     }
 
@@ -57,7 +65,7 @@ class MangRepository(
         password: String,
         confPassword: String
     ): RegisterResponse {
-        return ApiConfig.getApiService().register(
+        return ApiConfig.getApiServicee().register(
             name,
             email,
             password,
@@ -206,18 +214,7 @@ class MangRepository(
             }
         }
 
-    suspend fun callRefreshToken(refreshToken: String): LiveData<Result<ErrorResponse>> =
-        liveData {
-            emit(Result.Loading)
-            try {
-                val response = apiService.refreshToken("refreshToken=$refreshToken")
-                Log.d("MangRepository", "callRefreshToken: $response")
-                // Lakukan sesuatu dengan response yang diterima
-            } catch (e: Exception) {
-                emit(Result.Error(e.message.toString()))
-                Log.d("MangRepository", "callRefreshToken: ${e.message}")
-            }
-        }
+
 
     fun deleteLocation(): LiveData<Result<ErrorResponse>> =
         liveData {

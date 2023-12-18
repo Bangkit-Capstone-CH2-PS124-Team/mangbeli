@@ -16,6 +16,7 @@ import com.capstone.mangbeli.databinding.FragmentSettingsBinding
 import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeViewModel
+import com.capstone.mangbeli.ui.home.TokenViewModelFactory
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
 
 class SettingsFragment : Fragment() {
@@ -26,6 +27,7 @@ class SettingsFragment : Fragment() {
     private val viewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(requireActivity())
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,6 +55,7 @@ class SettingsFragment : Fragment() {
         binding.btnLogout.setOnClickListener {
             viewModel.logout()
             ViewModelFactory.refreshInstance()
+            TokenViewModelFactory.refreshInstance()
             startActivity(Intent(requireContext(), MenuActivity::class.java))
             requireActivity().finish()
         }

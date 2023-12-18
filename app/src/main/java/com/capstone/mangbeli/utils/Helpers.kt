@@ -1,19 +1,14 @@
 package com.capstone.mangbeli.utils
 
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
-import com.capstone.mangbeli.data.local.entity.TokenEntity
-import com.capstone.mangbeli.ui.home.HomeViewModel
+import com.capstone.mangbeli.ui.home.TokenViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 
 fun checkTokenAvailability(
-    viewModel: HomeViewModel,
-    token: TokenEntity,
-    lifecycleOwner: LifecycleOwner,
-    callback: (TokenEntity) -> Unit
+    viewModel: TokenViewModel
 ) {
     val dateFormat = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault())
     val expirationDateString = "14 Dec 2023 14:35:59" // Ganti dengan tanggal kadaluarsa yang benar
@@ -23,7 +18,7 @@ fun checkTokenAvailability(
 
     if (currentTime.after(expirationDate)) {
         // Waktu hari ini sudah melewati waktu kadaluarsa
-        viewModel.logoutRefreshToken() // Panggil fungsi logout pada viewModel
+        viewModel.reefreshToken() // Panggil fungsi logout pada viewModel
     } else {
         // Waktu hari ini masih sebelum waktu kadaluarsa
         val milis = expirationDate.time - currentTime.time
@@ -39,7 +34,7 @@ fun checkTokenAvailability(
 //                }
 //            }
         } else {
-            callback(token)
+//            callback(token)
         }
     }
 }

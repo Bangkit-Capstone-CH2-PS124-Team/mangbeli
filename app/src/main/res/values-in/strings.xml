@@ -118,4 +118,5 @@
     <string name="enable_location_negative_button">Tidak</string>
     <string name="location_not_available">Lokasi tidak tersedia, silakan coba lagi</string>
     <string name="location_permission_denied">Izin lokasi ditolak</string>
+    <string name="role_hint">Role</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.capstone.mangbeli.ui.home
 
-import android.content.Intent
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentHomeBinding
-import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.utils.LoadingStateAdapter
 import com.capstone.mangbeli.utils.setVisibility
@@ -40,13 +39,6 @@ class HomeFragment : Fragment() {
 
         homeAdapter = HomeAdapter()
 
-        viewModel.getSession().observe(viewLifecycleOwner) { user ->
-            if (user.token.isEmpty()) {
-                startActivity(Intent(requireContext(), MenuActivity::class.java))
-                requireActivity().finish()
-            }
-        }
-
         binding?.rvHomeUser?.apply {
             layoutManager = LinearLayoutManager(this.context)
         }
@@ -62,7 +54,6 @@ class HomeFragment : Fragment() {
         setUpSearchBar()
         initAllVendors()
         showRecyclerView()
-
 
         return binding?.root
     }
@@ -85,6 +76,7 @@ class HomeFragment : Fragment() {
                 search = viewModel.searchquery.value,
                 filter = viewModel.filterBy.value
             ).collectLatest {
+                ViewModelFactory.refreshInstance()
                 binding?.homeProgressBar?.let { it1 -> setVisibility(it1, false) }
                 homeAdapter.submitData(lifecycle, it)
                 smoothScrollToTop()

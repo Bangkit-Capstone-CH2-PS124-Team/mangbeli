@@ -71,7 +71,7 @@ class ViewModelFactory(private val repository: MangRepository) :
         }
         fun refreshInstance() {
             INSTANCE = null
-            Injection.refreshRepository()
+            Injection.refreshTokenRepository()
         }
     }
 

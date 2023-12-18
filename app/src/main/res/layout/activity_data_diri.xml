@@ -26,8 +26,8 @@
             android:id="@+id/roleEditText"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:autofillHints="Name"
-            android:hint="@string/name"
+            android:autofillHints="Role"
+            android:hint="@string/role_hint"
             android:inputType="text"
             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 

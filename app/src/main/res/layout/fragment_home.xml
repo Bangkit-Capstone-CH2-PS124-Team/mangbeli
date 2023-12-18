@@ -5,9 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.search.SearchBar
             android:id="@+id/searchBar"
             style="@style/Widget.Material3.SearchBar.Outlined"
@@ -15,11 +17,21 @@
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
             android:hint="@string/searchbar_hint"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIconTint="?attr/colorPrimary"
             app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="1dp" />
+
+<!--        <Button-->
+<!--            android:id="@+id/btnLoadMore"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:text="Load More"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/rv_home_user" />-->
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -29,6 +41,7 @@
         android:layout_height="match_parent"
         android:hint="@string/searchbar_hint"
         app:layout_anchor="@id/searchBar" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

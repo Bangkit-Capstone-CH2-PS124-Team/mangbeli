@@ -13,6 +13,7 @@ import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.ActivityLoginBinding
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
+import com.capstone.mangbeli.ui.home.TokenViewModelFactory
 import com.capstone.mangbeli.ui.role.AddRoleActivity
 import com.capstone.mangbeli.ui.signup.SignUpActivity
 import com.capstone.mangbeli.utils.Result
@@ -71,6 +72,7 @@ class LoginActivity : AppCompatActivity() {
 
             viewModel.login(email, password).observe(this@LoginActivity) { result ->
                 ViewModelFactory.refreshInstance()
+                TokenViewModelFactory.refreshInstance()
                 when (result) {
                     is Result.Loading -> {
                         binding.loadingProgressBar.visibility = View.VISIBLE

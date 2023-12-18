@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentMapsBinding
+import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
@@ -235,6 +236,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                                             }
 
                                             is Result.Error -> {
+                                                if (result.error == "Missing access token") {
+                                                    startActivity(Intent(requireContext(), MenuActivity::class.java))
+                                                    requireActivity().finish()
+                                                }
+                                                if (result.error == "Invalid access token") {
+                                                    startActivity(Intent(requireContext(), MenuActivity::class.java))
+                                                    requireActivity().finish()
+                                                }
                                                 Log.d("Check", "addManyMarker: ${result.error}")
                                                 Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
                                             }

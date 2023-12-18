@@ -68,7 +68,7 @@ interface ApiService {
     suspend fun getMapsVendors(): VendorsMapsResponse
 
     @GET("/token")
-    suspend fun refreshToken(@Header("Cookie") refreshToken: String): RefreshTokenResponse
+    suspend fun refreshToken(): RefreshTokenResponse
 
     @PATCH("/location")
     suspend fun updateLocation(

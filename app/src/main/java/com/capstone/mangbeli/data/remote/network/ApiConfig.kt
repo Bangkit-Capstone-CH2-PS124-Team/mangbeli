@@ -53,11 +53,33 @@ class ApiConfig {
             return retrofit.create(ApiService::class.java)
         }
 
-        fun getApiService(): ApiService {
+        fun getApiServicee(): ApiService {
             val loggingInterceptor =
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
+                .build()
+
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+            return retrofit.create(ApiService::class.java)
+        }
+        fun getApiService2(refreshToken: String): ApiService {
+            val loggingInterceptor =
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            val authInterceptor = Interceptor { chain ->
+                val req = chain.request()
+                val requestHeaders = req.newBuilder()
+                    .addHeader("Cookie", "refreshToken=$refreshToken")
+                    .build()
+                chain.proceed(requestHeaders)
+            }
+            val client = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .addInterceptor(authInterceptor)
                 .build()
 
             val retrofit = Retrofit.Builder()

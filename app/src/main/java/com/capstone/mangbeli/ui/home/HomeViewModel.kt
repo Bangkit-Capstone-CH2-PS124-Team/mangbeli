@@ -4,13 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.capstone.mangbeli.data.remote.response.LoginResponse
 import com.capstone.mangbeli.data.repository.MangRepository
 import com.capstone.mangbeli.model.User
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel (private val repository: MangRepository) : ViewModel() {
@@ -36,21 +34,14 @@ class HomeViewModel (private val repository: MangRepository) : ViewModel() {
                 _user.postValue(values)
             }
         }
+        Log.e("SplashScreen2", "refreshToken: $userResponse")
         return userResponse
-        Log.d("coba", "refreshToken: $userResponse")
-    }
-    init {
-        reefreshToken()
+
     }
 
      fun logoutRefreshToken() {
         viewModelScope.launch {
             repository.logoutRefreshToken(userResponse.value?.refreshToken.toString())
-        }
-    }
-    fun reefreshToken() {
-        viewModelScope.launch {
-            repository.callRefreshToken(userResponse.value?.refreshToken.toString())
         }
     }
     fun getToken() = viewModelScope.launch {

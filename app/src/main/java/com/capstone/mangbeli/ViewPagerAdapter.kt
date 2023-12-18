@@ -1,5 +1,6 @@
 package com.capstone.mangbeli
 
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,6 @@ import com.capstone.mangbeli.databinding.SlideLayoutBinding
 
 
 class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
-
     private val images = intArrayOf(
         R.drawable.onboarding1,
         R.drawable.onboarding2,
@@ -41,7 +41,6 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
         slideTitleImage.setImageResource(images[position])
         slideDescription.setText(descriptions[position])
-
         container.addView(view)
 
         return view

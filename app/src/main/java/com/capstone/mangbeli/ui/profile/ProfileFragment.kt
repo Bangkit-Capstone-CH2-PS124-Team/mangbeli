@@ -1,5 +1,6 @@
 package com.capstone.mangbeli.ui.profile
 
+import android.content.Intent
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -16,7 +17,9 @@ import androidx.fragment.app.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentProfileBinding
 import com.capstone.mangbeli.model.UserProfile
+import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
+import com.capstone.mangbeli.ui.home.TokenViewModelFactory
 import com.capstone.mangbeli.utils.ButtonUtils
 import com.capstone.mangbeli.utils.EditTextUtils
 import com.capstone.mangbeli.utils.LocationHelper
@@ -336,6 +339,17 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
                 is Error -> {
                     setVisibility(binding.profileProgressBar, false)
+                    ViewModelFactory.refreshInstance()
+                    TokenViewModelFactory.refreshInstance()
+                    if (result.error == "Missing access token") {
+                        startActivity(Intent(requireContext(), MenuActivity::class.java))
+                        requireActivity().finish()
+                    }
+                    if (result.error == "Invalid access token") {
+                        startActivity(Intent(requireContext(), MenuActivity::class.java))
+                        requireActivity().finish()
+                    }
+
                     Toast.makeText(
                         requireContext(),
                         "Error ${result.error} : Cek internet anda!",

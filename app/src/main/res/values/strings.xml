@@ -117,4 +117,5 @@
     <string name="enable_location_negative_button">No</string>
     <string name="location_not_available">Location not available, please try again</string>
     <string name="location_permission_denied">Location permission denied</string>
+    <string name="role_hint">Role</string>
 </resources>
