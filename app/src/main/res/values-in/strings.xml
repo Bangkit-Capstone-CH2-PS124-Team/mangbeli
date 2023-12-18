@@ -108,6 +108,14 @@
     <string name="name_product_hint">Nama Produk</string>
     <string name="whatsapp_login">Masuk Dengan Whatsapp</string>
     <string name="retry">Coba lagi</string>
-
-
+    <string name="pref_key_location">key_location</string>
+    <string name="slider">slider</string>
+    <string name="image_of_vendor">foto pedagang</string>
+    <string name="click_to_call_vendors">click to call vendors</string>
+    <string name="enable_location_title">Aktifkan Lokasi</string>
+    <string name="enable_location_message">Fitur lokasi dinonaktifkan. Apakah Anda ingin mengaktifkannya?</string>
+    <string name="enable_location_positive_button">Ya</string>
+    <string name="enable_location_negative_button">Tidak</string>
+    <string name="location_not_available">Lokasi tidak tersedia, silakan coba lagi</string>
+    <string name="location_permission_denied">Izin lokasi ditolak</string>
 </resources>

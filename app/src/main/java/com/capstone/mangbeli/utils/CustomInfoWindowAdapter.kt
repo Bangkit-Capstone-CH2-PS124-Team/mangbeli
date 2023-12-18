@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.capstone.mangbeli.R
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter
 import com.google.android.gms.maps.model.Marker
@@ -42,12 +41,6 @@ class CustomInfoWindowAdapter(private val context: Context) : InfoWindowAdapter 
             imgView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.logo_mangbeli))
         }
         Log.d("GAMBAR BOS", "windowText: $imageUrl")
-        imageUrl?.let {
-            // Example using Glide library
-            Glide.with(context)
-                .load(it)
-                .into(imgView)
-        }
 
     }
     override fun getInfoContents(marker: Marker): View? {

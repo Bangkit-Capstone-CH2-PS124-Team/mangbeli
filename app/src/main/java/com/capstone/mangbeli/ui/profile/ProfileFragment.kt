@@ -1,5 +1,6 @@
 package com.capstone.mangbeli.ui.profile
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -68,6 +69,18 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         onChangeEditText()
 
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val isLocationEnabled = getStatusFromSharedPreferences()
+        binding.switchLocation.isChecked = isLocationEnabled
+    }
+
+    private fun getStatusFromSharedPreferences(): Boolean {
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(getString(R.string.pref_key_location), false)
     }
 
     private fun onImageClicked() {
@@ -199,6 +212,8 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
 
     private fun onLocationEnable(latitude: Double, longitude: Double) {
         binding.switchLocation.setOnCheckedChangeListener { _, isChecked ->
+            Log.d("CekSwitch", "onLocationEnable: $isChecked")
+            saveLocationStatus(isChecked)
             if (isChecked) {
                 // User menyalakan lokasi
                 setVisibility(binding.cardView, true)
@@ -212,6 +227,13 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
                 deleteLocation()
             }
         }
+    }
+
+    private fun saveLocationStatus(isLocationEnabled: Boolean) {
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(getString(R.string.pref_key_location), isLocationEnabled)
+        editor.apply()
     }
 
     private fun deleteLocation() {

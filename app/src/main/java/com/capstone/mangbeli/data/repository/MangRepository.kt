@@ -1,10 +1,8 @@
 package com.capstone.mangbeli.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.capstone.mangbeli.data.local.entity.TokenEntity
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -12,14 +10,15 @@ import androidx.paging.PagingData
 import com.capstone.mangbeli.data.VendorRemoteMediator
 import com.capstone.mangbeli.data.local.entity.VendorEntity
 import com.capstone.mangbeli.data.local.pref.UserPref
-import com.capstone.mangbeli.data.local.room.UserDatabase
-import com.capstone.mangbeli.data.remote.network.ApiConfig
 import com.capstone.mangbeli.data.local.room.VendorDatabase
+import com.capstone.mangbeli.data.remote.network.ApiConfig
 import com.capstone.mangbeli.data.remote.network.ApiService
 import com.capstone.mangbeli.data.remote.response.DataUser
 import com.capstone.mangbeli.data.remote.response.DataVendor
+import com.capstone.mangbeli.data.remote.response.DetailVendor
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
+import com.capstone.mangbeli.data.remote.response.ListMapsVendorsItem
 import com.capstone.mangbeli.data.remote.response.LoginResult
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.model.LocationUpdate
@@ -30,7 +29,6 @@ import com.capstone.mangbeli.utils.Result
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
-import okhttp3.Response
 import retrofit2.HttpException
 
 class MangRepository(
@@ -67,7 +65,12 @@ class MangRepository(
         )
     }
 
-    fun getAllVendors(location: Int = 1, isLocationNotEnable: Int = 1, search: String? = "", filter: String? = ""): Flow<PagingData<VendorEntity>> {
+    fun getAllVendors(
+        location: Int = 1,
+        isLocationNotEnable: Int = 1,
+        search: String? = "",
+        filter: String? = ""
+    ): Flow<PagingData<VendorEntity>> {
         @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
@@ -75,7 +78,14 @@ class MangRepository(
                 enablePlaceholders = true,
                 jumpThreshold = 1
             ),
-            remoteMediator = VendorRemoteMediator(apiService, vendorDatabase, location, isLocationNotEnable, search, filter),
+            remoteMediator = VendorRemoteMediator(
+                apiService,
+                vendorDatabase,
+                location,
+                isLocationNotEnable,
+                search,
+                filter
+            ),
             pagingSourceFactory = {
                 vendorDatabase.vendorDao().getAllVendor()
             }
@@ -83,7 +93,20 @@ class MangRepository(
 
     }
 
-    suspend fun getMapsVendors(): List<VendorEntity> = vendorDatabase.vendorDao().getMapsAllVendor()
+    fun getMapsVendors(): LiveData<Result<List<ListMapsVendorsItem>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getMapsVendors().listVendors
+            Log.d("MangRepository", "getMapsVendors: $response")
+            emit(Result.Success(response))
+        } catch (e: HttpException) {
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            Log.d("Repository", "getMapsVendors: $errorMessage ")
+            emit(Result.Error(errorMessage.toString()))
+        }
+    }
 
     fun login(email: String, password: String): LiveData<Result<LoginResult>> = liveData {
         emit(Result.Loading)
@@ -147,14 +170,12 @@ class MangRepository(
         }
     }
 
-    fun getDetailVendor(id: String): LiveData<Result<DataVendor>> = liveData {
+    fun getDetailVendor(id: String): LiveData<Result<DetailVendor>> = liveData {
         emit(Result.Loading)
         try {
             val response = apiService.getDetailVendor(id).dataVendor
-            if (response != null) {
-                Log.d("Repo", "getDetailVendor: $response")
-                emit(Result.Success(response))
-            }
+            Log.d("Repo", "getDetailVendor: $response")
+            emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
@@ -254,7 +275,7 @@ class MangRepository(
             apiService: ApiService
         ): MangRepository =
             instance ?: synchronized(this) {
-                instance ?: MangRepository(vendorDatabase,userPref, apiService)
+                instance ?: MangRepository(vendorDatabase, userPref, apiService)
             }.also { instance = it }
 
         fun refreshInstance() {

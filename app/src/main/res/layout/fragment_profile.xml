@@ -91,14 +91,7 @@
             app:layout_constraintStart_toStartOf="@+id/linearProfile"
             app:layout_constraintTop_toBottomOf="@id/linearProfile" />
 
-        <ProgressBar
-            android:id="@+id/profileProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"
@@ -253,7 +246,14 @@
 
         </LinearLayout>
 
-
+        <ProgressBar
+            android:id="@+id/profileProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

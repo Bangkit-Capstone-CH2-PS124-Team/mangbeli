@@ -8,6 +8,7 @@ import com.capstone.mangbeli.data.remote.response.ProfileVendorResponse
 import com.capstone.mangbeli.data.remote.response.RefreshTokenResponse
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.data.remote.response.UserResponse
+import com.capstone.mangbeli.data.remote.response.VendorsMapsResponse
 import com.capstone.mangbeli.data.remote.response.VendorsResponse
 import com.capstone.mangbeli.model.LocationUpdate
 import com.capstone.mangbeli.model.UserProfile
@@ -62,6 +63,9 @@ interface ApiService {
         @Query("filter") filter: String?
 
     ): VendorsResponse
+
+    @GET("/vendors/maps")
+    suspend fun getMapsVendors(): VendorsMapsResponse
 
     @GET("/token")
     suspend fun refreshToken(@Header("Cookie") refreshToken: String): RefreshTokenResponse

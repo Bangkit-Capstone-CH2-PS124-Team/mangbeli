@@ -97,6 +97,7 @@ object LocationHelper {
         onError: () -> Unit
     ) {
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            Log.d("Location", "getLastKnownLocation: $location")
             if (location != null) {
                 onSuccess.invoke(location)
             } else {
