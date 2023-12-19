@@ -10,7 +10,7 @@
         android:id="@+id/text_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_home_vendor_around"
+        android:text="@string/title_home_pembeli_around"
         android:layout_marginTop="30dp"
         android:layout_marginHorizontal="16dp"
         android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
@@ -67,8 +67,8 @@
                 android:id="@+id/btn_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
                 android:text="@string/ya" />
 
             <androidx.fragment.app.FragmentContainerView

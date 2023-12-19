@@ -15,10 +15,12 @@ import com.capstone.mangbeli.data.remote.network.ApiConfig
 import com.capstone.mangbeli.data.remote.network.ApiService
 import com.capstone.mangbeli.data.remote.response.DataUser
 import com.capstone.mangbeli.data.remote.response.DataVendor
+import com.capstone.mangbeli.data.remote.response.DetailUser
 import com.capstone.mangbeli.data.remote.response.DetailVendor
 import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.data.remote.response.ImageUploadResponse
 import com.capstone.mangbeli.data.remote.response.ListMapsVendorsItem
+import com.capstone.mangbeli.data.remote.response.ListUsersItem
 import com.capstone.mangbeli.data.remote.response.LoginResult
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
 import com.capstone.mangbeli.model.LocationUpdate
@@ -115,6 +117,20 @@ class MangRepository(
             emit(Result.Error(errorMessage.toString()))
         }
     }
+    fun getMapsUsers(): LiveData<Result<List<ListUsersItem>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getMapsUsers().listUsers
+            Log.d("MangRepository", "getMapsVendors: $response")
+            emit(Result.Success(response))
+        } catch (e: HttpException) {
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            Log.d("Repository", "getMapsVendors: $errorMessage ")
+            emit(Result.Error(errorMessage.toString()))
+        }
+    }
 
     fun login(email: String, password: String): LiveData<Result<LoginResult>> = liveData {
         emit(Result.Loading)
@@ -182,6 +198,16 @@ class MangRepository(
         emit(Result.Loading)
         try {
             val response = apiService.getDetailVendor(id).dataVendor
+            Log.d("Repo", "getDetailVendor: $response")
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+    fun getDetailUser(id: String): LiveData<Result<DetailUser>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getDetailtUser(id).dataUser
             Log.d("Repo", "getDetailVendor: $response")
             emit(Result.Success(response))
         } catch (e: Exception) {

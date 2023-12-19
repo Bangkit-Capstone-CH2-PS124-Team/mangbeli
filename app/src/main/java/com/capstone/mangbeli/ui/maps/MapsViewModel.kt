@@ -11,8 +11,10 @@ class MapsViewModel(private val repository: MangRepository) : ViewModel() {
 
     fun getMapsVendors() = repository.getMapsVendors()
 
-    fun getDetailVendor(id:String) = repository.getDetailVendor(id)
+    fun getMapsUsers() = repository.getMapsUsers()
 
+    fun getDetailVendor(id:String) = repository.getDetailVendor(id)
+    fun getDetailUser(id:String) = repository.getDetailUser(id)
     fun updateCurrentLocation(lat: Double, log: Double) {
         _currentLocation.value = Pair(lat, log)
     }

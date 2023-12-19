@@ -7,6 +7,8 @@ import com.capstone.mangbeli.data.remote.response.LoginResponse
 import com.capstone.mangbeli.data.remote.response.ProfileVendorResponse
 import com.capstone.mangbeli.data.remote.response.RefreshTokenResponse
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
+import com.capstone.mangbeli.data.remote.response.UserDetailResponse
+import com.capstone.mangbeli.data.remote.response.UserMapsResponse
 import com.capstone.mangbeli.data.remote.response.UserResponse
 import com.capstone.mangbeli.data.remote.response.VendorsMapsResponse
 import com.capstone.mangbeli.data.remote.response.VendorsResponse
@@ -53,6 +55,9 @@ interface ApiService {
     @GET("/vendor")
     suspend fun getDetailVendor(@Query("vendorId") vendorId: String): DetailVendorResponse
 
+    @GET("/user")
+    suspend fun getDetailtUser(@Query("userId") userId: String): UserDetailResponse
+
     @GET("/vendors")
     suspend fun getVendors(
         @Query("page") page: Int = 1,
@@ -66,6 +71,9 @@ interface ApiService {
 
     @GET("/vendors/maps")
     suspend fun getMapsVendors(): VendorsMapsResponse
+
+    @GET("/users/maps")
+    suspend fun getMapsUsers(): UserMapsResponse
 
     @GET("/token")
     suspend fun refreshToken(): RefreshTokenResponse

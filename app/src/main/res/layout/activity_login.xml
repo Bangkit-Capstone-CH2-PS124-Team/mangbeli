@@ -183,7 +183,7 @@
             android:layout_height="1dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="15dp"
-            android:background="@color/md_theme_light_primary" />
+            android:background="?attr/colorOnBackground"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -192,7 +192,7 @@
             android:layout_marginVertical="15dp"
             android:fontFamily="@font/nunito_bold"
             android:text="@string/or"
-            android:textColor="@color/md_theme_light_primary"
+
             android:textSize="15sp" />
 
         <View
@@ -200,23 +200,10 @@
             android:layout_height="1dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="15dp"
-            android:background="@color/md_theme_light_primary" />
+            android:background="?attr/colorOnBackground" />
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/new_googlebtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:backgroundTint="@color/md_theme_light_onSecondary"
-        android:text="@string/whatsapp_login"
-        android:textColor="?attr/colorOnTertiaryContainer"
-        app:icon="@drawable/whatsapp"
-        app:iconGravity="textStart"
-        app:iconPadding="10dp"
-        app:iconTint="#00100D0D"
-        app:iconTintMode="src_atop" />
 
 
 </LinearLayout>

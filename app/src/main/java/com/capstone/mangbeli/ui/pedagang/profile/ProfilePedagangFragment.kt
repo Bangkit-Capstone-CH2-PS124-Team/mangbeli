@@ -1,5 +1,6 @@
 package com.capstone.mangbeli.ui.pedagang.profile
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,8 @@ import com.capstone.mangbeli.databinding.FragmentProfilePedagangBinding
 import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.model.VendorProfile
 import com.capstone.mangbeli.ui.ViewModelFactory
+import com.capstone.mangbeli.ui.home.TokenViewModel
+import com.capstone.mangbeli.ui.home.TokenViewModelFactory
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.utils.loadImage
@@ -35,6 +38,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
@@ -45,6 +51,9 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
     private val viewModel by viewModels<ProfileVendorViewModel> {
         ViewModelFactory.getInstance(requireActivity())
+    }
+    private val tokenViewModel by viewModels<TokenViewModel> {
+        TokenViewModelFactory.getInstance(requireActivity())
     }
     private var currentImageUri: Uri? = null
     private var isEdited = false
@@ -65,7 +74,32 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         setSlider()
         onImageClicked()
         onSubmit()
+        viewModel.getToken()
+
+        viewModel.userResponse.observe(viewLifecycleOwner) { user ->
+            ViewModelFactory.refreshInstance()
+            TokenViewModelFactory.refreshInstance()
+            val expirationDateString = user.expired.toString()
+            val expiredAkesToken = user.expiredToken.toString()
+            if (expiredAkesToken != " "){
+                reefreshToken(expiredAkesToken)}
+            else{
+                Log.e("SplashScreen", "onCreate: $expiredAkesToken")
+            }
+            if (expirationDateString == " ") {
+                Log.e("SplashScreen", "onCreate: $expirationDateString")
+            } else {
+                checkTokenExpiration(expirationDateString)
+            }
+            Log.e("SplashScreen", "onCreate: ${user}")
+        }
+        val isLocationEnabled = getStatusFromSharedPreferences()
+        binding.switchLocation.isChecked = isLocationEnabled
         return root
+    }
+    private fun getStatusFromSharedPreferences(): Boolean {
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(getString(R.string.pref_key_location), false)
     }
     private fun onImageClicked() {
         binding.imgProfile.setOnClickListener { startGallery() }
@@ -140,6 +174,13 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
+
+    private fun saveLocationStatus(isLocationEnabled: Boolean) {
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(getString(R.string.pref_key_location), isLocationEnabled)
+        editor.apply()
+    }
     private fun startGallery() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
@@ -212,17 +253,23 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+
     private fun onLocationEnable(latitude: Double, longitude: Double) {
         binding.switchLocation.setOnCheckedChangeListener { _, isChecked ->
+            Log.d("CekSwitch", "onLocationEnable: $isChecked")
+            saveLocationStatus(isChecked)
             if (isChecked) {
                 // User menyalakan lokasi
+                setVisibility(binding.cardView, true)
                 setVisibility(binding.googleMapProfile, true)
                 updateLocation(latitude, longitude)
                 updateMapLocation(latitude, longitude)
             } else {
                 // User mematikan lokasi
+                setVisibility(binding.cardView, false)
                 setVisibility(binding.googleMapProfile, false)
                 deleteLocation()
+
             }
         }
     }
@@ -292,6 +339,60 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
                 }
         }
     }
+    fun reefreshToken(expirationDate: String) {
+        ViewModelFactory.refreshInstance()
+        TokenViewModelFactory.refreshInstance()
+        if (expirationDate != " ") {
+            val expirationDateFormat =
+                SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.ENGLISH)
+            val expirationDateParsed = expirationDateFormat.parse(expirationDate)
+            val calendar = Calendar.getInstance()
+            calendar.time = expirationDateParsed as Date
+
+            val expirationDatePlus7Hours = calendar.time
+            val currentTime = Calendar.getInstance().time
+
+            if (currentTime.after(expirationDatePlus7Hours)) {
+                tokenViewModel.reefreshToken()
+                Log.d("coba", "cek akses token: $currentTime, $expirationDatePlus7Hours")
+            } else {
+                Log.d("coba", "cek akses token: $currentTime, $expirationDatePlus7Hours")
+            }
+        } else {
+            Log.d("coba", "cek akses token: $expirationDate")
+        }
+    }
+
+    fun logoutRefreshToken() {
+        ViewModelFactory.refreshInstance()
+        TokenViewModelFactory.refreshInstance()
+        tokenViewModel.logoutRefreshToken()
+    }
+    fun checkTokenExpiration(expirationDate: String) {
+        if (expirationDate != " ") {
+            val expirationDateFormat =
+                SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH)
+            val expirationDateParsed = expirationDateFormat.parse(expirationDate)
+            // Ganti dengan tanggal kadaluarsa yang benar
+            val calendar = Calendar.getInstance()
+            calendar.time = expirationDateParsed as Date
+
+            // Tambahkan 7 jam ke tanggal kedaluwarsa
+            calendar.add(Calendar.HOUR_OF_DAY, -7)
+
+            val expirationDatePlus7Hours = calendar.time
+            val currentTime = Calendar.getInstance().time
+
+            if (currentTime.after(expirationDatePlus7Hours)) {
+                Log.d("coba", "cek refreshToken: $currentTime, $expirationDatePlus7Hours")
+                logoutRefreshToken()  // Panggil fungsi logout pada viewModel
+            } else {
+                Log.d("coba", "cek refreshToken: $currentTime, $expirationDatePlus7Hours")
+            }
+        } else {
+            Log.d("coba", "cek refreshToken: $expirationDate")
+        }
+    }
     private fun setSlider() {
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
         binding.minimumSlider.valueFrom = 1000f
@@ -353,8 +454,6 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         viewModel.currentLocation.observe(viewLifecycleOwner) {
             onLocationEnable(it.first, it.second)
         }
-
-
     }
 
     private fun updateMapLocation(latitude: Double, longitude: Double) {
@@ -381,6 +480,7 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         )
 
     }
+
     private fun getUserLocation() {
         LocationHelper.getLastKnownLocation(
             fusedLocationClient,

@@ -19,7 +19,7 @@
     <string name="input">Input</string>
     <string name="password">Password</string>
     <string name="login">LOGIN</string>
-    <string name="or">Or login with</string>
+    <string name="or">Find Your Nearby Vendors</string>
     <string name="sign_in_with_google">Sign In With Google</string>
     <string name="profile">Profile</string>
     <string name="suka">Favorite</string>
@@ -118,4 +118,7 @@
     <string name="location_not_available">Location not available, please try again</string>
     <string name="location_permission_denied">Location permission denied</string>
     <string name="role_hint">Role</string>
+    <string name="title_home_pembeli_around">Buyers near you</string>
+    <string name="action_bar_maps_pedagang">Buyer Location</string>
+    <string name="detail_pembei">Detail Buyer</string>
 </resources>

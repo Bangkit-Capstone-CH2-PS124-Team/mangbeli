@@ -38,4 +38,9 @@
         android:name="com.capstone.mangbeli.ui.pedagang.profile.ProfilePedagangFragment"
         android:label="fragment_profile_pedagang"
         tools:layout="@layout/fragment_profile_pedagang" />
+    <fragment
+        android:id="@+id/navigation_maps_pedagang"
+        android:name="com.capstone.mangbeli.ui.pedagang.maps.MapsPedagangFragment"
+        android:label="@string/title_maps"
+        tools:layout="@layout/fragment_maps_pedagang" />
 </navigation>

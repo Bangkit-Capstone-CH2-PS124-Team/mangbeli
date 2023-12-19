@@ -94,7 +94,7 @@ class HomeActivity : AppCompatActivity() {
                             navController.navigate(R.id.navigation_maps)
                          when (userRole) {
                              "user" -> navController.navigate(R.id.navigation_maps)
-                             "vendor" -> navController.navigate(R.id.navigation_profile_pedagang)
+                             "vendor" -> navController.navigate(R.id.navigation_maps_pedagang)
                              else -> navController.navigate(R.id.navigation_maps)
                          }
                             true
