@@ -2,11 +2,10 @@ package com.capstone.mangbeli.ui.home
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,10 +15,13 @@ import com.capstone.mangbeli.R
 import com.capstone.mangbeli.data.local.pref.SettingsPref
 import com.capstone.mangbeli.data.local.pref.dataStore
 import com.capstone.mangbeli.databinding.ActivityHomeBinding
-
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.settings.SettingViewModel
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
+import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -41,6 +43,18 @@ class HomeActivity : AppCompatActivity() {
 
         val pref = SettingsPref.getInstance(applicationContext.dataStore)
         val settingViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingViewModel::class.java]
+
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task: Task<String> ->
+                if (!task.isSuccessful) {
+                    Log.w("FCM", "Failed to get token", task.exception)
+                    return@addOnCompleteListener
+                }
+
+                // Mendapatkan token
+                val token = task.result
+                Log.d("FCM", "Token: $token")
+            }
 
         settingViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
             if (isDarkModeActive) {

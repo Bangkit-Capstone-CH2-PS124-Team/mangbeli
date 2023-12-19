@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.mangbeli.data.local.pref.SettingsPref
-import com.capstone.mangbeli.data.local.pref.dataStore
+import com.capstone.mangbeli.data.local.pref.themes
 import com.capstone.mangbeli.databinding.FragmentSettingsBinding
 import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
@@ -35,7 +35,7 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val pref = SettingsPref.getInstance(requireContext().dataStore)
+        val pref = SettingsPref.getInstance(requireContext().themes)
         val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingViewModel::class.java]
 
         settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean ->

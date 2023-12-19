@@ -78,8 +78,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 Log.d("HiddenBottomSheet", "hiddenBottomSheet: ${this.state}")
             }
-
-
         }
     }
 
@@ -221,8 +219,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                                                     distanceMapsContent.text = it.snippet
                                                     minPriceMapsContent.text = "Rp. ${bottomSheetData.minPrice}"
                                                     maxPriceMapsContent.text = "Rp. ${bottomSheetData.maxPrice}"
-                                                    if (data.imageUrl != null) {
-                                                        imageMapsContent.loadImage(data.imageUrl)
+                                                    if (bottomSheetData.imageUrl != null) {
+                                                        imageMapsContent.loadImage(bottomSheetData.imageUrl)
+                                                    } else {
+                                                        imageMapsContent.setImageResource(R.drawable.logo_mangbeli)
                                                     }
                                                     if (bottomSheetData.noHp != null) {
                                                         setVisibility(binding.actionCall, true)
