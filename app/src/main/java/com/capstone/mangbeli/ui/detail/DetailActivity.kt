@@ -259,7 +259,6 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
                     viewModel.updateLocation(location.latitude, location.longitude)
                 }
             }
-
         } else {
             requestPermissionLauncher.launch(
                 arrayOf(
@@ -335,6 +334,8 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
                 .alternativeRoutes(true)
                 .waypoints(start, end)
                 .build()
+
+
             routing.execute()
         }
     }
@@ -347,10 +348,8 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
     }
 
     override fun onRouteSuccess(list: ArrayList<RouteInfoModel>, indexing: Int) {
-
         val polylineOptions = PolylineOptions()
         val polylines = ArrayList<Polyline>()
-
         for (i in 0 until list.size) {
             if (i == indexing) {
                 Log.e("TAG", "onRoutingSuccess: routeIndexing $indexing")
@@ -361,6 +360,10 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
                 polylineOptions.endCap(RoundCap())
                 val polyline: Polyline = mMap.addPolyline(polylineOptions)
                 polylines.add(polyline)
+                val durationText = list[indexing].durationText
+                binding.tvArrivalTimes.text = durationText
+                setVisibility(binding.linearLayoutArrivalTime, true)
+                Log.e("DActivity", "onRoutingSuccess: routeIndexing $durationText")
             }
         }
     }

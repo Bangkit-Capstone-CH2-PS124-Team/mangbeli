@@ -122,4 +122,6 @@
     <string name="title_home_pembeli_around">Buyers near you</string>
     <string name="action_bar_maps_pedagang">Buyer Location</string>
     <string name="detail_pembei">Detail Buyer</string>
+    <string name="predict_arrival_time">Predict Arrival Time :</string>
+    <string name="route">Route</string>
 </resources>

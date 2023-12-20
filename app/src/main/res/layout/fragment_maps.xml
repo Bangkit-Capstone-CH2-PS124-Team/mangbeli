@@ -30,14 +30,15 @@
         android:layout_gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
+
         <TextView
             android:id="@+id/error_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:text="@string/enable_location_message"
             android:textAlignment="center"
-            android:textColor="?android:textColorPrimary"
-            android:text="@string/enable_location_message" />
+            android:textColor="?android:textColorPrimary" />
 
         <Button
             android:id="@+id/enable_location_button"
@@ -231,13 +232,15 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayout8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout7"
+                tools:layout_editor_absoluteX="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -257,6 +260,47 @@
                     android:textStyle="bold"
                     tools:text="Descripsi" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutArrivalTimeMaps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="@string/predict_arrival_time" />
+
+                <TextView
+                    android:id="@+id/tv_arrival_times_maps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Descripsi" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_route_maps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/route"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+                app:layout_constraintStart_toStartOf="@+id/linearLayout"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout8" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 

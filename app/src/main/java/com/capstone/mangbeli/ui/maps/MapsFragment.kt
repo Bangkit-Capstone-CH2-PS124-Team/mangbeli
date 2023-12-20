@@ -26,6 +26,11 @@ import com.capstone.mangbeli.utils.UserLocationManager
 import com.capstone.mangbeli.utils.VectorToBitmap
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.setVisibility
+import com.codebyashish.googledirectionapi.AbstractRouting
+import com.codebyashish.googledirectionapi.ErrorHandling
+import com.codebyashish.googledirectionapi.RouteDrawing
+import com.codebyashish.googledirectionapi.RouteInfoModel
+import com.codebyashish.googledirectionapi.RouteListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,12 +40,15 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 
-class MapsFragment : Fragment(), OnMapReadyCallback {
+class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
 
     private lateinit var mMap: GoogleMap
     private var _binding: FragmentMapsBinding? = null
@@ -286,6 +294,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                                                     } else {
                                                         setVisibility(binding.actionCall, false)
                                                     }
+                                                    val vendorLocation =
+                                                        bottomSheetData.latitude?.let { it1 ->
+                                                            bottomSheetData.longitude?.let { it2 ->
+                                                                LatLng(
+                                                                    it1, it2
+                                                                )
+                                                            }
+                                                        }
+                                                    val userLoc = LatLng(userLocation.first, userLocation.second)
+                                                    btnRouteMaps.setOnClickListener {
+                                                        findRoute(userLoc, vendorLocation)
+                                                    }
                                                 }
                                             }
 
@@ -423,4 +443,54 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         super.onDestroyView()
         _binding = null
     }
+
+    @Suppress("DEPRECATION")
+    private fun findRoute(start: LatLng?, end: LatLng?) {
+        if (start == null || end == null) {
+            Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
+        } else {
+            val routing = RouteDrawing.Builder()
+                .key(getString(R.string.api_key))
+                .travelMode(AbstractRouting.TravelMode.WALKING)
+                .withListener(this)
+                .alternativeRoutes(true)
+                .waypoints(start, end)
+                .build()
+            routing.execute()
+        }
+    }
+
+    override fun onRouteFailure(e: ErrorHandling?) {
+        Log.d("Route", "onRoutingFailure: $e")
+    }
+
+    override fun onRouteStart() {
+        Log.d("Route", "Started Route")
+    }
+
+    override fun onRouteSuccess(list: ArrayList<RouteInfoModel>, indexing: Int) {
+        val polylineOptions = PolylineOptions()
+        val polylines = ArrayList<Polyline>()
+        for (i in 0 until list.size) {
+            if (i == indexing) {
+                Log.e("TAG", "onRoutingSuccess: routeIndexing $indexing")
+                polylineOptions.color(Color.GREEN)
+                polylineOptions.width(12f)
+                polylineOptions.addAll(list[indexing].points)
+                polylineOptions.startCap(RoundCap())
+                polylineOptions.endCap(RoundCap())
+                val polyline: Polyline = mMap.addPolyline(polylineOptions)
+                polylines.add(polyline)
+                val durationText = list[indexing].durationText
+                binding.tvArrivalTimesMaps.text = durationText
+                setVisibility(binding.linearLayoutArrivalTimeMaps, true)
+                Log.e("DActivity", "onRoutingSuccess: routeIndexing $durationText")
+            }
+        }
+    }
+
+    override fun onRouteCancelled() {
+        Log.d("Route", "Cancel Route")
+    }
+
 }
