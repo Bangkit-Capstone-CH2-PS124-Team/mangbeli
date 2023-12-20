@@ -200,8 +200,12 @@ class MangRepository(
             val response = apiService.getDetailVendor(id).dataVendor
             Log.d("Repo", "getDetailVendor: $response")
             emit(Result.Success(response))
-        } catch (e: Exception) {
-            emit(Result.Error(e.message.toString()))
+        } catch (e: HttpException) {
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            Log.d("Repository", "getDataVendor: $errorMessage ")
+            emit(Result.Error(errorMessage.toString()))
         }
     }
     fun getDetailUser(id: String): LiveData<Result<DetailUser>> = liveData {

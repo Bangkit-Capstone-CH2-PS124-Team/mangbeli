@@ -1,7 +1,6 @@
 package com.capstone.mangbeli.ui.maps
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -17,13 +16,13 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentMapsBinding
 import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
+import com.capstone.mangbeli.utils.UserLocationManager
 import com.capstone.mangbeli.utils.VectorToBitmap
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.setVisibility
@@ -37,6 +36,8 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
@@ -67,6 +68,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         hiddenBottomSheet()
 
+        LocationHelper.requestLocationPermissions(
+            this,
+            {
+                getUserLocation()
+            },
+            {
+                onPermissionDenied()
+            }
+        )
         return root
     }
 
@@ -83,30 +93,72 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        configureMapSettings()
 
-        with(mMap) {
-            uiSettings.isZoomControlsEnabled = true
-            uiSettings.isIndoorLevelPickerEnabled = true
-            uiSettings.isMapToolbarEnabled = true
-            uiSettings.isCompassEnabled = true
+        if (isLocationSwitchEnabled()) {
+            handleLocationEnabled()
+        } else {
+            handleLocationDisabled()
+        }
+    }
+
+    private fun handleLocationDisabled() {
+        setVisibility(binding.retryMaps, true)
+        setVisibility(binding.mapProgressBar, true)
+        setVisibility(binding.googleMap, false)
+
+        binding.enableLocationButton.setOnClickListener {
+            mapsViewModel.currentLocation.observe(viewLifecycleOwner) {
+                onLocationEnable(it.first, it.second)
+            }
         }
 
         mapsViewModel.currentLocation.observe(viewLifecycleOwner) {
+            onLocationEnable(it.first, it.second)
+            setVisibility(binding.mapProgressBar, false)
+        }
+    }
+
+    private fun handleLocationEnabled() {
+        setVisibility(binding.googleMap, true)
+        setVisibility(binding.mapProgressBar, false)
+        setVisibility(binding.retryMaps, false)
+
+        mapsViewModel.currentLocation.observe(viewLifecycleOwner) {
+            onLocationEnable(it.first, it.second)
+            UserLocationManager.setCurrentLocation(it.first, it.second)
             addUserLocation(it.first, it.second)
             addManyMarker(it)
         }
+    }
 
+    private fun configureMapSettings() {
+        with(mMap.uiSettings) {
+            isZoomControlsEnabled = true
+            isIndoorLevelPickerEnabled = true
+            isMapToolbarEnabled = true
+            isCompassEnabled = true
+        }
+    }
+
+    private fun onLocationEnable(first: Double, second: Double) {
+        if (!isLocationSwitchEnabled()) {
+            Log.d("MapsFragment", "onMapReady: Location switch is disabled, showing AlertDialog")
+            showLocationSwitchBottomSheet(first, second)
+        }
     }
 
     private fun initMap() {
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        if (!isLocationSwitchEnabled()) {
-            Log.d("MapsFragment", "onMapReady: Location switch is disabled, showing AlertDialog")
-            showLocationSwitchAlertDialog()
-        }
-        getUserLocation()
+
+    }
+
+    private fun onPermissionDenied() {
+        Toast.makeText(
+            requireContext(), "Location permission denied", Toast.LENGTH_SHORT
+        ).show()
     }
 
 
@@ -217,8 +269,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                                                     descMapsContent.text =
                                                         bottomSheetData.products?.joinToString(", ")
                                                     distanceMapsContent.text = it.snippet
-                                                    minPriceMapsContent.text = "Rp. ${bottomSheetData.minPrice}"
-                                                    maxPriceMapsContent.text = "Rp. ${bottomSheetData.maxPrice}"
+                                                    minPriceMapsContent.text =
+                                                        "Rp. ${bottomSheetData.minPrice}"
+                                                    maxPriceMapsContent.text =
+                                                        "Rp. ${bottomSheetData.maxPrice}"
                                                     if (bottomSheetData.imageUrl != null) {
                                                         imageMapsContent.loadImage(bottomSheetData.imageUrl)
                                                     } else {
@@ -237,15 +291,29 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
                                             is Result.Error -> {
                                                 if (result.error == "Missing access token") {
-                                                    startActivity(Intent(requireContext(), MenuActivity::class.java))
+                                                    startActivity(
+                                                        Intent(
+                                                            requireContext(),
+                                                            MenuActivity::class.java
+                                                        )
+                                                    )
                                                     requireActivity().finish()
                                                 }
                                                 if (result.error == "Invalid access token") {
-                                                    startActivity(Intent(requireContext(), MenuActivity::class.java))
+                                                    startActivity(
+                                                        Intent(
+                                                            requireContext(),
+                                                            MenuActivity::class.java
+                                                        )
+                                                    )
                                                     requireActivity().finish()
                                                 }
                                                 Log.d("Check", "addManyMarker: ${result.error}")
-                                                Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    result.error,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         }
 
@@ -276,20 +344,39 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             Toast.makeText(requireContext(), "WhatsApp not installed.", Toast.LENGTH_SHORT).show()
         }
     }
+    private fun showLocationSwitchBottomSheet(latitude: Double, longitude: Double) {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_location_switch, null)
 
-    private fun showLocationSwitchAlertDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.enable_location_title))
-            .setMessage(getString(R.string.enable_location_message))
-            .setPositiveButton(getString(R.string.enable_location_positive_button)) { _, _ ->
-                // Buka ProfileFragment untuk mengaktifkan switch location
-                findNavController().navigate(R.id.navigation_profile)
+        // Sesuaikan elemen tampilan pada bottom sheet sesuai kebutuhan Anda
+        val isLocationEnabled = getStatusFromSharedPreferences()
+        val enableButton = view.findViewById<SwitchMaterial>(R.id.switch_location)
+        enableButton.isChecked = isLocationEnabled
+        enableButton.setOnCheckedChangeListener{ _, isChecked ->
+            Log.d("CekSwitch", "onLocationEnable: $isChecked")
+            saveLocationStatus(isChecked)
+            if (isChecked) {
+                // User menyalakan lokasi
+                updateLocation(latitude, longitude)
+                bottomSheetDialog.dismiss()
+                initMap()
             }
-            .setNegativeButton(getString(R.string.enable_location_negative_button)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+        }
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
     }
+    private fun saveLocationStatus(isLocationEnabled: Boolean) {
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(getString(R.string.pref_key_location), isLocationEnabled)
+        editor.apply()
+    }
+
+    private fun getStatusFromSharedPreferences(): Boolean {
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(getString(R.string.pref_key_location), false)
+    }
+
 
     private fun isLocationSwitchEnabled(): Boolean {
         val sharedPreferences =
@@ -300,6 +387,30 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         val isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_key_location), false)
         Log.d("MapsFragment", "isLocationSwitchEnabled: $isEnabled")
         return isEnabled
+    }
+    private fun updateLocation(latitude: Double, longitude: Double) {
+        mapsViewModel.updateLocation(latitude, longitude)
+            .observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        setVisibility(binding.mapProgressBar, true)
+                    }
+
+                    is Result.Success -> {
+                        setVisibility(binding.mapProgressBar, false)
+                        val response = result.data.message
+                        Log.d("ProfileLocation", "location: $response")
+                        Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is Result.Error -> {
+                        setVisibility(binding.mapProgressBar, false)
+                        Log.d("LocationError", "startUpload: ${result.error}")
+                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
     }
 
     private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {

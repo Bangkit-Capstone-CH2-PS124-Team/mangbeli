@@ -1,24 +1,33 @@
 package com.capstone.mangbeli.ui.detail
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
+import androidx.core.content.ContextCompat
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.ActivityDetailBinding
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.utils.Result.Error
 import com.capstone.mangbeli.utils.Result.Loading
 import com.capstone.mangbeli.utils.Result.Success
+import com.capstone.mangbeli.utils.UserLocationManager
 import com.capstone.mangbeli.utils.VectorToBitmap
+import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.setVisibility
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -37,6 +46,8 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private val viewModel by viewModels<DetailViewModel> {
         ViewModelFactory.getInstance(this)
     }
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +60,6 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         val id = intent.getStringExtra("id") ?: ""
-        val name = intent.getStringExtra("name") ?: ""
-        val photoUrl = intent.getStringExtra("photoUrl") ?: ""
         noHp = intent.getStringExtra("noHp") ?: ""
         val currentLatitude = intent.getDoubleExtra("latitude", 0.0)
         val currentLongitude = intent.getDoubleExtra("longitude", 0.0)
@@ -65,37 +74,45 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.google_map_detail) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // Dummy implementation, it should replace when repository or data is done
-        initDetail(id, name, photoUrl)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+
+        if (!isLocationSwitchEnabled()) {
+            getMyLastLocation()
+        } else {
+            initDetail(id)
+        }
 
     }
 
-    private fun initDetail(id: String, name: String, photoUrl: String) {
+    @SuppressLint("SetTextI18n")
+    private fun initDetail(id: String) {
         viewModel.getDetailVendor(id).observe(this) { result ->
             when (result) {
                 is Loading -> {
                     setVisibility(binding.detailProgressBar, false)
-
                 }
 
                 is Success -> {
                     setVisibility(binding.detailProgressBar, false)
                     val response = result.data
                     with(binding) {
-                        tvSellerName.text = name
+                        tvSellerName.text = response.name
                         tvVendorName.text = response.nameVendor ?: "Pedagang"
                         tvProducts.text = response.products?.joinToString(", ")
-                        if (photoUrl.isEmpty()) {
-                            imgDetailProfile.setImageResource(R.drawable.gobaklogo)
+                        if (response.imageUrl != null) {
+                            imgDetailProfile.loadImage(response.imageUrl)
                         } else {
-                            imgDetailProfile.loadImage(photoUrl)
+                            imgDetailProfile.setImageResource(R.drawable.logo_mangbeli)
                         }
                         fab.setOnClickListener {
                             showAlert()
                         }
-                        if (noHp.isEmpty()) {
-                            setVisibility(binding.fabWhatsapp, false)
+                        distanceDetail.text = response.distance
+                        minPriceDetail.text = "Rp. ${response.minPrice.toString()}"
+                        maxPriceDetail.text = "Rp. ${response.maxPrice.toString()}"
+                        if (response.noHp != null) {
+                            setVisibility(binding.fabWhatsapp, true)
                         } else {
                             setVisibility(binding.fabWhatsapp, false)
                         }
@@ -131,13 +148,24 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        mMap.uiSettings.isZoomControlsEnabled = true
-        mMap.uiSettings.isIndoorLevelPickerEnabled = true
-        mMap.uiSettings.isMapToolbarEnabled = true
-        mMap.uiSettings.isCompassEnabled = true
+        getMyLastLocation()
+
+        with(mMap) {
+            uiSettings.isZoomControlsEnabled = true
+            uiSettings.isIndoorLevelPickerEnabled = true
+            uiSettings.isMapToolbarEnabled = true
+            uiSettings.isCompassEnabled = true
+            isMyLocationEnabled = true
+        }
+        val getCurrentLocation = UserLocationManager.getCurrentLocation()
+        val userLocation = LatLng(getCurrentLocation.first, getCurrentLocation.second)
+        mMap.setOnMyLocationClickListener {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f))
+        }
 
         val currentLocation = LatLng(latitude, longitude)
         val iconConverter = VectorToBitmap()
@@ -151,11 +179,56 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
     }
 
-    private fun ImageView.loadImage(url: String) {
-        Glide.with(this)
-            .load(url)
-            .into(this)
+    private val requestPermissionLauncher =
+        this.registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
+                    // Precise location access granted.
+                    getMyLastLocation()
+                }
+
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                    // Only approximate location access granted.
+                    getMyLastLocation()
+                }
+
+                else -> {
+                    // No location access granted.
+
+                }
+            }
+        }
+
+    private fun checkPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
+
+    private fun getMyLastLocation() {
+        if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
+            checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    saveLocationStatus(true)
+                    viewModel.updateLocation(location.latitude, location.longitude)
+                }
+            }
+
+        } else {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
 
     private fun showAlert() {
         AlertDialog.Builder(this).apply {
@@ -178,4 +251,33 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
             show()
         }
     }
+
+    private fun showLocationAlertDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.enable_location_title))
+            .setMessage(getString(R.string.enable_location_message))
+            .setPositiveButton(getString(R.string.enable_location_positive_button)) { _, _ ->
+            }
+            .setNegativeButton(getString(R.string.enable_location_negative_button)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+    private fun saveLocationStatus(isLocationEnabled: Boolean) {
+        val sharedPreferences = this.getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(getString(R.string.pref_key_location), isLocationEnabled)
+        editor.apply()
+    }
+    private fun isLocationSwitchEnabled(): Boolean {
+        val sharedPreferences =
+            this.getSharedPreferences(
+                getString(R.string.pref_key_location),
+                Context.MODE_PRIVATE
+            )
+        val isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_key_location), false)
+        Log.d("MapsFragment", "isLocationSwitchEnabled: $isEnabled")
+        return isEnabled
+    }
+
 }

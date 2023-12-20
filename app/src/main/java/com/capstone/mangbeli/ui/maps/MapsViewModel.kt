@@ -13,6 +13,9 @@ class MapsViewModel(private val repository: MangRepository) : ViewModel() {
 
     fun getMapsUsers() = repository.getMapsUsers()
 
+    fun updateLocation(latitude: Double, longitude: Double) =
+        repository.updateLocation(latitude, longitude)
+
     fun getDetailVendor(id:String) = repository.getDetailVendor(id)
     fun getDetailUser(id:String) = repository.getDetailUser(id)
     fun updateCurrentLocation(lat: Double, log: Double) {

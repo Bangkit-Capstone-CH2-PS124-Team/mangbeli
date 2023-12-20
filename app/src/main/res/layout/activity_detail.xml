@@ -6,97 +6,201 @@
     android:layout_height="match_parent"
     tools:context=".ui.detail.DetailActivity">
 
-    <ProgressBar
-        android:id="@+id/detailProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/google_map_detail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/img_detail_profile"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/circularImageView"
-        tools:ignore="ImageContrastCheck"
-        tools:src="@drawable/gobaklogo" />
-
     <LinearLayout
-        android:id="@+id/linear_layout_detail"
-        android:layout_width="0dp"
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/img_detail_profile"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/img_detail_profile"
-        app:layout_constraintTop_toTopOf="@+id/img_detail_profile">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_seller_name"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_detail_profile"
+            android:layout_width="80dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/image_of_vendor"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo_mangbeli"
+            app:shapeAppearanceOverlay="@style/roundedImageView" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_vendor_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Pedagang" />
+
+            <TextView
+                android:id="@+id/tv_seller_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                tools:text="Pak Budi" />
+
+            <TextView
+                android:id="@+id/tv_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                tools:text="Descripsi" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            tools:text="Name" />
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
 
-        <TextView
-            android:id="@+id/tv_vendor_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/vendor_name"
-            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
-            android:textColor="?attr/colorTertiary" />
+            <TextView
+                android:id="@+id/distance_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="?attr/colorTertiary"
+                android:textStyle="italic"
+                tools:text="500ms" />
 
-        <TextView
-            android:id="@+id/tv_products"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-            tools:text="@string/list_of_favorit_user" />
+            <ImageView
+                android:id="@+id/fabWhatsapp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/click_to_call_vendors"
+                android:src="@drawable/whatsapp" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/google_map_detail"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/materialDivider4"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="0.5dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_detail_profile" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/materialDivider4"
+        tools:layout_editor_absoluteX="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@string/minimum_price" />
+
+        <TextView
+            android:id="@+id/min_price_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Deskripsi" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7"
+        tools:layout_editor_absoluteX="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/maksimum_price" />
+
+        <TextView
+            android:id="@+id/max_price_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Descripsi" />
+    </LinearLayout>
+
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         style="@style/Widget.Material3.FloatingActionButton.Tertiary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="72dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:contentDescription="@string/cta_fab_desc"
         android:src="@drawable/ic_hands"
         android:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView2" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabWhatsapp"
-        style="@style/Widget.Material3.FloatingActionButton.Tertiary"
+    <ProgressBar
+        android:id="@+id/detailProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:contentDescription="@string/cta_fab_desc"
-        android:src="@drawable/whatsapp"
-        android:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/fab"
-        app:layout_constraintEnd_toStartOf="@+id/fab" />
+        android:progressTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView2"
+        android:layout_width="0dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+        app:strokeColor="?attr/colorTertiaryContainer">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/google_map_detail"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
