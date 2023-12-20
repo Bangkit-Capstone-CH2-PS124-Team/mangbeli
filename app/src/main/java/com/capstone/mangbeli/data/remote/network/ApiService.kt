@@ -12,7 +12,9 @@ import com.capstone.mangbeli.data.remote.response.UserMapsResponse
 import com.capstone.mangbeli.data.remote.response.UserResponse
 import com.capstone.mangbeli.data.remote.response.VendorsMapsResponse
 import com.capstone.mangbeli.data.remote.response.VendorsResponse
+import com.capstone.mangbeli.model.FCMToken
 import com.capstone.mangbeli.model.LocationUpdate
+import com.capstone.mangbeli.model.SendNotif
 import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.model.VendorProfile
 import okhttp3.MultipartBody
@@ -45,6 +47,16 @@ interface ApiService {
         @Field("email") email: String,
         @Field("password") password: String
     ): LoginResponse
+
+    @POST("/fcm")
+    suspend fun updateFCMToken(
+        @Body fcm: FCMToken
+    ): ErrorResponse
+
+    @POST("/notif")
+    suspend fun sendNotification(
+        @Body sendNotif: SendNotif
+    ): ErrorResponse
 
     @GET("/user/profile")
     suspend fun getUserProfile(): UserResponse

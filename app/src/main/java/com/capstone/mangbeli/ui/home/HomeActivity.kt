@@ -15,8 +15,12 @@ import com.capstone.mangbeli.R
 import com.capstone.mangbeli.data.local.pref.SettingsPref
 import com.capstone.mangbeli.data.local.pref.dataStore
 import com.capstone.mangbeli.databinding.ActivityHomeBinding
+import com.capstone.mangbeli.model.FCMToken
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.settings.SettingViewModel
+import com.capstone.mangbeli.utils.Result.Error
+import com.capstone.mangbeli.utils.Result.Loading
+import com.capstone.mangbeli.utils.Result.Success
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -54,6 +58,20 @@ class HomeActivity : AppCompatActivity() {
                 // Mendapatkan token
                 val token = task.result
                 Log.d("FCM", "Token: $token")
+                val fcmToken = FCMToken(token)
+                viewModel.updateFCMToken(fcmToken).observe(this){result ->
+                    when (result) {
+                        is Loading -> {
+                            Log.d("FCM", "Loading Token: $result")
+                        }
+                        is Success -> {
+                            Log.d("FCM", "Success Token: ${result.data.message}")
+                        }
+                        is Error -> {
+                            Log.d("FCM", "Error Token: ${result.error}")
+                        }
+                    }
+                }
             }
 
         settingViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->

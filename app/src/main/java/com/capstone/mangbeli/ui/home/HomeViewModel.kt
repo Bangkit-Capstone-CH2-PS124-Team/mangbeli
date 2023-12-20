@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.capstone.mangbeli.data.remote.response.LoginResponse
 import com.capstone.mangbeli.data.repository.MangRepository
+import com.capstone.mangbeli.model.FCMToken
 import com.capstone.mangbeli.model.User
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,7 @@ class HomeViewModel (private val repository: MangRepository) : ViewModel() {
             _user.postValue(values)
         }
     }
-
+    fun updateFCMToken(fcm: FCMToken) = repository.updateFCMToken(fcm)
     fun logout() {
         viewModelScope.launch {
             repository.logout()

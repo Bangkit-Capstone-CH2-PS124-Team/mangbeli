@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.ActivityDetailBinding
+import com.capstone.mangbeli.model.SendNotif
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.utils.Result.Error
 import com.capstone.mangbeli.utils.Result.Loading
@@ -106,6 +107,29 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                             imgDetailProfile.setImageResource(R.drawable.logo_mangbeli)
                         }
                         fab.setOnClickListener {
+                            val sendNotif = response.userId?.let { it1 ->
+                                SendNotif(
+                                    it1,
+                                    "MangBeli",
+                                    "Kamu dapet orderan dari Blabla nih!"
+                                )
+                            }
+                            if (sendNotif != null) {
+                                viewModel.sendNotif(sendNotif).observe(this@DetailActivity) {result ->
+                                    when (result) {
+                                        is Loading -> {
+                                            Log.d("SendNotif", "Loading: $result")
+                                        }
+                                        is Success -> {
+                                            Log.d("SendNotif", "Loading: ${result.data.message}")
+                                        }
+                                        is Error -> {
+                                            Log.d("SendNotif", "Loading: ${result.error}")
+
+                                        }
+                                    }
+                                }
+                            }
                             showAlert()
                         }
                         distanceDetail.text = response.distance

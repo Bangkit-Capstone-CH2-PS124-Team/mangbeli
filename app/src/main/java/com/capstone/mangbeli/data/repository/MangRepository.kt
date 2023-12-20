@@ -23,7 +23,9 @@ import com.capstone.mangbeli.data.remote.response.ListMapsVendorsItem
 import com.capstone.mangbeli.data.remote.response.ListUsersItem
 import com.capstone.mangbeli.data.remote.response.LoginResult
 import com.capstone.mangbeli.data.remote.response.RegisterResponse
+import com.capstone.mangbeli.model.FCMToken
 import com.capstone.mangbeli.model.LocationUpdate
+import com.capstone.mangbeli.model.SendNotif
 import com.capstone.mangbeli.model.User
 import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.model.VendorProfile
@@ -101,6 +103,28 @@ class MangRepository(
             }
         ).flow
 
+    }
+
+    fun updateFCMToken(fcm : FCMToken): LiveData<Result<ErrorResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.updateFCMToken(fcm)
+            Log.d("MangRepository", "updateToken: $response")
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
+    fun sendNotif(fcm : SendNotif): LiveData<Result<ErrorResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.sendNotification(fcm)
+            Log.d("MangRepository", "updateToken: $response")
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
     }
 
     fun getMapsVendors(): LiveData<Result<List<ListMapsVendorsItem>>> = liveData {
