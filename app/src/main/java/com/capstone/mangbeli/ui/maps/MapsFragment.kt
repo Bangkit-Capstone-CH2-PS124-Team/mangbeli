@@ -204,6 +204,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
         mMap.setOnMyLocationClickListener {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f))
         }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f))
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -243,7 +245,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
                                         )
                                     )
                             )?.tag = data.vendorId
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
                         } else {
                             mMap.addMarker(
                                 MarkerOptions().position(latLng).title(data.name)
@@ -255,7 +256,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
                                         )
                                     )
                             )?.tag = data.vendorId
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
                         }
                         mMap.setOnMarkerClickListener {
                             val id = it.tag as? String
