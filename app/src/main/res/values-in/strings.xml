@@ -10,6 +10,7 @@
     <string name="title_settings">Pengaturan</string>
     <string name="move_to_item_detail">pindah ke detail item</string>
     <string name="searchbar_hint">Cari Pedagang..</string>
+    <string name="api_key">AIzaSyCJGXpV0zpsGLJxDF3IeSL77yy6Sl12zKs</string>
     <string name="title_home_vendor_around">Pedagang di Sekitarmu..</string>
     <string name="description_logo">Gerobak Logo</string>
     <string name="sort_by">Sort By</string>

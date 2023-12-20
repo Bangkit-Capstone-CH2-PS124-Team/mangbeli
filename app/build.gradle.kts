@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.capstone.mangbeli"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -99,4 +99,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:19.2.0")
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+
+    //route
+    implementation("com.github.dangiashish:Google-Direction-Api:1.4")
 }

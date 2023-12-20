@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -23,10 +24,14 @@ import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.utils.Result.Error
 import com.capstone.mangbeli.utils.Result.Loading
 import com.capstone.mangbeli.utils.Result.Success
-import com.capstone.mangbeli.utils.UserLocationManager
 import com.capstone.mangbeli.utils.VectorToBitmap
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.setVisibility
+import com.codebyashish.googledirectionapi.AbstractRouting
+import com.codebyashish.googledirectionapi.ErrorHandling
+import com.codebyashish.googledirectionapi.RouteDrawing
+import com.codebyashish.googledirectionapi.RouteInfoModel
+import com.codebyashish.googledirectionapi.RouteListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,10 +40,18 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
+import com.google.android.material.snackbar.Snackbar
 
-class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
+
+class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var mMap: GoogleMap
+    private lateinit var sendNotif: SendNotif
+    private var userLocation: LatLng = LatLng(0.0, 0.0)
+    private var vendorLocation: LatLng = LatLng(0.0, 0.0)
     private var name: String? = null
     private var vendorName: String? = null
     private var latitude: Double = 0.0
@@ -66,10 +79,6 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val currentLongitude = intent.getDoubleExtra("longitude", 0.0)
         latitude = currentLatitude
         longitude = currentLongitude
-        Log.d("Detail", "Get Id: $id")
-        Log.d("DetailLatitude", "Get Lat: $currentLatitude")
-        Log.d("DetailLongitude", "Get Long: $currentLongitude")
-
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.google_map_detail) as SupportMapFragment
@@ -80,8 +89,11 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         if (!isLocationSwitchEnabled()) {
             getMyLastLocation()
+            setVisibility(binding.googleMapDetail, false)
         } else {
+            getMyLastLocation()
             initDetail(id)
+            setVisibility(binding.googleMapDetail, true)
         }
 
     }
@@ -107,29 +119,12 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                             imgDetailProfile.setImageResource(R.drawable.logo_mangbeli)
                         }
                         fab.setOnClickListener {
-                            val sendNotif = response.userId?.let { it1 ->
-                                SendNotif(
-                                    it1,
-                                    "MangBeli",
-                                    "Kamu dapet orderan dari Blabla nih!"
-                                )
-                            }
-                            if (sendNotif != null) {
-                                viewModel.sendNotif(sendNotif).observe(this@DetailActivity) {result ->
-                                    when (result) {
-                                        is Loading -> {
-                                            Log.d("SendNotif", "Loading: $result")
-                                        }
-                                        is Success -> {
-                                            Log.d("SendNotif", "Success: ${result.data.message}")
-                                        }
-                                        is Error -> {
-                                            Log.d("SendNotif", "Error: ${result.error}")
-
-                                        }
-                                    }
-                                }
-                            }
+                            getUserProfile()
+                            sendNotif = SendNotif(
+                                response.userId,
+                                "MangBeli",
+                                "Kamu dapet orderan dari $name nih!"
+                            )
                             showAlert()
                         }
                         distanceDetail.text = response.distance
@@ -143,6 +138,10 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                         binding.fabWhatsapp.setOnClickListener {
                             intentWhatsapp()
                         }
+                        binding.btnRoute.setOnClickListener {
+                            findRoute(userLocation, vendorLocation)
+                        }
+
                     }
                 }
 
@@ -154,6 +153,23 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                         Toast.LENGTH_SHORT
                     ).show()
                     Log.d("DetailActivity", "Error: ${result.error}")
+                }
+            }
+        }
+    }
+
+    private fun getUserProfile() {
+        viewModel.getUserProfile().observe(this@DetailActivity){result ->
+            when (result) {
+                is Loading -> {
+                    Log.d("GetProfile", "loading: $result")
+                }
+                is Success -> {
+                    name = result.data.name.toString()
+                    Log.d("GetProfile", "success: ${result.data.name}")
+                }
+                is Error -> {
+                    Log.d("GetProfile", "success: ${result.error}")
                 }
             }
         }
@@ -174,9 +190,8 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
+        vendorLocation = LatLng(latitude, longitude)
         mMap = googleMap
-
-        getMyLastLocation()
 
         with(mMap) {
             uiSettings.isZoomControlsEnabled = true
@@ -185,22 +200,22 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
             uiSettings.isCompassEnabled = true
             isMyLocationEnabled = true
         }
-        val getCurrentLocation = UserLocationManager.getCurrentLocation()
-        val userLocation = LatLng(getCurrentLocation.first, getCurrentLocation.second)
+//        val getCurrentLocation = UserLocationManager.getCurrentLocation()
+//        val userLocation = LatLng(getCurrentLocation.first, getCurrentLocation.second)
         mMap.setOnMyLocationClickListener {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f))
         }
 
-        val currentLocation = LatLng(latitude, longitude)
         val iconConverter = VectorToBitmap()
         mMap.addMarker(
             MarkerOptions()
-                .position(currentLocation)
+                .position(vendorLocation)
                 .title(vendorName)
                 .snippet(name)
                 .icon(iconConverter.vectorToBitmap(R.drawable.ic_food_cart, resources))
         )
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(vendorLocation, 18f))
     }
 
     private val requestPermissionLauncher =
@@ -238,6 +253,8 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         ) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) {
+                    userLocation = LatLng(location.latitude, location.longitude)
+                    Log.d("USERLOCATION2", "onMapReady: $userLocation")
                     saveLocationStatus(true)
                     viewModel.updateLocation(location.latitude, location.longitude)
                 }
@@ -264,6 +281,20 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     getString(R.string.toast_alert_detail),
                     Toast.LENGTH_SHORT
                 ).show()
+                viewModel.sendNotif(sendNotif).observe(this@DetailActivity) {result ->
+                    when (result) {
+                        is Loading -> {
+                            Log.d("SendNotif", "Loading: $result")
+                        }
+                        is Success -> {
+                            Log.d("SendNotif", "Success: ${result.data.message}")
+                        }
+                        is Error -> {
+                            Log.d("SendNotif", "Error: ${result.error}")
+
+                        }
+                    }
+                }
             }
             setNegativeButton(getString(R.string.cancel)) { _, _ ->
                 Toast.makeText(
@@ -276,17 +307,6 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun showLocationAlertDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.enable_location_title))
-            .setMessage(getString(R.string.enable_location_message))
-            .setPositiveButton(getString(R.string.enable_location_positive_button)) { _, _ ->
-            }
-            .setNegativeButton(getString(R.string.enable_location_negative_button)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
     private fun saveLocationStatus(isLocationEnabled: Boolean) {
         val sharedPreferences = this.getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -302,6 +322,51 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_key_location), false)
         Log.d("MapsFragment", "isLocationSwitchEnabled: $isEnabled")
         return isEnabled
+    }
+    @Suppress("DEPRECATION")
+    private fun findRoute(start: LatLng?, end: LatLng?) {
+        if (start == null || end == null) {
+            Snackbar.make(findViewById(android.R.id.content), "Unable to get location", Snackbar.LENGTH_LONG).show()
+        } else {
+            val routing = RouteDrawing.Builder()
+                .key(getString(R.string.api_key))
+                .travelMode(AbstractRouting.TravelMode.WALKING)
+                .withListener(this)
+                .alternativeRoutes(true)
+                .waypoints(start, end)
+                .build()
+            routing.execute()
+        }
+    }
+    override fun onRouteFailure(e: ErrorHandling?) {
+        Log.d("Route", "onRoutingFailure: $e")
+    }
+
+    override fun onRouteStart() {
+        Log.d("Route", "Started Route")
+    }
+
+    override fun onRouteSuccess(list: ArrayList<RouteInfoModel>, indexing: Int) {
+
+        val polylineOptions = PolylineOptions()
+        val polylines = ArrayList<Polyline>()
+
+        for (i in 0 until list.size) {
+            if (i == indexing) {
+                Log.e("TAG", "onRoutingSuccess: routeIndexing $indexing")
+                polylineOptions.color(Color.GREEN)
+                polylineOptions.width(12f)
+                polylineOptions.addAll(list[indexing].points)
+                polylineOptions.startCap(RoundCap())
+                polylineOptions.endCap(RoundCap())
+                val polyline: Polyline = mMap.addPolyline(polylineOptions)
+                polylines.add(polyline)
+            }
+        }
+    }
+
+    override fun onRouteCancelled() {
+        Log.d("Route", "Cancel Route")
     }
 
 }

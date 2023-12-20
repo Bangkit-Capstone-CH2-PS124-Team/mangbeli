@@ -22,4 +22,5 @@ class HomeVendorViewModel(private val locationRepository: LocationRepository): V
         }
     }
 
+
 }

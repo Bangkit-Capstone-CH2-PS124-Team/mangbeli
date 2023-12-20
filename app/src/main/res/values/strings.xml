@@ -107,6 +107,7 @@
     <string name="name_product_hint">Name Product</string>
     <string name="whatsapp_login">Login With Whatsapp</string>
     <string name="retry">Retry</string>
+    <string name="api_key">AIzaSyCJGXpV0zpsGLJxDF3IeSL77yy6Sl12zKs</string>
     <string name="pref_key_location">key_location</string>
     <string name="slider">slider</string>
     <string name="image_of_vendor">image of vendor</string>

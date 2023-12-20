@@ -1,12 +1,12 @@
 package com.capstone.mangbeli.ui.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.capstone.mangbeli.R
@@ -81,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
                     is Result.Success -> {
                         binding.loadingProgressBar.visibility = View.GONE
                         val userData = result.data
+
                         if (userData.role != null) {
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                             startActivity(intent)

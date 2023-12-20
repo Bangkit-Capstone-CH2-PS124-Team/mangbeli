@@ -14,9 +14,7 @@ class LocationRepository(private val database: UserDatabase) {
         userLocationDao.saveToken(data)
     }
 
-    fun getLastLocation(): UserEntity {
-        return userLocationDao.getLastLocation()
-    }
+    fun getLastLocation(): UserEntity = userLocationDao.getLastLocation()
 
     companion object {
         @Volatile

@@ -14,6 +14,8 @@ class DetailViewModel(private val repository: MangRepository) : ViewModel() {
 
     fun sendNotif(fcm: SendNotif) = repository.sendNotif(fcm)
 
+    fun getUserProfile() = repository.getUserProfile()
+
     fun updateLocation(latitude: Double, longitude: Double) =
         repository.updateLocation(latitude, longitude)
     fun deleteLocation() =
