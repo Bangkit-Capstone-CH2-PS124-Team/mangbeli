@@ -121,10 +121,10 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                                             Log.d("SendNotif", "Loading: $result")
                                         }
                                         is Success -> {
-                                            Log.d("SendNotif", "Loading: ${result.data.message}")
+                                            Log.d("SendNotif", "Success: ${result.data.message}")
                                         }
                                         is Error -> {
-                                            Log.d("SendNotif", "Loading: ${result.error}")
+                                            Log.d("SendNotif", "Error: ${result.error}")
 
                                         }
                                     }
