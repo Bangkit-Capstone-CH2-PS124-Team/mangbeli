@@ -12,12 +12,12 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentHomePedagangBinding
@@ -193,11 +193,14 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
 
     private fun addMarker(first: Double, second: Double) {
         val latLng = LatLng(first,second)
-        googleMap2.addMarker(
-            MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-        )
+        val marker = mutableListOf<LatLng>()
+        marker.add(latLng)
+        marker.forEach { location ->
+            googleMap2.addMarker(
+                MarkerOptions().position(location).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            )
+        }
         googleMap2.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-
     }
 
     private fun getUserLocation() {

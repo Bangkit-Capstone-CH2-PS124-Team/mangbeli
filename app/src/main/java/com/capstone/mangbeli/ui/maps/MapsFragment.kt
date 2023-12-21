@@ -303,6 +303,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
                                                             }
                                                         }
                                                     val userLoc = LatLng(userLocation.first, userLocation.second)
+                                                    setVisibility(binding.linearLayoutArrivalTimeMaps, false)
                                                     btnRouteMaps.setOnClickListener {
                                                         findRoute(userLoc, vendorLocation)
                                                     }
