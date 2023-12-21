@@ -12,19 +12,26 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentHomePedagangBinding
 import com.capstone.mangbeli.model.VendorsData
+import com.capstone.mangbeli.ui.MenuActivity
+import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.maps.GeofenceBroadcastReceiver
+import com.capstone.mangbeli.ui.maps.MapsViewModel
 import com.capstone.mangbeli.ui.profile.ProfileViewModelFactory
 import com.capstone.mangbeli.utils.LocationHelper
+import com.capstone.mangbeli.utils.Result
+import com.capstone.mangbeli.utils.VectorToBitmap
+import com.capstone.mangbeli.utils.loadImage
+import com.capstone.mangbeli.utils.setVisibility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
@@ -37,7 +44,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
 class HomePedagangFragment : Fragment(), OnMapReadyCallback {
@@ -48,8 +57,12 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var googleMap1: GoogleMap
     private lateinit var googleMap2: GoogleMap
+    private val markers: MutableList<Marker> = mutableListOf()
     private val viewModel by viewModels<HomeVendorViewModel> {
         ProfileViewModelFactory.getInstance(requireActivity())
+    }
+    private val mapsViewModel by viewModels<MapsViewModel> {
+        ViewModelFactory.getInstance(requireActivity())
     }
 
     private val geofencePendingIntent: PendingIntent by lazy {
@@ -86,9 +99,12 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
         }
 
 
-
     private val binding get() = _binding!!
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomePedagangBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -100,6 +116,7 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
 
         return root
     }
+
     @SuppressLint("MissingPermission", "VisibleForTests")
     private fun addGeofence(vendorId: String, latLng: LatLng) {
 
@@ -152,7 +169,7 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
         LocationHelper.requestLocationPermissions(
             this,
             {
-               getUserLocation()
+                getUserLocation()
             },
             {
                 onPermissionDenied()
@@ -163,6 +180,7 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
         )
         geofencingClient = LocationServices.getGeofencingClient(requireContext())
     }
+
     override fun onMapReady(googleMap: GoogleMap) {
         if (!::googleMap1.isInitialized) {
             googleMap1 = googleMap
@@ -175,32 +193,49 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
 
             viewModel.currentLocation.observe(viewLifecycleOwner) {
                 addMyLocation(it.first, it.second)
+                val latLng = LatLng(it.first, it.second)
+                googleMap1.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
                 addUsersMarker(it)
             }
         } else if (!::googleMap2.isInitialized) {
             googleMap2 = googleMap
             binding.btnMark.setOnClickListener {
-                viewModel.currentLocation.observe(viewLifecycleOwner) {
-                    addMarker(it.first, it.second)
-                }
+                addMarker() // Tambahkan marker saat tombol ditekan
             }
 
+            viewModel.currentLocation.observe(viewLifecycleOwner) {
+                val latLng = LatLng(it.first, it.second)
+                googleMap2.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+            }
         }
-
 
 
     }
 
-    private fun addMarker(first: Double, second: Double) {
-        val latLng = LatLng(first,second)
-        val marker = mutableListOf<LatLng>()
-        marker.add(latLng)
-        marker.forEach { location ->
-            googleMap2.addMarker(
-                MarkerOptions().position(location).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-            )
+    @SuppressLint("MissingPermission")
+    private fun addMarker() {
+            // Mendapatkan lokasi saat ini
+            getUserLocation()
+            // Menambahkan marker saat mendapatkan lokasi saat ini
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    val latLng = LatLng(it.latitude, it.longitude)
+                    googleMap2.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                    val marker = googleMap2.addMarker(MarkerOptions().position(latLng))
+                    marker?.let {
+                        markers.add(it)
+                    }
+                }
+            }.addOnFailureListener { exception ->
+                // Handle failure to get location
+                Log.e("Location", "Error getting location: ${exception.message}")
+            }
         }
-        googleMap2.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+    private fun clearMarkers() {
+        for (marker in markers) {
+            marker.remove() // Hapus semua marker dari peta
+        }
+        markers.clear() // Bersihkan list marker
     }
 
     private fun getUserLocation() {
@@ -219,48 +254,78 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
-    private fun addUsersMarker(myLocation: Pair<Double, Double>){
+    private fun addUsersMarker(myLocation: Pair<Double, Double>) {
+        val iconConverter = VectorToBitmap()
         val maxDistance = 1000.0
+        mapsViewModel.getMapsUsers().observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    Log.d("AddMarker", "addManyMarker: Loading")
+                }
 
-        VendorsData.usersDummy.forEach { data ->
-            val latLng = LatLng(data.latitude, data.longitude)
-            val distance = calculateDistance(
-                myLocation.first,
-                myLocation.second,
-                data.latitude,
-                data.longitude
-            )
-            val listFavorite = data.favorite.joinToString(separator = ", ")
+                is Result.Success -> {
+                    result.data.forEach { data ->
 
-            if (distance <= maxDistance) {
-                googleMap1.addMarker(
-                    MarkerOptions().position(latLng).title(data.name).snippet(listFavorite)
-                )
-                googleMap1.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-                addGeofence(data.name, latLng)
-            } else {
-                googleMap1.addMarker(
-                    MarkerOptions().position(latLng).title(data.name).snippet(listFavorite)
-                )
+                        val latLng = LatLng(data.latitude, data.longitude)
+                        val distance = calculateDistance(
+                            myLocation.first,
+                            myLocation.second,
+                            data.latitude,
+                            data.longitude
+                        )
+                        val listFavorite = data.favorite?.joinToString(separator = ", ")
+                        if (distance <= maxDistance) {
+                            googleMap1.addMarker(
+                                MarkerOptions().position(latLng).title(data.name)
+                                    .snippet(listFavorite).icon(
+                                    iconConverter.vectorToBitmap(
+                                        R.drawable.ic_detail_user,
+                                        resources
+                                    )
+                                )
+                            )
+                            addGeofence(data.name.toString(), latLng)
+                        } else {
+                            googleMap1.addMarker(
+                                MarkerOptions().position(latLng).title(data.name)
+                                    .snippet(listFavorite).icon(
+                                        iconConverter.vectorToBitmap(
+                                            R.drawable.ic_detail_user,
+                                            resources
+                                        )
+                                    )
+                            )
+                        }
+                    }
+                }
+
+                is Result.Error -> {
+                    Log.d("AddMarker", "addManyMarker: ${result.error}")
+                    Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                }
             }
+
         }
     }
+
     @SuppressLint("MissingPermission")
     private fun addMyLocation(lat: Double, log: Double) {
+        if (!::googleMap2.isInitialized) {
+            return
+        }
         val myLocation = LatLng(lat, log)
-        googleMap1.addCircle(
-            CircleOptions()
-                .center(myLocation)
-                .radius(geofenceRadius)
-                .fillColor(0x2200FF00)
-                .strokeColor(Color.CYAN)
-                .strokeWidth(3f)
-        )
+        googleMap2.isMyLocationEnabled = true
+        googleMap2.setOnMyLocationClickListener {
+            googleMap2.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 18f))
+        }
         googleMap1.isMyLocationEnabled = true
         googleMap1.setOnMyLocationClickListener {
             googleMap1.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 18f))
         }
     }
+
+
+
 
     private fun requestBackgroundLocationPermission() {
         AlertDialog.Builder(requireContext())
@@ -274,12 +339,14 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
             }
             .show()
     }
+
     private fun openAppSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
         intent.data = uri
         startActivity(intent)
     }
+
     private fun onPermissionDenied() {
         Toast.makeText(
             requireContext(),

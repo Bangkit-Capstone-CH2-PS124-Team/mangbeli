@@ -48,28 +48,40 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_no_hp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="phone"/>
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="22dp"
+        android:layout_marginVertical="10dp"
+        android:text="@string/list_product_hint"
+        />
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/productTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+
+        app:hintEnabled="false"
         android:layout_marginEnd="20dp">
 
         <EditText
             android:id="@+id/productEditText"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:autofillHints="Name"
-            android:hint="@string/list_product_hint"
+            android:hint="@string/product1_product2_product3"
             android:inputType="text"
             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/range_text_view"

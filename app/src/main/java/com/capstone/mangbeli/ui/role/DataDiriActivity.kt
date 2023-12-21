@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.ActivityDataDiriBinding
 import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.ui.ViewModelFactory
@@ -20,6 +21,7 @@ class DataDiriActivity : AppCompatActivity() {
     private val profileViewModel by viewModels<ProfileViewModel> {
         ViewModelFactory.getInstance(this)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDataDiriBinding.inflate(layoutInflater)
@@ -44,21 +46,13 @@ class DataDiriActivity : AppCompatActivity() {
             profileViewModel.updateUserProfile(updateUser).observe(this) { result ->
                 when (result) {
                     is Result.Loading -> {
-                        // Tampilkan indikasi loading kepada pengguna
-                        // Misalnya, tampilkan ProgressBar atau indikator lainnya
+                        Log.d("DataDiriActivity", "initProfile: Loading")
                     }
 
                     is Result.Success -> {
-                        val userData = result.data.message
-                        AlertDialog.Builder(this@DataDiriActivity).apply {
-                            setTitle("Update Profile Berhasil")
-                            setMessage("$userData")
-                            setPositiveButton("Lanjut") { _, _ ->
-                                val mainIntent = Intent(this@DataDiriActivity, HomeActivity::class.java)
-                                startActivity(mainIntent)
-                                finish()
-                            }
-                        }.show() // Panggil show() untuk menampilkan dialog yang dibuat
+                        val mainIntent = Intent(this@DataDiriActivity, HomeActivity::class.java)
+                        startActivity(mainIntent)
+                        finish()
 
                     }
                     is Result.Error -> {
@@ -71,9 +65,9 @@ class DataDiriActivity : AppCompatActivity() {
                         Log.d("DataDiriActivity", "onCreate: ${result.error}")
                     }
                 }
+                Toast.makeText(this@DataDiriActivity,
+                    getString(R.string.data_berhasil_disimpan), Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 }

@@ -28,6 +28,11 @@ import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.utils.VectorToBitmap
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.setVisibility
+import com.codebyashish.googledirectionapi.AbstractRouting
+import com.codebyashish.googledirectionapi.ErrorHandling
+import com.codebyashish.googledirectionapi.RouteDrawing
+import com.codebyashish.googledirectionapi.RouteInfoModel
+import com.codebyashish.googledirectionapi.RouteListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -37,12 +42,21 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 
-class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
+class MapsPedagangFragment : Fragment(), OnMapReadyCallback, RouteListener{
     private lateinit var mMap: GoogleMap
     private var _binding: FragmentMapsPedagangBinding? = null
     private val geofenceRadius = 100.0
+    private var userLocation: LatLng = LatLng(0.0, 0.0)
+    private var vendorLocation: LatLng = LatLng(0.0, 0.0)
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+    private var previousPolylines: ArrayList<Polyline> = ArrayList()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val mapsViewModel by viewModels<MapsViewModel> {
         ViewModelFactory.getInstance(requireActivity())
@@ -65,8 +79,29 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
         initMap()
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         hiddenBottomSheet()
+        binding.btnRoute.setOnClickListener {
+            findRoute(userLocation, vendorLocation)
+        }
 
         return root
+    }
+    private fun findRoute(start: LatLng?, end: LatLng?) {
+        previousPolylines.forEach { it.remove() }
+        previousPolylines.clear()
+        if (start == null || end == null) {
+            view?.let { rootView ->
+                Snackbar.make(rootView.findViewById(android.R.id.content), "Unable to get location", Snackbar.LENGTH_LONG).show()
+            }
+        } else {
+            val routing = RouteDrawing.Builder()
+                .key(getString(R.string.api_key))
+                .travelMode(AbstractRouting.TravelMode.WALKING)
+                .withListener(this as RouteListener)
+                .alternativeRoutes(true)
+                .waypoints(start, end)
+                .build()
+            routing.execute()
+        }
     }
     private fun hiddenBottomSheet() {
         bottomSheetBehavior.apply {
@@ -92,7 +127,10 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
 
         mapsViewModel.currentLocation.observe(viewLifecycleOwner) {
             addUserLocation(it.first, it.second)
+            val latLng = LatLng(it.first, it.second)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
             addManyMarker(it)
+
         }
 
     }
@@ -112,6 +150,7 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
             fusedLocationClient,
             { location ->
                 mapsViewModel.updateCurrentLocation(location.latitude, location.longitude)
+                userLocation = LatLng(location.latitude, location.longitude)
                 setVisibility(binding.mapProgressBar, false)
             },
             {
@@ -178,7 +217,6 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
                                         )
                                     )
                             )?.tag = data.userId
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
                         } else {
                             mMap.addMarker(
                                 MarkerOptions().position(latLng).title(data.name)
@@ -190,7 +228,6 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
                                         )
                                     )
                             )?.tag = data.userId
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
                         }
                         mMap.setOnMarkerClickListener {
                             val id = it.tag as? String
@@ -224,6 +261,10 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
                                                         setVisibility(binding.actionCall, false)
                                                     }
                                                 }
+                                                latitude = bottomSheetData.latitude!!
+                                                longitude = bottomSheetData.longitude!!
+                                                vendorLocation = LatLng(latitude, longitude)
+                                                Log.d("Checkayam", "addManyMarker: $vendorLocation")
                                             }
 
                                             is Result.Error -> {
@@ -301,5 +342,40 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    override fun onRouteFailure(e: ErrorHandling?) {
+        Log.d("Route", "onRoutingFailure: $e")
+    }
+
+    override fun onRouteStart() {
+        Log.d("Route", "Started Route")
+    }
+
+    override fun onRouteSuccess(list: ArrayList<RouteInfoModel>, indexing: Int) {
+        val polylineOptions = PolylineOptions()
+        val polylines = ArrayList<Polyline>()
+
+        for (i in 0 until list.size) {
+            if (i == indexing) {
+                Log.e("TAG", "onRoutingSuccess: routeIndexing $indexing")
+                polylineOptions.color(Color.GREEN)
+                polylineOptions.width(12f)
+                polylineOptions.addAll(list[indexing].points)
+                polylineOptions.startCap(RoundCap())
+                polylineOptions.endCap(RoundCap())
+                val durationText = list[indexing].durationText
+                binding.tvArrivalTimesMaps.text = durationText
+                setVisibility(binding.linearLayoutArrivalTimeMaps, true)
+                val polyline: Polyline = mMap.addPolyline(polylineOptions)
+                polylines.add(polyline)
+            }
+        }
+        previousPolylines.forEach { it.remove() }
+        previousPolylines.clear()
+
+        previousPolylines.addAll(polylines)
+    }
+    override fun onRouteCancelled() {
+        Log.d("Route", "Cancel Route")
     }
 }

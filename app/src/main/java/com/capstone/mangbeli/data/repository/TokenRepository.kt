@@ -23,8 +23,7 @@ class TokenRepository(
                 calendar.time = Calendar.getInstance().time
 
                 // Tambahkan 10 menit
-                calendar.add(Calendar.MINUTE, 10)
-
+                calendar.add(Calendar.DAY_OF_YEAR, 6)
                 val currentTimePlus10Minutes = calendar.time
                 saveToken(result, currentTimePlus10Minutes.toString())
 

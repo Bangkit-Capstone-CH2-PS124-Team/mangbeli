@@ -78,12 +78,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp">
+                android:layout_marginEnd="20dp"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_account_circle_24">
 
                 <EditText
                     android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:hint="@string/name_hint"
                     android:inputType="text"
                     tools:ignore="LabelFor,SpeakableTextPresentCheck" />
@@ -104,7 +106,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp">
+                android:layout_marginEnd="20dp"
+                app:startIconDrawable="@drawable/baseline_email_24">
 
                 <com.capstone.mangbeli.ui.customview.MyEmailEditText
                     android:id="@+id/emailEditText"
@@ -136,7 +139,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                app:passwordToggleEnabled="true">
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/baseline_password_24">
 
                 <com.capstone.mangbeli.ui.customview.MyPasswordEditText
                     android:id="@+id/passwordEditText"
@@ -168,7 +172,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                app:passwordToggleEnabled="true">
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/baseline_password_24">
 
                 <com.capstone.mangbeli.ui.customview.MyPasswordEditText
                     android:id="@+id/confpasswordEditText"

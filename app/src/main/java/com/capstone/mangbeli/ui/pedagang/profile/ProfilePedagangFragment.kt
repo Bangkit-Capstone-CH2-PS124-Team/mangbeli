@@ -1,14 +1,19 @@
 package com.capstone.mangbeli.ui.pedagang.profile
 
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.IntentSender
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -20,14 +25,21 @@ import com.capstone.mangbeli.model.VendorProfile
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.TokenViewModel
 import com.capstone.mangbeli.ui.home.TokenViewModelFactory
+import com.capstone.mangbeli.utils.ButtonUtils
+import com.capstone.mangbeli.utils.EditTextUtils
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.reduceFileImage
 import com.capstone.mangbeli.utils.setVisibility
 import com.capstone.mangbeli.utils.uriToFile
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -42,12 +54,16 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private var _binding: FragmentProfilePedagangBinding? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    private var originalData: VendorProfile? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<ProfileVendorViewModel> {
         ViewModelFactory.getInstance(requireActivity())
@@ -57,6 +73,7 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
     }
     private var currentImageUri: Uri? = null
     private var isEdited = false
+    private var isTracking = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +84,8 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         setVisibility(binding.googleMapProfile, false)
-
+        createLocationRequest()
+        createLocationCallback()
         initMap()
         initProfileUser()
         initProfile()
@@ -95,6 +113,7 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         }
         val isLocationEnabled = getStatusFromSharedPreferences()
         binding.switchLocation.isChecked = isLocationEnabled
+        onChangeEditText()
         return root
     }
     private fun getStatusFromSharedPreferences(): Boolean {
@@ -263,6 +282,7 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
                 setVisibility(binding.cardView, true)
                 setVisibility(binding.googleMapProfile, true)
                 updateLocation(latitude, longitude)
+                startLocationUpdates()
                 updateMapLocation(latitude, longitude)
             } else {
                 // User mematikan lokasi
@@ -275,6 +295,12 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun onSubmit() {
+        originalData = VendorProfile(
+            nameVendor = binding.edtNameVendor.text.toString(),
+            products = binding.edtListProduct.text?.split(", ")?.map { it.trim() },
+            minPrice = binding.minimumSlider.value.toInt(),
+            maxPrice = binding.maksimumSlider.value.toInt()
+        )
         binding.btnSave.setOnClickListener {
             val name = binding.edtName.text.toString()
             val vendorName = binding.edtNameVendor.text.toString()
@@ -337,6 +363,10 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
                         }
                     }
                 }
+            val isDataChanged = originalData != updateVendor
+
+            binding.btnSave.isEnabled = isDataChanged
+
         }
     }
     fun reefreshToken(expirationDate: String) {
@@ -454,6 +484,9 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         viewModel.currentLocation.observe(viewLifecycleOwner) {
             onLocationEnable(it.first, it.second)
         }
+        createLocationRequest()
+        createLocationCallback()
+
     }
 
     private fun updateMapLocation(latitude: Double, longitude: Double) {
@@ -497,6 +530,11 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         )
     }
     private fun updateLocation(latitude: Double, longitude: Double) {
+        if (!isAdded || view == null) {
+            val ayam = viewModel.updateLocation(latitude, longitude)
+            Log.d("ProfileLocation", "updateLocation: $ayam $latitude $longitude")
+            return
+        }
         viewModel.updateLocation(latitude, longitude)
             .observe(viewLifecycleOwner) { result ->
                 when (result) {
@@ -520,6 +558,107 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
 
             }
     }
+    private val resolutionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            when (result.resultCode) {
+                RESULT_OK ->
+                    Log.i(TAG, "onActivityResult: All location settings are satisfied.")
+                RESULT_CANCELED ->
+                    Toast.makeText(
+                        requireContext(),
+                        "Anda harus mengaktifkan GPS untuk menggunakan aplikasi ini!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+            }
+        }
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest.create().apply {
+            interval = TimeUnit.SECONDS.toMillis(30)
+            maxWaitTime = TimeUnit.SECONDS.toMillis(30)
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        val client = LocationServices.getSettingsClient(requireContext())
+        client.checkLocationSettings(builder.build())
+            .addOnSuccessListener {
+                getUserLocation()
+            }
+            .addOnFailureListener { exception ->
+                if (exception is ResolvableApiException) {
+                    try {
+                        resolutionLauncher.launch(
+                            IntentSenderRequest.Builder(exception.resolution).build()
+                        )
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        Toast.makeText(requireContext(), sendEx.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+    }
+    private fun createLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                for (location in locationResult.locations) {
+                    Log.d(TAG, "onLocationResult: " + location.latitude + ", " + location.longitude)
+                    updateLocation(location.latitude, location.longitude)
+                }
+            }
+        }
+    }
+    private fun startLocationUpdates() {
+        try {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        } catch (exception: SecurityException) {
+            Log.e(TAG, "Error : " + exception.message)
+        }
+    }
+    private fun onChangeEditText() {
+        EditTextUtils.setupTextWatcher(
+            binding.edtName,
+            binding.edtNameVendor,
+            binding.edtNoHp,
+            binding.edtListProduct
+        ) {
+            isEdited = true
+            ButtonUtils.enableButtonIfEdited(binding.btnCancel, isEdited)
+            ButtonUtils.enableButtonIfEdited(binding.btnSave, isEdited)
+        }
+
+        ButtonUtils.enableButtonIfEdited(binding.btnCancel, isEdited)
+        ButtonUtils.enableButtonIfEdited(binding.btnSave, isEdited)
+
+        binding.btnCancel.setOnClickListener {
+            binding.edtName.text = null
+            binding.edtNameVendor.text = null
+            binding.edtNoHp.text = null
+            binding.edtListProduct.text = null
+            isEdited = false
+            ButtonUtils.enableButtonIfEdited(binding.btnCancel, isEdited)
+            ButtonUtils.enableButtonIfEdited(binding.btnSave, isEdited)
+        }
+    }
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+    override fun onResume() {
+        super.onResume()
+        if (binding.switchLocation.isChecked) {
+            startLocationUpdates()
+        }
+    }
+    override fun onPause() {
+        super.onPause()
+        if (binding.switchLocation.isChecked) {
+            startLocationUpdates()
+        }
+    }
     private fun onPermissionDenied() {
         Toast.makeText(
             requireContext(), "Location permission denied", Toast.LENGTH_SHORT
@@ -529,7 +668,11 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        if (binding.switchLocation.isChecked) {
+            startLocationUpdates()
+        }
     }
-
+    companion object {
+        private const val TAG = "profileFragment"
+    }
 }

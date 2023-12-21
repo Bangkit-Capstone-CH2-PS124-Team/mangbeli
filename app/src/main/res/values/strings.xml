@@ -78,7 +78,7 @@
     <string name="title_home_mark_buyer">(Mark purchase)</string>
     <string name="ya">Yes</string>
     <string name="confirpassword_is_required">Password must match</string>
-    <string name="minimal_8_characters">Password must be at least 8 characters</string>
+    <string name="minimal_8_characters">minimum 8 characters</string>
     <string name="email_example">example@gmail.com</string>
     <string name="invalid_format">Invalid Format</string>
     <string name="dont_have_account">Don\'t Have Account? </string>
@@ -89,7 +89,7 @@
     <string name="price_range">Price range</string>
     <string name="enable_location">Enable Location</string>
     <string name="choose_your_role">Choose Your Role</string>
-    <string name="description_pembeli">pembeli</string>
+    <string name="description_pembeli">Buyer</string>
     <string name="start">START</string>
     <string name="get_started">GET STARTED</string>
     <string name="already_have_account">I ALREADY HAVE ACCOUNT</string>
@@ -98,10 +98,10 @@
     <string name="bubur">Bubur</string>
     <string name="image_food">image Food</string>
     <string name="list_product_hint">List Product</string>
-    <string name="minimum_price">Minimal Harga : </string>
-    <string name="maksimum_price">Maksimal Harga : </string>
-    <string name="minimum_sapi">Minimal Harga : </string>
-    <string name="maksimum">Maksimal Harga : </string>
+    <string name="minimum_price">Minimum Price : </string>
+    <string name="maksimum_price">Maksimum Price : </string>
+    <string name="minimum_sapi">Minimum Price : </string>
+    <string name="maksimum">Maksimum Price : </string>
     <string name="email_not_registered">Email Not Registered</string>
     <string name="wrong_password">Wrong Password</string>
     <string name="name_product_hint">Name Product</string>
@@ -124,4 +124,7 @@
     <string name="detail_pembei">Detail Buyer</string>
     <string name="predict_arrival_time">Predict Arrival Time :</string>
     <string name="route">Route</string>
+    <string name="data_berhasil_disimpan">"data saved successfully "</string>
+    <string name="product1_product2_product3">product1, product2, product3</string>
+    <string name="description_vendor">Vendor</string>
 </resources>

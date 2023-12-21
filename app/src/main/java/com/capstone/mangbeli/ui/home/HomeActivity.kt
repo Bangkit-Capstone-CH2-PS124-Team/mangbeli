@@ -34,6 +34,7 @@ class HomeActivity : AppCompatActivity() {
     private val viewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(this)
     }
+    private val tokenViewModel by viewModels<TokenViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,6 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
-
         val navView: BottomNavigationView = binding.navView
 
         val pref = SettingsPref.getInstance(applicationContext.dataStore)
@@ -81,6 +81,7 @@ class HomeActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
+
 
         viewModel.getSession().observe(this) { user ->
             userRole = user.role
