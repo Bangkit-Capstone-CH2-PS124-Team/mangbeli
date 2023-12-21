@@ -1,7 +1,7 @@
 package com.capstone.mangbeli.ui.profile
 
-import android.content.Intent
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +26,7 @@ import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result.Error
 import com.capstone.mangbeli.utils.Result.Loading
 import com.capstone.mangbeli.utils.Result.Success
+import com.capstone.mangbeli.utils.isNetworkAvailable
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.reduceFileImage
 import com.capstone.mangbeli.utils.setVisibility
@@ -301,64 +302,75 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initProfile() {
-        profileViewModel.getUserProfile().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Loading -> {
-                    setVisibility(binding.profileProgressBar, true)
-                    binding.profileProgressBar.visibility = View.VISIBLE
-                    Log.d("ProfileFragment", "initProfile: Loading")
-                }
+        if (!isNetworkAvailable(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                "Internet connection is required",
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+        else {
+            profileViewModel.getUserProfile().observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Loading -> {
+                        setVisibility(binding.profileProgressBar, true)
+                        binding.profileProgressBar.visibility = View.VISIBLE
+                        Log.d("ProfileFragment", "initProfile: Loading")
+                    }
 
-                is Success -> {
-                    setVisibility(binding.profileProgressBar, false)
-                    ViewModelFactory.refreshInstance()
-                    val userData = result.data
-                    val listFavorite = userData.favorite?.joinToString(", ")
-                    Log.d("ProfileFragment", "Get Data: $userData")
-                    with(binding) {
-                        Log.d("Profile", "initProfile: ${imgProfile.drawable}")
-                        if (imgProfile.drawable == null) {
-                            imgProfile.setImageResource(R.drawable.ic_account_circle_24)
-                        } else {
-                            imgProfile.loadImage(userData.imageUrl.toString())
+                    is Success -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        ViewModelFactory.refreshInstance()
+                        val userData = result.data
+                        val listFavorite = userData.favorite?.joinToString(", ")
+                        Log.d("ProfileFragment", "Get Data: $userData")
+                        with(binding) {
+                            Log.d("Profile", "initProfile: ${imgProfile.drawable}")
+                            if (imgProfile.drawable == null) {
+                                imgProfile.setImageResource(R.drawable.ic_account_circle_24)
+                            } else {
+                                imgProfile.loadImage(userData.imageUrl.toString())
+                            }
+                            tvNameUser.text = userData.name.toString().replaceFirstChar {
+                                if (it.isLowerCase())
+                                    it.titlecase(Locale.getDefault())
+                                else it.toString()
+                            }
+                            tvEmailUser.text = userData.email
+                            tvFavoriteUser.text = listFavorite
+                            edtName.setText(userData.name)
+                            edtNoHp.setText(userData.noHp)
+                            edtFavorite.setText(listFavorite)
                         }
-                        tvNameUser.text = userData.name.toString().replaceFirstChar {
-                            if (it.isLowerCase())
-                                it.titlecase(Locale.getDefault())
-                            else it.toString()
+
+
+                    }
+
+                    is Error -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        ViewModelFactory.refreshInstance()
+                        TokenViewModelFactory.refreshInstance()
+                        if (result.error == "Missing access token") {
+                            startActivity(Intent(requireContext(), MenuActivity::class.java))
+                            requireActivity().finish()
                         }
-                        tvEmailUser.text = userData.email
-                        tvFavoriteUser.text = listFavorite
-                        edtName.setText(userData.name)
-                        edtNoHp.setText(userData.noHp)
-                        edtFavorite.setText(listFavorite)
+                        if (result.error == "Invalid access token") {
+                            startActivity(Intent(requireContext(), MenuActivity::class.java))
+                            requireActivity().finish()
+                        }
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Error ${result.error} : Cek internet anda!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.d("ProfileFragment", "onCreate: ${result.error}")
                     }
-
-
-                }
-
-                is Error -> {
-                    setVisibility(binding.profileProgressBar, false)
-                    ViewModelFactory.refreshInstance()
-                    TokenViewModelFactory.refreshInstance()
-                    if (result.error == "Missing access token") {
-                        startActivity(Intent(requireContext(), MenuActivity::class.java))
-                        requireActivity().finish()
-                    }
-                    if (result.error == "Invalid access token") {
-                        startActivity(Intent(requireContext(), MenuActivity::class.java))
-                        requireActivity().finish()
-                    }
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Error ${result.error} : Cek internet anda!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.d("ProfileFragment", "onCreate: ${result.error}")
                 }
             }
         }
+
     }
 
     private fun onChangeEditText() {

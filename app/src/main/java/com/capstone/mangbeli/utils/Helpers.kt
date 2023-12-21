@@ -2,6 +2,7 @@ package com.capstone.mangbeli.utils
 
 import android.content.Context
 import android.content.res.Resources
+import android.net.ConnectivityManager
 import android.util.Log
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.ui.home.TokenViewModel
@@ -21,6 +22,12 @@ fun setMapStyle(mMap: GoogleMap, context: Context) {
     } catch (exception: Resources.NotFoundException) {
         Log.e("SwapMap", "Can't find style. Error: ", exception)
     }
+}
+
+fun isNetworkAvailable(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetworkInfo = connectivityManager.activeNetworkInfo
+    return activeNetworkInfo != null && activeNetworkInfo.isConnected
 }
 
 fun checkTokenAvailability(

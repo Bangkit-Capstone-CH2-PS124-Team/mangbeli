@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,7 @@ import com.capstone.mangbeli.ui.home.TokenViewModelFactory
 import com.capstone.mangbeli.ui.role.AddRoleActivity
 import com.capstone.mangbeli.ui.signup.SignUpActivity
 import com.capstone.mangbeli.utils.Result
-import com.firebase.ui.auth.AuthUI
+import com.capstone.mangbeli.utils.isNetworkAvailable
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
@@ -44,11 +45,17 @@ class LoginActivity : AppCompatActivity() {
             btnLoginActivity.setOnClickListener {
                 val email = binding.edtEmail.text.toString()
                 val password = binding.edtPassword.text.toString()
-                loginSet(email, password)
+                if (!isNetworkAvailable(this@LoginActivity)) {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Internet connection is required",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                } else {
+                    loginSet(email, password)
+                }
             }
-//            googleSignInButton.setOnClickListener {
-//                mulaiLogin()
-//            }
             btnToRegister.setOnClickListener {
                 startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
             }
@@ -84,7 +91,8 @@ class LoginActivity : AppCompatActivity() {
 
                         if (userData.role != null) {
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                             finish()
                         } else {
@@ -147,14 +155,17 @@ class LoginActivity : AppCompatActivity() {
                     setTitle(getString(R.string.error))
                     setMessage(getString(R.string.email_not_registered))
                 }
+
                 "Wrong Password" -> {
                     setTitle(getString(R.string.error))
                     setMessage(getString(R.string.wrong_password))
                 }
+
                 "Password must be at least 8 characters" -> {
                     setTitle(getString(R.string.error))
                     setMessage(getString(R.string.minimal_8_characters))
                 }
+
                 else -> {
                     setTitle(getString(R.string.error))
                     setMessage(errorMessage)

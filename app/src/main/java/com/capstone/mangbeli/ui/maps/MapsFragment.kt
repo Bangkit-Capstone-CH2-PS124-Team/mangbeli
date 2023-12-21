@@ -24,6 +24,7 @@ import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.utils.UserLocationManager
 import com.capstone.mangbeli.utils.VectorToBitmap
+import com.capstone.mangbeli.utils.isNetworkAvailable
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.setMapStyle
 import com.capstone.mangbeli.utils.setVisibility
@@ -178,6 +179,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
         LocationHelper.getLastKnownLocation(
             fusedLocationClient,
             { location ->
+
                 mapsViewModel.updateCurrentLocation(location.latitude, location.longitude)
                 setVisibility(binding.mapProgressBar, false)
             },
@@ -219,139 +221,148 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
         mMap.setOnMapClickListener {
             hiddenBottomSheet()
         }
-        mapsViewModel.getMapsVendors().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    setVisibility(binding.mapProgressBar, true)
-                }
+        if (!isNetworkAvailable(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                "Internet connection is required",
+                Toast.LENGTH_LONG
+            )
+                .show()
+        } else {
+            mapsViewModel.getMapsVendors().observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        setVisibility(binding.mapProgressBar, true)
+                    }
 
-                is Result.Success -> {
-                    setVisibility(binding.mapProgressBar, false)
-                    result.data.forEach { data ->
+                    is Result.Success -> {
+                        setVisibility(binding.mapProgressBar, false)
+                        result.data.forEach { data ->
 
-                        val latLng = LatLng(data.latitude, data.longitude)
-                        val distance = calculateDistance(
-                            userLocation.first,
-                            userLocation.second,
-                            data.latitude,
-                            data.longitude
-                        )
+                            val latLng = LatLng(data.latitude, data.longitude)
+                            val distance = calculateDistance(
+                                userLocation.first,
+                                userLocation.second,
+                                data.latitude,
+                                data.longitude
+                            )
 
-                        if (distance <= maxDistance) {
-                            mMap.addMarker(
-                                MarkerOptions().position(latLng).title(data.name)
-                                    .snippet(data.distance)
-                                    .icon(
-                                        iconConverter.vectorToBitmap(
-                                            R.drawable.ic_food_cart,
-                                            resources
+                            if (distance <= maxDistance) {
+                                mMap.addMarker(
+                                    MarkerOptions().position(latLng).title(data.name)
+                                        .snippet(data.distance)
+                                        .icon(
+                                            iconConverter.vectorToBitmap(
+                                                R.drawable.ic_food_cart,
+                                                resources
+                                            )
                                         )
-                                    )
-                            )?.tag = data.vendorId
-                        } else {
-                            mMap.addMarker(
-                                MarkerOptions().position(latLng).title(data.name)
-                                    .snippet(data.distance)
-                                    .icon(
-                                        iconConverter.vectorToBitmap(
-                                            R.drawable.ic_food_cart,
-                                            resources
+                                )?.tag = data.vendorId
+                            } else {
+                                mMap.addMarker(
+                                    MarkerOptions().position(latLng).title(data.name)
+                                        .snippet(data.distance)
+                                        .icon(
+                                            iconConverter.vectorToBitmap(
+                                                R.drawable.ic_food_cart,
+                                                resources
+                                            )
                                         )
-                                    )
-                            )?.tag = data.vendorId
-                        }
-                        mMap.setOnMarkerClickListener {
-                            val id = it.tag as? String
-                            if (id != null) {
-                                mapsViewModel.getDetailVendor(id)
-                                    .observe(viewLifecycleOwner) { result ->
-                                        when (result) {
-                                            is Result.Loading -> {
-                                                setVisibility(binding.mapProgressBar, true)
-                                            }
-
-                                            is Result.Success -> {
-                                                val bottomSheetData = result.data
-                                                setVisibility(binding.mapProgressBar, false)
-                                                with(binding) {
-                                                    titleMapsContent.text =
-                                                        bottomSheetData.nameVendor
-                                                    nameMapsContent.text = it.title
-                                                    descMapsContent.text =
-                                                        bottomSheetData.products?.joinToString(", ")
-                                                    distanceMapsContent.text = it.snippet
-                                                    minPriceMapsContent.text =
-                                                        "Rp. ${bottomSheetData.minPrice}"
-                                                    maxPriceMapsContent.text =
-                                                        "Rp. ${bottomSheetData.maxPrice}"
-                                                    if (bottomSheetData.imageUrl != null) {
-                                                        imageMapsContent.loadImage(bottomSheetData.imageUrl)
-                                                    } else {
-                                                        imageMapsContent.setImageResource(R.drawable.logo_mangbeli)
-                                                    }
-                                                    if (bottomSheetData.noHp != null) {
-                                                        setVisibility(binding.actionCall, true)
-                                                        binding.actionCall.setOnClickListener {
-                                                            intentWhatsapp(bottomSheetData.noHp)
-                                                        }
-                                                    } else {
-                                                        setVisibility(binding.actionCall, false)
-                                                    }
-                                                    val vendorLocation =
-                                                        bottomSheetData.latitude?.let { it1 ->
-                                                            bottomSheetData.longitude?.let { it2 ->
-                                                                LatLng(
-                                                                    it1, it2
-                                                                )
-                                                            }
-                                                        }
-                                                    val userLoc = LatLng(userLocation.first, userLocation.second)
-                                                    setVisibility(binding.linearLayoutArrivalTimeMaps, false)
-                                                    btnRouteMaps.setOnClickListener {
-                                                        findRoute(userLoc, vendorLocation)
-                                                    }
-                                                }
-                                            }
-
-                                            is Result.Error -> {
-                                                if (result.error == "Missing access token") {
-                                                    startActivity(
-                                                        Intent(
-                                                            requireContext(),
-                                                            MenuActivity::class.java
-                                                        )
-                                                    )
-                                                    requireActivity().finish()
-                                                }
-                                                if (result.error == "Invalid access token") {
-                                                    startActivity(
-                                                        Intent(
-                                                            requireContext(),
-                                                            MenuActivity::class.java
-                                                        )
-                                                    )
-                                                    requireActivity().finish()
-                                                }
-                                                Log.d("Check", "addManyMarker: ${result.error}")
-                                                Toast.makeText(
-                                                    requireContext(),
-                                                    result.error,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-
-                                    }
+                                )?.tag = data.vendorId
                             }
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                            false
+                            mMap.setOnMarkerClickListener {
+                                val id = it.tag as? String
+                                if (id != null) {
+                                    mapsViewModel.getDetailVendor(id)
+                                        .observe(viewLifecycleOwner) { result ->
+                                            when (result) {
+                                                is Result.Loading -> {
+                                                    setVisibility(binding.mapProgressBar, true)
+                                                }
+
+                                                is Result.Success -> {
+                                                    val bottomSheetData = result.data
+                                                    setVisibility(binding.mapProgressBar, false)
+                                                    with(binding) {
+                                                        titleMapsContent.text =
+                                                            bottomSheetData.nameVendor
+                                                        nameMapsContent.text = it.title
+                                                        descMapsContent.text =
+                                                            bottomSheetData.products?.joinToString(", ")
+                                                        distanceMapsContent.text = it.snippet
+                                                        minPriceMapsContent.text =
+                                                            "Rp. ${bottomSheetData.minPrice}"
+                                                        maxPriceMapsContent.text =
+                                                            "Rp. ${bottomSheetData.maxPrice}"
+                                                        if (bottomSheetData.imageUrl != null) {
+                                                            imageMapsContent.loadImage(bottomSheetData.imageUrl)
+                                                        } else {
+                                                            imageMapsContent.setImageResource(R.drawable.logo_mangbeli)
+                                                        }
+                                                        if (bottomSheetData.noHp != null) {
+                                                            setVisibility(binding.actionCall, true)
+                                                            binding.actionCall.setOnClickListener {
+                                                                intentWhatsapp(bottomSheetData.noHp)
+                                                            }
+                                                        } else {
+                                                            setVisibility(binding.actionCall, false)
+                                                        }
+                                                        val vendorLocation =
+                                                            bottomSheetData.latitude?.let { it1 ->
+                                                                bottomSheetData.longitude?.let { it2 ->
+                                                                    LatLng(
+                                                                        it1, it2
+                                                                    )
+                                                                }
+                                                            }
+                                                        val userLoc = LatLng(userLocation.first, userLocation.second)
+                                                        setVisibility(binding.linearLayoutArrivalTimeMaps, false)
+                                                        btnRouteMaps.setOnClickListener {
+                                                            findRoute(userLoc, vendorLocation)
+                                                        }
+                                                    }
+                                                }
+
+                                                is Result.Error -> {
+                                                    if (result.error == "Missing access token") {
+                                                        startActivity(
+                                                            Intent(
+                                                                requireContext(),
+                                                                MenuActivity::class.java
+                                                            )
+                                                        )
+                                                        requireActivity().finish()
+                                                    }
+                                                    if (result.error == "Invalid access token") {
+                                                        startActivity(
+                                                            Intent(
+                                                                requireContext(),
+                                                                MenuActivity::class.java
+                                                            )
+                                                        )
+                                                        requireActivity().finish()
+                                                    }
+                                                    Log.d("Check", "addManyMarker: ${result.error}")
+                                                    Toast.makeText(
+                                                        requireContext(),
+                                                        result.error,
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+
+                                        }
+                                }
+                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                                false
+                            }
                         }
                     }
-                }
 
-                is Result.Error -> {
-                    Log.d("AddMarker", "addManyMarker: ${result.error}")
-                    Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                    is Result.Error -> {
+                        Log.d("AddMarker", "addManyMarker: ${result.error}")
+                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -413,28 +424,37 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
         return isEnabled
     }
     private fun updateLocation(latitude: Double, longitude: Double) {
-        mapsViewModel.updateLocation(latitude, longitude)
-            .observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        setVisibility(binding.mapProgressBar, true)
+        if (!isNetworkAvailable(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                "Internet connection is required",
+                Toast.LENGTH_LONG
+            )
+                .show()
+        } else {
+            mapsViewModel.updateLocation(latitude, longitude)
+                .observe(viewLifecycleOwner) { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            setVisibility(binding.mapProgressBar, true)
+                        }
+
+                        is Result.Success -> {
+                            setVisibility(binding.mapProgressBar, false)
+                            val response = result.data.message
+                            Log.d("ProfileLocation", "location: $response")
+                            Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show()
+                        }
+
+                        is Result.Error -> {
+                            setVisibility(binding.mapProgressBar, false)
+                            Log.d("LocationError", "startUpload: ${result.error}")
+                            Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                        }
                     }
 
-                    is Result.Success -> {
-                        setVisibility(binding.mapProgressBar, false)
-                        val response = result.data.message
-                        Log.d("ProfileLocation", "location: $response")
-                        Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show()
-                    }
-
-                    is Result.Error -> {
-                        setVisibility(binding.mapProgressBar, false)
-                        Log.d("LocationError", "startUpload: ${result.error}")
-                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
-                    }
                 }
-
-            }
+        }
     }
 
     private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {

@@ -13,12 +13,12 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentHomePedagangBinding
@@ -29,6 +29,7 @@ import com.capstone.mangbeli.ui.profile.ProfileViewModelFactory
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.utils.VectorToBitmap
+import com.capstone.mangbeli.utils.isNetworkAvailable
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
@@ -272,54 +273,63 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
     private fun addUsersMarker(myLocation: Pair<Double, Double>) {
         val iconConverter = VectorToBitmap()
         val maxDistance = 1000.0
-        mapsViewModel.getMapsUsers().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    Log.d("AddMarker", "addManyMarker: Loading")
-                }
+        if (!isNetworkAvailable(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                "Internet connection is required",
+                Toast.LENGTH_LONG
+            )
+                .show()
+        } else {
+            mapsViewModel.getMapsUsers().observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        Log.d("AddMarker", "addManyMarker: Loading")
+                    }
 
-                is Result.Success -> {
-                    result.data.forEach { data ->
+                    is Result.Success -> {
+                        result.data.forEach { data ->
 
-                        val latLng = LatLng(data.latitude, data.longitude)
-                        val distance = calculateDistance(
-                            myLocation.first,
-                            myLocation.second,
-                            data.latitude,
-                            data.longitude
-                        )
-                        val listFavorite = data.favorite?.joinToString(separator = ", ")
-                        if (distance <= maxDistance) {
-                            googleMap1.addMarker(
-                                MarkerOptions().position(latLng).title(data.name)
-                                    .snippet(listFavorite).icon(
-                                    iconConverter.vectorToBitmap(
-                                        R.drawable.ic_detail_user,
-                                        resources
-                                    )
-                                )
+                            val latLng = LatLng(data.latitude, data.longitude)
+                            val distance = calculateDistance(
+                                myLocation.first,
+                                myLocation.second,
+                                data.latitude,
+                                data.longitude
                             )
-                            addGeofence(data.name.toString(), latLng)
-                        } else {
-                            googleMap1.addMarker(
-                                MarkerOptions().position(latLng).title(data.name)
-                                    .snippet(listFavorite).icon(
-                                        iconConverter.vectorToBitmap(
-                                            R.drawable.ic_detail_user,
-                                            resources
+                            val listFavorite = data.favorite?.joinToString(separator = ", ")
+                            if (distance <= maxDistance) {
+                                googleMap1.addMarker(
+                                    MarkerOptions().position(latLng).title(data.name)
+                                        .snippet(listFavorite).icon(
+                                            iconConverter.vectorToBitmap(
+                                                R.drawable.ic_detail_user,
+                                                resources
+                                            )
                                         )
-                                    )
-                            )
+                                )
+                                addGeofence(data.name.toString(), latLng)
+                            } else {
+                                googleMap1.addMarker(
+                                    MarkerOptions().position(latLng).title(data.name)
+                                        .snippet(listFavorite).icon(
+                                            iconConverter.vectorToBitmap(
+                                                R.drawable.ic_detail_user,
+                                                resources
+                                            )
+                                        )
+                                )
+                            }
                         }
+                    }
+
+                    is Result.Error -> {
+                        Log.d("AddMarker", "addManyMarker: ${result.error}")
+                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                is Result.Error -> {
-                    Log.d("AddMarker", "addManyMarker: ${result.error}")
-                    Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
-                }
             }
-
         }
     }
 

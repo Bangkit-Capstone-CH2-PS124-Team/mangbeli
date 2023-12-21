@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentProfilePedagangBinding
@@ -29,6 +29,7 @@ import com.capstone.mangbeli.utils.ButtonUtils
 import com.capstone.mangbeli.utils.EditTextUtils
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
+import com.capstone.mangbeli.utils.isNetworkAvailable
 import com.capstone.mangbeli.utils.loadImage
 import com.capstone.mangbeli.utils.reduceFileImage
 import com.capstone.mangbeli.utils.setVisibility
@@ -124,74 +125,95 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         binding.imgProfile.setOnClickListener { startGallery() }
     }
     private fun initProfileUser() {
-        viewModel.getUserProfile().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    setVisibility(binding.profileProgressBar, true)
-                    binding.profileProgressBar.visibility = View.VISIBLE
-                    Log.d("ProfileFragment", "initProfile: Loading")
-                }
-
-                is Result.Success -> {
-                    setVisibility(binding.profileProgressBar, false)
-                    ViewModelFactory.refreshInstance()
-                    val userData = result.data
-                    Log.d("ProfileFragment", "Get Data: $userData")
-                    with(binding) {
-                        Log.d("Profile", "initProfile: ${imgProfile.drawable}")
-                        if (imgProfile.drawable == null) {
-                            imgProfile.setImageResource(R.drawable.ic_account_circle_24)
-                        } else {
-                            imgProfile.loadImage(userData.imageUrl.toString())
-                        }
-                        edtName.setText(userData.name)
-                        edtNoHp.setText(userData.noHp)
+        if (!isNetworkAvailable(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                "Internet connection is required",
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+        else {
+            viewModel.getUserProfile().observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        setVisibility(binding.profileProgressBar, true)
+                        binding.profileProgressBar.visibility = View.VISIBLE
+                        Log.d("ProfileFragment", "initProfile: Loading")
                     }
 
+                    is Result.Success -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        ViewModelFactory.refreshInstance()
+                        val userData = result.data
+                        Log.d("ProfileFragment", "Get Data: $userData")
+                        with(binding) {
+                            Log.d("Profile", "initProfile: ${imgProfile.drawable}")
+                            if (imgProfile.drawable == null) {
+                                imgProfile.setImageResource(R.drawable.ic_account_circle_24)
+                            } else {
+                                imgProfile.loadImage(userData.imageUrl.toString())
+                            }
+                            edtName.setText(userData.name)
+                            edtNoHp.setText(userData.noHp)
+                        }
 
-                }
 
-                is Result.Error -> {
-                    setVisibility(binding.profileProgressBar, false)
-                    Toast.makeText(
-                        requireContext(),
-                        "Error ${result.error} : Cek internet anda!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.d("ProfileFragment", "onCreate: ${result.error}")
+                    }
+
+                    is Result.Error -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        Toast.makeText(
+                            requireContext(),
+                            "Error ${result.error} : Cek internet anda!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.d("ProfileFragment", "onCreate: ${result.error}")
+                    }
                 }
             }
         }
+
     }
 
     private fun initProfile() {
-        viewModel.getVendorProfile().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    setVisibility(binding.profileProgressBar, true)
-                    Log.d("sapi", "Cek Ombak: $result")
-                }
-
-                is Result.Success -> {
-                    setVisibility(binding.profileProgressBar, false)
-                    ViewModelFactory.refreshInstance()
-                    val vendors = result.data
-                    vendors?.let {
-                        binding.edtNameVendor.setText(it.nameVendor)
-                        binding.edtListProduct.setText(it.products?.joinToString(", "))
-                        binding.minimumSlider.value = it.minPrice?.toFloat() ?: 500f
-                        binding.maksimumSlider.value = it.maxPrice?.toFloat() ?: 500f
-                        Log.d("kucing", "Cek Ombak: $it")
+        if (!isNetworkAvailable(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                "Internet connection is required",
+                Toast.LENGTH_LONG
+            )
+                .show()
+        } else {
+            viewModel.getVendorProfile().observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        setVisibility(binding.profileProgressBar, true)
+                        Log.d("sapi", "Cek Ombak: $result")
                     }
-                    Log.d("sapi", "Cek Ombak: $vendors")
-                }
 
-                is Result.Error -> {
-                    setVisibility(binding.profileProgressBar, false)
-                    Log.d("sapi", "onCreateView: ${result.error}")
+                    is Result.Success -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        ViewModelFactory.refreshInstance()
+                        val vendors = result.data
+                        vendors?.let {
+                            binding.edtNameVendor.setText(it.nameVendor)
+                            binding.edtListProduct.setText(it.products?.joinToString(", "))
+                            binding.minimumSlider.value = it.minPrice?.toFloat() ?: 500f
+                            binding.maksimumSlider.value = it.maxPrice?.toFloat() ?: 500f
+                            Log.d("kucing", "Cek Ombak: $it")
+                        }
+                        Log.d("sapi", "Cek Ombak: $vendors")
+                    }
+
+                    is Result.Error -> {
+                        setVisibility(binding.profileProgressBar, false)
+                        Log.d("sapi", "onCreateView: ${result.error}")
+                    }
                 }
             }
         }
+
     }
 
     private fun saveLocationStatus(isLocationEnabled: Boolean) {
@@ -227,39 +249,49 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
                 requestImg
             )
             Log.d("CekImageUpload", "onUploadImage: $multipartBody")
-            viewModel.uploadImage(multipartBody).observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        Log.d("ProfileFragment", "uploadImage: Loading")
-                        setVisibility(binding.profileProgressBar, true)
-                    }
-
-                    is Result.Success -> {
-                        setVisibility(binding.profileProgressBar, false)
-                        val userData = result.data.message
-                        AlertDialog.Builder(requireContext()).apply {
-                            setTitle("Update Image Profile berhasil")
-                            setMessage(userData)
-                            setPositiveButton("Lanjut") { _, _ ->
-                                initProfile()
-                            }
-                            create()
-                            show()
+            if (!isNetworkAvailable(requireContext())) {
+                Toast.makeText(
+                    requireContext(),
+                    "Internet connection is required",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            } else {
+                viewModel.uploadImage(multipartBody).observe(viewLifecycleOwner) { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            Log.d("ProfileFragment", "uploadImage: Loading")
+                            setVisibility(binding.profileProgressBar, true)
                         }
 
-                    }
+                        is Result.Success -> {
+                            setVisibility(binding.profileProgressBar, false)
+                            val userData = result.data.message
+                            AlertDialog.Builder(requireContext()).apply {
+                                setTitle("Update Image Profile berhasil")
+                                setMessage(userData)
+                                setPositiveButton("Lanjut") { _, _ ->
+                                    initProfile()
+                                }
+                                create()
+                                show()
+                            }
+
+                        }
 
 
-                    is Result.Error -> {
-                        setVisibility(binding.profileProgressBar, false)
-                        Toast.makeText(
-                            requireContext(),
-                            "Error ${result.error} : Cek internet anda!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d("ProfileFragment", "uploadImage: ${result.error}")
+                        is Result.Error -> {
+                            setVisibility(binding.profileProgressBar, false)
+                            Toast.makeText(
+                                requireContext(),
+                                "Error ${result.error} : Cek internet anda!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.d("ProfileFragment", "uploadImage: ${result.error}")
+                        }
                     }
                 }
+
             }
         }
 
@@ -317,55 +349,65 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
                 name = name,
                 noHp = noHp
             )
-            viewModel.updateUserProfile(updateUser)
-                .observe(viewLifecycleOwner) { result ->
-                    when (result) {
-                        is Result.Loading -> {
-                            Log.d("ProfileFragment", "initProfile: Loading")
-                        }
+            if (!isNetworkAvailable(requireContext())) {
+                Toast.makeText(
+                    requireContext(),
+                    "Internet connection is required",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            } else {
+                viewModel.updateUserProfile(updateUser)
+                    .observe(viewLifecycleOwner) { result ->
+                        when (result) {
+                            is Result.Loading -> {
+                                Log.d("ProfileFragment", "initProfile: Loading")
+                            }
 
-                        is Result.Success -> {
-                            Log.d("ProfileFragment", "initProfile: Success")
-                        }
+                            is Result.Success -> {
+                                Log.d("ProfileFragment", "initProfile: Success")
+                            }
 
-                        is Result.Error -> {
+                            is Result.Error -> {
 
-                            Log.d("DataDiriActivity", "onCreate: ${result.error}")
-                        }
-                    }
-                }
-
-            viewModel.updateVendorProfile(updateVendor)
-                .observe(viewLifecycleOwner) { result ->
-                    when (result) {
-                        is Result.Loading -> {
-                            Log.d("ProfileFragment", "initProfile: Loading")
-                        }
-
-                        is Result.Success -> {
-                            val userData = result.data.message
-                            AlertDialog.Builder(requireContext()).apply {
-                                setTitle("Update Profile berhasil")
-                                setMessage("$userData")
-                                setPositiveButton("Lanjut") { _, _ ->
-                                    initProfileUser()
-                                    initProfile()
-                                }
-                                create()
-                                show()
+                                Log.d("DataDiriActivity", "onCreate: ${result.error}")
                             }
                         }
+                    }
 
-                        is Result.Error -> {
-                            // Tampilkan pesan kesalahan kepada pengguna
+                viewModel.updateVendorProfile(updateVendor)
+                    .observe(viewLifecycleOwner) { result ->
+                        when (result) {
+                            is Result.Loading -> {
+                                Log.d("ProfileFragment", "initProfile: Loading")
+                            }
 
-                            Log.d("DataDiriActivity", "onCreate: ${result.error}")
+                            is Result.Success -> {
+                                val userData = result.data.message
+                                AlertDialog.Builder(requireContext()).apply {
+                                    setTitle("Update Profile berhasil")
+                                    setMessage("$userData")
+                                    setPositiveButton("Lanjut") { _, _ ->
+                                        initProfileUser()
+                                        initProfile()
+                                    }
+                                    create()
+                                    show()
+                                }
+                            }
+
+                            is Result.Error -> {
+                                // Tampilkan pesan kesalahan kepada pengguna
+
+                                Log.d("DataDiriActivity", "onCreate: ${result.error}")
+                            }
                         }
                     }
-                }
-            val isDataChanged = originalData != updateVendor
+                val isDataChanged = originalData != updateVendor
 
-            binding.btnSave.isEnabled = isDataChanged
+                binding.btnSave.isEnabled = isDataChanged
+            }
+
 
         }
     }
@@ -530,33 +572,44 @@ class ProfilePedagangFragment : Fragment(), OnMapReadyCallback {
         )
     }
     private fun updateLocation(latitude: Double, longitude: Double) {
+
         if (!isAdded || view == null) {
             val ayam = viewModel.updateLocation(latitude, longitude)
             Log.d("ProfileLocation", "updateLocation: $ayam $latitude $longitude")
             return
         }
-        viewModel.updateLocation(latitude, longitude)
-            .observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        setVisibility(binding.profileProgressBar, true)
+        if (!isNetworkAvailable(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                "Internet connection is required",
+                Toast.LENGTH_LONG
+            )
+                .show()
+        } else {
+            viewModel.updateLocation(latitude, longitude)
+                .observe(viewLifecycleOwner) { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            setVisibility(binding.profileProgressBar, true)
+                        }
+
+                        is Result.Success -> {
+                            setVisibility(binding.profileProgressBar, false)
+                            val response = result.data.message
+                            Log.d("ProfileLocation", "location: $response")
+                            Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show()
+                        }
+
+                        is Result.Error -> {
+                            setVisibility(binding.profileProgressBar, false)
+                            Log.d("LocationError", "startUpload: ${result.error}")
+                            Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                        }
                     }
 
-                    is Result.Success -> {
-                        setVisibility(binding.profileProgressBar, false)
-                        val response = result.data.message
-                        Log.d("ProfileLocation", "location: $response")
-                        Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show()
-                    }
-
-                    is Result.Error -> {
-                        setVisibility(binding.profileProgressBar, false)
-                        Log.d("LocationError", "startUpload: ${result.error}")
-                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
-                    }
                 }
+        }
 
-            }
     }
     private val resolutionLauncher =
         registerForActivityResult(

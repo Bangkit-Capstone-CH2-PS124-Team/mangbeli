@@ -70,7 +70,6 @@ class HomeFragment : Fragment() {
 
     private fun initAllVendors() {
         lifecycleScope.launch {
-
             viewModel.getAllVendors(
                 search = viewModel.searchquery.value,
                 filter = viewModel.filterBy.value
