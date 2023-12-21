@@ -314,7 +314,7 @@ class MapsPedagangFragment : Fragment(), OnMapReadyCallback, RouteListener{
             .setMessage(getString(R.string.enable_location_message))
             .setPositiveButton(getString(R.string.enable_location_positive_button)) { _, _ ->
                 // Buka ProfileFragment untuk mengaktifkan switch location
-                findNavController().navigate(R.id.navigation_profile)
+                findNavController().navigate(R.id.navigation_profile_pedagang)
             }
             .setNegativeButton(getString(R.string.enable_location_negative_button)) { dialog, _ ->
                 dialog.dismiss()

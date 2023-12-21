@@ -4,8 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.content.SharedPreferences
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -21,8 +22,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import com.capstone.mangbeli.R
 import com.capstone.mangbeli.databinding.FragmentHomePedagangBinding
-import com.capstone.mangbeli.model.VendorsData
-import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.maps.GeofenceBroadcastReceiver
 import com.capstone.mangbeli.ui.maps.MapsViewModel
@@ -30,8 +29,6 @@ import com.capstone.mangbeli.ui.profile.ProfileViewModelFactory
 import com.capstone.mangbeli.utils.LocationHelper
 import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.utils.VectorToBitmap
-import com.capstone.mangbeli.utils.loadImage
-import com.capstone.mangbeli.utils.setVisibility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
@@ -41,12 +38,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
 class HomePedagangFragment : Fragment(), OnMapReadyCallback {
@@ -58,6 +52,7 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
     private lateinit var googleMap1: GoogleMap
     private lateinit var googleMap2: GoogleMap
     private val markers: MutableList<Marker> = mutableListOf()
+    private lateinit var sharedPreferences: SharedPreferences
     private val viewModel by viewModels<HomeVendorViewModel> {
         ProfileViewModelFactory.getInstance(requireActivity())
     }
@@ -107,13 +102,13 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
     ): View {
         _binding = FragmentHomePedagangBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
+        sharedPreferences = requireContext().getSharedPreferences("MarkerPrefs", Context.MODE_PRIVATE)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         if (Build.VERSION.SDK_INT >= 33) {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
         initMap()
-
+        loadMarkersFromPrefs()
         return root
     }
 
@@ -146,11 +141,7 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
                             .show()
                     }
                     addOnFailureListener {
-                        Toast.makeText(
-                            requireContext(),
-                            "Geofencing not added, ${it.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                       Log.e("GeofenceMaps", "addGeofence: ${it.message}")
 
                     }
                 }
@@ -231,6 +222,30 @@ class HomePedagangFragment : Fragment(), OnMapReadyCallback {
                 Log.e("Location", "Error getting location: ${exception.message}")
             }
         }
+
+    private fun saveMarkerToPrefs(marker: Marker) {
+        // Simpan informasi marker ke dalam SharedPreferences
+        val editor = sharedPreferences.edit()
+        editor.putString("marker_${markers.size}", "${marker.position.latitude},${marker.position.longitude}")
+        editor.apply()
+    }
+    private fun loadMarkersFromPrefs() {
+        // Mendapatkan jumlah marker yang tersimpan
+        val markerCount = markers.size // Ganti dengan metode untuk mendapatkan jumlah marker yang tersimpan sebelumnya
+
+        // Muat informasi marker dari SharedPreferences
+        for (i in 0 until markerCount) {
+            val markerInfo = sharedPreferences.getString("marker_$i", null)
+            markerInfo?.let {
+                val position = it.split(",")
+                val lat = position[0].toDouble()
+                val lng = position[1].toDouble()
+                val latLng = LatLng(lat, lng)
+                val marker = googleMap2.addMarker(MarkerOptions().position(latLng))
+                marker?.let { it1 -> markers.add(it1) }
+            }
+        }
+    }
     private fun clearMarkers() {
         for (marker in markers) {
             marker.remove() // Hapus semua marker dari peta

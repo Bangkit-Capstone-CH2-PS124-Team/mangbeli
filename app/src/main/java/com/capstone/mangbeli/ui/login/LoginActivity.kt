@@ -107,14 +107,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun mulaiLogin() {
-        val providers = arrayListOf(AuthUI.IdpConfig.GoogleBuilder().build())
-        val intent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-        signInLauncher.launch(intent)
-    }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
@@ -136,7 +128,7 @@ class LoginActivity : AppCompatActivity() {
     private fun showSuccessDialog(email: String) {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.success))
-            setMessage(resources.getString(R.string.success) + email)
+            setMessage(email + resources.getString(R.string.success))
 
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
                 startActivity(Intent(this@LoginActivity, HomeActivity::class.java))

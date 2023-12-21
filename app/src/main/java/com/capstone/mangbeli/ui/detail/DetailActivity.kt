@@ -71,12 +71,11 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         configureDetailActionBar()
         handleIntentData()
         initGMaps()
         setUpLocationPermission()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
     }
 

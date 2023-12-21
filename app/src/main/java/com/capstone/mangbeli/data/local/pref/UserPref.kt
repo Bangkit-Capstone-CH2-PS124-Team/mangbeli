@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.capstone.mangbeli.model.Marker
 import com.capstone.mangbeli.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -46,6 +47,15 @@ class UserPref private constructor( private val dataStore: DataStore<Preferences
             preferences[EXPIRED_KEY] = Expired
         }
     }
+
+//    fun getMarker(): Flow<Marker> {
+//        return dataStore.data.map { preferences ->
+//            Marker(
+//                preferences[Marker.MARKER_LATITUDE] ?: 0.0,
+//                preferences[Marker.MARKER_LONGITUDE] ?: 0.0,
+//            )
+//        }
+//    }
 
 
     fun getSession(): Flow<User> {
