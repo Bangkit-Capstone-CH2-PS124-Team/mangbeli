@@ -12,7 +12,8 @@ import com.capstone.mangbeli.data.local.entity.UserEntity
         UserEntity::class,
         TokenEntity::class
                ],
-    version = 2)
+    version = 2,
+    exportSchema = false)
 abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 

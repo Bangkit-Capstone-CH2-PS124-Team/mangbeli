@@ -30,6 +30,7 @@ import com.capstone.mangbeli.model.User
 import com.capstone.mangbeli.model.UserProfile
 import com.capstone.mangbeli.model.VendorProfile
 import com.capstone.mangbeli.utils.Result
+import com.capstone.mangbeli.utils.wrapEspressoIdlingResource
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
@@ -158,21 +159,23 @@ class MangRepository(
 
     fun login(email: String, password: String): LiveData<Result<LoginResult>> = liveData {
         emit(Result.Loading)
-        try {
-            val response = apiService.login(email, password).loginResult
-            if (response != null) {
-                Log.d("MangRepository", "getLoginResponse: $response")
-                if (response.email != null) {
-                    saveToken(response.token, response.email, response.role)
+        wrapEspressoIdlingResource {
+            try {
+                val response = apiService.login(email, password).loginResult
+                if (response != null) {
+                    Log.d("MangRepository", "getLoginResponse: $response")
+                    if (response.email != null) {
+                        saveToken(response.token, response.email, response.role)
+                    }
+                    emit(Result.Success(response))
                 }
-                emit(Result.Success(response))
+            } catch (e: HttpException) {
+                val jsonInString = e.response()?.errorBody()?.string()
+                val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+                val errorMessage = errorBody.message
+                Log.d("Repository", "register user: $errorMessage ")
+                emit(Result.Error(errorMessage.toString()))
             }
-        } catch (e: HttpException) {
-            val jsonInString = e.response()?.errorBody()?.string()
-            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
-            val errorMessage = errorBody.message
-            Log.d("Repository", "register user: $errorMessage ")
-            emit(Result.Error(errorMessage.toString()))
         }
     }
 

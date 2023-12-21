@@ -12,6 +12,7 @@ import com.capstone.mangbeli.R
 
 
 class MyEmailEditText : AppCompatEditText {
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -21,17 +22,14 @@ class MyEmailEditText : AppCompatEditText {
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+        context, attrs, defStyleAttr
     ) {
         init()
     }
 
     private fun init() {
         addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // Do nothing.
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -40,10 +38,10 @@ class MyEmailEditText : AppCompatEditText {
                 }
             }
 
-            override fun afterTextChanged(s: Editable) {
-                // Do nothing.
+            override fun afterTextChanged(p0: Editable?) {
             }
         })
+
     }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
