@@ -50,7 +50,6 @@ class HomeFragment : Fragment() {
         viewModel.filterBy.observe(viewLifecycleOwner) {
             initAllVendors()
         }
-
         setUpSearchBar()
         initAllVendors()
         showRecyclerView()
