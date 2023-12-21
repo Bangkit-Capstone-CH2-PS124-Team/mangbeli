@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 app:passwordToggleEnabled="true"
-                app:startIconDrawable="@drawable/baseline_email_24">
+                app:startIconDrawable="@drawable/baseline_password_24">
 
                 <com.capstone.mangbeli.ui.customview.MyPasswordEditText
                     android:id="@+id/edt_password"
@@ -191,6 +191,7 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="15dp"
             android:fontFamily="@font/nunito_bold"
+            android:textAlignment="center"
             android:text="@string/or"
 
             android:textSize="15sp" />

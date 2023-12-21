@@ -54,6 +54,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
     private var _binding: FragmentMapsBinding? = null
     private val geofenceRadius = 100.0
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var previousPolylines: ArrayList<Polyline> = ArrayList()
     private val mapsViewModel by viewModels<MapsViewModel> {
         ViewModelFactory.getInstance(requireActivity())
     }
@@ -447,6 +448,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
 
     @Suppress("DEPRECATION")
     private fun findRoute(start: LatLng?, end: LatLng?) {
+        previousPolylines.forEach { it.remove() }
+        previousPolylines.clear()
         if (start == null || end == null) {
             Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
         } else {
@@ -488,6 +491,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
                 Log.e("DActivity", "onRoutingSuccess: routeIndexing $durationText")
             }
         }
+        previousPolylines.forEach { it.remove() }
+        previousPolylines.clear()
+
+        previousPolylines.addAll(polylines)
     }
 
     override fun onRouteCancelled() {

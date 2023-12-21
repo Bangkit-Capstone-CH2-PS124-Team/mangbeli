@@ -104,6 +104,7 @@ class AddDataVendor : AppCompatActivity() {
                     is Result.Success -> {
                         val mainIntent = Intent(this@AddDataVendor, HomeActivity::class.java)
                         startActivity(mainIntent)
+                        finish()
                     }
 
                     is Result.Error -> {
@@ -116,7 +117,8 @@ class AddDataVendor : AppCompatActivity() {
                     }
                 }
             }
-            Toast.makeText(this@AddDataVendor, "Data berhasil disimpan $updateVendor", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@AddDataVendor,
+                getString(R.string.data_berhasil_disimpan), Toast.LENGTH_SHORT).show()
         }
     }
 }

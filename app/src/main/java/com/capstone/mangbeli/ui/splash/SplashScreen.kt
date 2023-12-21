@@ -61,19 +61,19 @@ class SplashScreen : AppCompatActivity() {
             ViewModelFactory.refreshInstance()
             TokenViewModelFactory.refreshInstance()
             isUserValid = user.refreshToken == " "
+            Log.e("SplashScreen", "onCreate: ${user}")
             val expirationDateString = user.expired.toString()
             val expiredAkesToken = user.expiredToken.toString()
             if (expiredAkesToken != " "){
                 reefreshToken(expiredAkesToken)}
             else{
-             Log.e("SplashScreen", "onCreate: $expiredAkesToken")
+                Log.e("SplashScreen", "onCreate: $expiredAkesToken")
             }
             if (expirationDateString == " ") {
                 Log.e("SplashScreen", "onCreate: $expirationDateString")
             } else {
                 checkTokenExpiration(expirationDateString)
             }
-            Log.e("SplashScreen", "onCreate: ${user}")
             cekSession()
         }
 

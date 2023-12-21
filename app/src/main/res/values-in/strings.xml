@@ -125,4 +125,7 @@
     <string name="detail_pembei">Detail Pembei</string>
     <string name="predict_arrival_time">Predict Arrival Time :</string>
     <string name="route">Route</string>
+    <string name="data_berhasil_disimpan">"Data berhasil disimpan "</string>
+    <string name="product1_product2_product3">dagangan1,dagangan2,dagangan3</string>
+    <string name="description_vendor">Pedagang</string>
 </resources>

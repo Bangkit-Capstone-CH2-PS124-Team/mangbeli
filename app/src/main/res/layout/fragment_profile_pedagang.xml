@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
-            android:text="@string/profile"
             android:fontFamily="@font/nunito_extrabold"
+            android:text="@string/profile"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -128,9 +127,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
+                android:hint="@string/name_hint"
                 app:shapeAppearance="@style/circularImageView"
-                app:startIconDrawable="@drawable/ic_account_circle_24"
-                android:hint="@string/name_hint">
+                app:startIconDrawable="@drawable/ic_account_circle_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_name"
@@ -145,9 +144,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:hint="@string/name_vendor"
                 app:shapeAppearance="@style/circularImageView"
-                app:startIconDrawable="@drawable/ic_account_circle_24"
-                android:hint="@string/name_vendor">
+                app:startIconDrawable="@drawable/ic_account_circle_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_name_vendor"
@@ -166,11 +165,11 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="16dp"
             android:hint="@string/no_hp_hint"
-            app:shapeAppearance="@style/circularImageView"
             app:layout_constraintEnd_toEndOf="@+id/img_profile"
-            app:startIconDrawable="@drawable/baseline_phone_24"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView"
+            app:shapeAppearance="@style/circularImageView"
+            app:startIconDrawable="@drawable/baseline_phone_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_no_hp"
@@ -186,12 +185,11 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="20dp"
             android:hint="@string/list_product_hint"
-            app:shapeAppearance="@style/circularImageView"
             app:layout_constraintEnd_toEndOf="@+id/img_profile"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
             app:layout_constraintTop_toBottomOf="@+id/edl_no_hp"
-            app:startIconDrawable="@drawable/baseline_fastfood_24"
-            >
+            app:shapeAppearance="@style/circularImageView"
+            app:startIconDrawable="@drawable/baseline_fastfood_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_list_product"
@@ -205,8 +203,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/price_range"
             android:fontFamily="@font/nunito_bold"
+            android:text="@string/price_range"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.055"
@@ -214,48 +212,48 @@
             app:layout_constraintTop_toBottomOf="@+id/edl_list_product" />
 
         <TextView
-        android:id="@+id/maksimum_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/maksimum_price"
+            android:id="@+id/maksimum_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/nunito_bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/range_text_view" />
+            android:text="@string/maksimum_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/range_text_view" />
 
-    <com.google.android.material.slider.Slider
-        android:id="@+id/maksimum_slider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:stepSize="1000"
-        android:value="1000"
-        android:valueFrom="1000"
-        android:valueTo="100000"
-        app:labelBehavior="withinBounds"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maksimum_text_view"
-        app:thumbColor="@color/md_theme_dark_onTertiaryContainer"
-        app:thumbElevation="8dp"
-        app:thumbRadius="12dp"
-        app:trackColorActive="@color/white"
-        app:trackColorInactive="@color/white"
-        app:trackHeight="2dp" />
+        <com.google.android.material.slider.Slider
+            android:id="@+id/maksimum_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:stepSize="1000"
+            android:value="1000"
+            android:valueFrom="1000"
+            android:valueTo="100000"
+            app:labelBehavior="withinBounds"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/maksimum_text_view"
+            app:thumbColor="@color/md_theme_dark_onTertiaryContainer"
+            app:thumbElevation="8dp"
+            app:thumbRadius="12dp"
+            app:trackColorActive="@color/white"
+            app:trackColorInactive="@color/white"
+            app:trackHeight="2dp" />
 
 
-    <TextView
-        android:id="@+id/minimum_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/nunito_bold"
-        android:text="@string/minimum_price"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maksimum_slider" />
+        <TextView
+            android:id="@+id/minimum_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/nunito_bold"
+            android:text="@string/minimum_price"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/maksimum_slider" />
 
         <com.google.android.material.slider.Slider
             android:id="@+id/minimum_slider"
@@ -277,36 +275,34 @@
             app:trackColorInactive="@color/white"
             app:trackHeight="2dp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginVertical="10dp"
-        android:layout_marginEnd="15dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/minimum_slider">
-
-        <Button
-            android:id="@+id/btn_cancel"
-            style="?android:attr/buttonBarButtonStyle"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="@string/btn_cancel"
-            android:textColor="?attr/colorError" />
+            android:layout_gravity="end"
+            android:layout_marginVertical="10dp"
+            android:layout_marginEnd="15dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/minimum_slider">
 
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/md_theme_dark_onTertiaryContainer"
-            android:textColor="@color/black"
-            android:text="@string/save_btn" />
+            <Button
+                android:id="@+id/btn_cancel"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/btn_cancel"
+                android:textColor="?attr/colorError" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save_btn" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
