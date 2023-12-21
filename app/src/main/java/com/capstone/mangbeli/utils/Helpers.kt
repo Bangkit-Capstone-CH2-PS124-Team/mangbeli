@@ -1,11 +1,27 @@
 package com.capstone.mangbeli.utils
 
+import android.content.Context
+import android.content.res.Resources
 import android.util.Log
+import com.capstone.mangbeli.R
 import com.capstone.mangbeli.ui.home.TokenViewModel
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.MapStyleOptions
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+fun setMapStyle(mMap: GoogleMap, context: Context) {
+    try {
+        val success =
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
+        if (!success) {
+            Log.e("SwapMap", "Style parsing failed.")
+        }
+    } catch (exception: Resources.NotFoundException) {
+        Log.e("SwapMap", "Can't find style. Error: ", exception)
+    }
+}
 
 fun checkTokenAvailability(
     viewModel: TokenViewModel

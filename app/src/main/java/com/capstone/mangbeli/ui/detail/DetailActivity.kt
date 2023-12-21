@@ -26,6 +26,7 @@ import com.capstone.mangbeli.utils.Result.Loading
 import com.capstone.mangbeli.utils.Result.Success
 import com.capstone.mangbeli.utils.VectorToBitmap
 import com.capstone.mangbeli.utils.loadImage
+import com.capstone.mangbeli.utils.setMapStyle
 import com.capstone.mangbeli.utils.setVisibility
 import com.codebyashish.googledirectionapi.AbstractRouting
 import com.codebyashish.googledirectionapi.ErrorHandling
@@ -273,7 +274,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
     override fun onMapReady(googleMap: GoogleMap) {
         vendorLocation = LatLng(latitude, longitude)
         mMap = googleMap
-
+        setMapStyle(mMap, this)
         with(mMap) {
             uiSettings.isZoomControlsEnabled = true
             uiSettings.isIndoorLevelPickerEnabled = true

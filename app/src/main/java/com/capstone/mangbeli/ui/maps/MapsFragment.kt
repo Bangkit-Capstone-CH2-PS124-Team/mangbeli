@@ -25,6 +25,7 @@ import com.capstone.mangbeli.utils.Result
 import com.capstone.mangbeli.utils.UserLocationManager
 import com.capstone.mangbeli.utils.VectorToBitmap
 import com.capstone.mangbeli.utils.loadImage
+import com.capstone.mangbeli.utils.setMapStyle
 import com.capstone.mangbeli.utils.setVisibility
 import com.codebyashish.googledirectionapi.AbstractRouting
 import com.codebyashish.googledirectionapi.ErrorHandling
@@ -103,6 +104,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, RouteListener {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         configureMapSettings()
+        setMapStyle(mMap, requireContext())
 
         if (isLocationSwitchEnabled()) {
             handleLocationEnabled()
