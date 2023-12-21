@@ -18,6 +18,9 @@ class DetailViewModel(private val repository: MangRepository) : ViewModel() {
 
     fun updateLocation(latitude: Double, longitude: Double) =
         repository.updateLocation(latitude, longitude)
+    fun updateCurrentLocation(lat: Double, log: Double) {
+        _currentLocation.value = Pair(lat, log)
+    }
     fun deleteLocation() =
         repository.deleteLocation()
 }

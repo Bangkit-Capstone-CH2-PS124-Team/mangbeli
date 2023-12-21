@@ -43,7 +43,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.RoundCap
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 
 class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
@@ -53,6 +55,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
     private var userLocation: LatLng = LatLng(0.0, 0.0)
     private var vendorLocation: LatLng = LatLng(0.0, 0.0)
     private var name: String? = null
+    private lateinit var id: String
     private var vendorName: String? = null
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
@@ -68,25 +71,15 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.apply {
-            title = getString(R.string.detail_pedagang)
-            setDisplayHomeAsUpEnabled(true)
-        }
-
-        val id = intent.getStringExtra("id") ?: ""
-        noHp = intent.getStringExtra("noHp") ?: ""
-        val currentLatitude = intent.getDoubleExtra("latitude", 0.0)
-        val currentLongitude = intent.getDoubleExtra("longitude", 0.0)
-        latitude = currentLatitude
-        longitude = currentLongitude
-
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.google_map_detail) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-
+        configureDetailActionBar()
+        handleIntentData()
+        initGMaps()
+        setUpLocationPermission()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+    }
 
+    private fun setUpLocationPermission() {
         if (!isLocationSwitchEnabled()) {
             getMyLastLocation()
             setVisibility(binding.googleMapDetail, false)
@@ -95,7 +88,93 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
             initDetail(id)
             setVisibility(binding.googleMapDetail, true)
         }
+    }
 
+    private fun handleIntentData() {
+        id = intent.getStringExtra("id") ?: ""
+        noHp = intent.getStringExtra("noHp") ?: ""
+        val currentLatitude = intent.getDoubleExtra("latitude", 0.0)
+        val currentLongitude = intent.getDoubleExtra("longitude", 0.0)
+        latitude = currentLatitude
+        longitude = currentLongitude    }
+
+    private fun initGMaps() {
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.google_map_detail) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+
+    private fun configureDetailActionBar() {
+        supportActionBar?.apply {
+            title = getString(R.string.detail_pedagang)
+            setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    private fun onLocationEnable(first: Double, second: Double) {
+        if (!isLocationSwitchEnabled()) {
+            Log.d("MapsFragment", "onMapReady: Location switch is disabled, showing AlertDialog")
+            showLocationPermissionBottomSheet(first, second)
+        }
+    }
+
+    @SuppressLint("MissingPermission", "InflateParams")
+    private fun showLocationPermissionBottomSheet(first: Double, second: Double) {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_location_switch, null)
+
+        // Sesuaikan elemen tampilan pada bottom sheet sesuai kebutuhan Anda
+        val isLocationEnabled = getStatusFromSharedPreferences()
+        val enableButton = view.findViewById<SwitchMaterial>(R.id.switch_location)
+        enableButton.isChecked = isLocationEnabled
+        enableButton.setOnCheckedChangeListener { _, isChecked ->
+            Log.d("CekSwitch", "onLocationEnable: $isChecked")
+            saveLocationStatus(isChecked)
+            if (isChecked) {
+                // User menyalakan lokasi
+                updateLocation(first, second)
+                bottomSheetDialog.dismiss()
+                initDetail(id)
+                setVisibility(binding.googleMapDetail, true)
+                if (::mMap.isInitialized) {
+                    mMap.isMyLocationEnabled = true
+                }
+            }
+        }
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+    }
+
+    private fun updateLocation(latitude: Double, longitude: Double) {
+        viewModel.updateLocation(latitude, longitude)
+            .observe(this) { result ->
+                when (result) {
+                    is Loading -> {
+                        setVisibility(binding.detailProgressBar, true)
+                    }
+
+                    is Success -> {
+                        setVisibility(binding.detailProgressBar, false)
+                        val response = result.data.message
+                        Log.d("ProfileLocation", "location: $response")
+                        Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is Error -> {
+                        setVisibility(binding.detailProgressBar, false)
+                        Log.d("LocationError", "startUpload: ${result.error}")
+                        Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
+    }
+
+
+    private fun getStatusFromSharedPreferences(): Boolean {
+        val sharedPreferences =
+            this.getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(getString(R.string.pref_key_location), false)
     }
 
     @SuppressLint("SetTextI18n")
@@ -159,15 +238,17 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
     }
 
     private fun getUserProfile() {
-        viewModel.getUserProfile().observe(this@DetailActivity){result ->
+        viewModel.getUserProfile().observe(this@DetailActivity) { result ->
             when (result) {
                 is Loading -> {
                     Log.d("GetProfile", "loading: $result")
                 }
+
                 is Success -> {
                     name = result.data.name.toString()
                     Log.d("GetProfile", "success: ${result.data.name}")
                 }
+
                 is Error -> {
                     Log.d("GetProfile", "success: ${result.error}")
                 }
@@ -198,10 +279,15 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
             uiSettings.isIndoorLevelPickerEnabled = true
             uiSettings.isMapToolbarEnabled = true
             uiSettings.isCompassEnabled = true
-            isMyLocationEnabled = true
         }
-//        val getCurrentLocation = UserLocationManager.getCurrentLocation()
-//        val userLocation = LatLng(getCurrentLocation.first, getCurrentLocation.second)
+
+        viewModel.currentLocation.observe(this) {
+            onLocationEnable(it.first, it.second)
+            if (::mMap.isInitialized) {
+                mMap.isMyLocationEnabled = true
+            }
+            setVisibility(binding.detailProgressBar, false)
+        }
         mMap.setOnMyLocationClickListener {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f))
         }
@@ -254,9 +340,8 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) {
                     userLocation = LatLng(location.latitude, location.longitude)
+                    viewModel.updateCurrentLocation(location.latitude, location.longitude)
                     Log.d("USERLOCATION2", "onMapReady: $userLocation")
-                    saveLocationStatus(true)
-                    viewModel.updateLocation(location.latitude, location.longitude)
                 }
             }
         } else {
@@ -280,20 +365,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
                     getString(R.string.toast_alert_detail),
                     Toast.LENGTH_SHORT
                 ).show()
-                viewModel.sendNotif(sendNotif).observe(this@DetailActivity) {result ->
-                    when (result) {
-                        is Loading -> {
-                            Log.d("SendNotif", "Loading: $result")
-                        }
-                        is Success -> {
-                            Log.d("SendNotif", "Success: ${result.data.message}")
-                        }
-                        is Error -> {
-                            Log.d("SendNotif", "Error: ${result.error}")
-
-                        }
-                    }
-                }
+                sendNotification()
             }
             setNegativeButton(getString(R.string.cancel)) { _, _ ->
                 Toast.makeText(
@@ -306,12 +378,24 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
         }
     }
 
+    private fun sendNotification() {
+        viewModel.sendNotif(sendNotif).observe(this@DetailActivity) { result ->
+            when (result) {
+                is Loading -> Log.d("SendNotif", "Loading: $result")
+                is Success -> Log.d("SendNotif", "Success: ${result.data.message}")
+                is Error -> Log.d("SendNotif", "Error: ${result.error}")
+            }
+        }
+    }
+
     private fun saveLocationStatus(isLocationEnabled: Boolean) {
-        val sharedPreferences = this.getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
+        val sharedPreferences =
+            this.getSharedPreferences(getString(R.string.pref_key_location), Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean(getString(R.string.pref_key_location), isLocationEnabled)
         editor.apply()
     }
+
     private fun isLocationSwitchEnabled(): Boolean {
         val sharedPreferences =
             this.getSharedPreferences(
@@ -322,10 +406,15 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
         Log.d("MapsFragment", "isLocationSwitchEnabled: $isEnabled")
         return isEnabled
     }
+
     @Suppress("DEPRECATION")
     private fun findRoute(start: LatLng?, end: LatLng?) {
         if (start == null || end == null) {
-            Snackbar.make(findViewById(android.R.id.content), "Unable to get location", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(
+                findViewById(android.R.id.content),
+                "Unable to get location",
+                Snackbar.LENGTH_LONG
+            ).show()
         } else {
             val routing = RouteDrawing.Builder()
                 .key(getString(R.string.api_key))
@@ -339,6 +428,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback, RouteListener {
             routing.execute()
         }
     }
+
     override fun onRouteFailure(e: ErrorHandling?) {
         Log.d("Route", "onRoutingFailure: $e")
     }

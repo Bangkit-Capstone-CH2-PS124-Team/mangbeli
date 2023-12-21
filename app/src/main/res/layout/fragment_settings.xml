@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:fontFamily="@font/nunito_extrabold"
         android:text="@string/title_settings"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
@@ -40,6 +41,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_extrabold"
                 android:text="@string/title_dark_mode"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
