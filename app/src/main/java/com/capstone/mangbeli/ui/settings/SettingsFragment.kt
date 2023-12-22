@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.mangbeli.data.local.pref.SettingsPref
-import com.capstone.mangbeli.data.local.pref.dataStore
+import com.capstone.mangbeli.data.local.pref.themes
 import com.capstone.mangbeli.databinding.FragmentSettingsBinding
 import com.capstone.mangbeli.ui.MenuActivity
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeViewModel
-import com.capstone.mygithubusers.ui.settings.SettingViewModel
+import com.capstone.mangbeli.ui.home.TokenViewModelFactory
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
 
 class SettingsFragment : Fragment() {
@@ -27,6 +27,7 @@ class SettingsFragment : Fragment() {
     private val viewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(requireActivity())
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,7 +35,7 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val pref = SettingsPref.getInstance(requireContext().dataStore)
+        val pref = SettingsPref.getInstance(requireContext().themes)
         val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingViewModel::class.java]
 
         settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean ->
@@ -53,6 +54,8 @@ class SettingsFragment : Fragment() {
 
         binding.btnLogout.setOnClickListener {
             viewModel.logout()
+            ViewModelFactory.refreshInstance()
+            TokenViewModelFactory.refreshInstance()
             startActivity(Intent(requireContext(), MenuActivity::class.java))
             requireActivity().finish()
         }

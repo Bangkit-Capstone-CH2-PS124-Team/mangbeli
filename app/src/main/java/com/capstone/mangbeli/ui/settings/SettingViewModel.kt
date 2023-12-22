@@ -1,4 +1,4 @@
-package com.capstone.mygithubusers.ui.settings
+package com.capstone.mangbeli.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

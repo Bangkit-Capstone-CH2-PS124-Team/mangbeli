@@ -10,86 +10,152 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:text="@string/profile"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/img_profile"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/gobaklogo"
-            app:layout_constraintStart_toStartOf="@+id/text_profile"
-            app:layout_constraintTop_toBottomOf="@+id/text_profile"
-            app:shapeAppearanceOverlay="@style/circularImageView"
+            android:id="@+id/img_vendor"
+            android:layout_width="320dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            android:background="?attr/colorSecondaryContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageView"
             tools:ignore="ImageContrastCheck" />
 
-        <LinearLayout
-            android:id="@+id/linear_layout_profile"
+            <LinearLayout
+                android:id="@+id/linearProfile"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/profile"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bakso"
+                    app:shapeAppearanceOverlay="@style/circularImageView"
+                    app:strokeWidth="2dp"
+                    tools:ignore="ImageContrastCheck" />
+
+
+                <TextView
+                    android:id="@+id/tv_name_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:textStyle="bold"
+                    tools:text="Name" />
+
+                <TextView
+                    android:id="@+id/tv_email_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/email"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/suka"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_favorite_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/list_of_favorit_user"
+                    android:textAlignment="center"
+                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+            </LinearLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/linearProfile"
+            app:layout_constraintStart_toStartOf="@+id/linearProfile"
+            app:layout_constraintTop_toBottomOf="@id/linearProfile" />
+
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/img_profile"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/img_profile"
-            app:layout_constraintTop_toTopOf="@+id/img_profile">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider">
 
-            <TextView
-                android:id="@+id/tv_name_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                tools:text="Name" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/suka"
-                android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
-                android:textColor="?attr/colorTertiary" />
-
-            <TextView
-                android:id="@+id/tv_favorite_user"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/list_of_favorit_user"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/location_profile"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:textColor="?attr/colorTertiary"
-            app:layout_constraintStart_toStartOf="@+id/img_profile"
-            app:layout_constraintTop_toBottomOf="@+id/img_profile" />
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/enable_location"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textStyle="bold" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/google_map_profile"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/edl_name"
-            app:layout_constraintEnd_toEndOf="@+id/linear_layout_profile"
-            app:layout_constraintStart_toStartOf="@+id/img_profile"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <androidx.fragment.app.FragmentContainerView
+                        android:id="@+id/google_map_profile"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -97,16 +163,20 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/email_hint"
-            app:layout_constraintEnd_toEndOf="@+id/linear_layout_profile"
-            app:layout_constraintStart_toStartOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/google_map_profile">
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:hint="@string/name_hint"
+            app:layout_constraintEnd_toEndOf="@+id/materialCardView"
+            app:layout_constraintStart_toStartOf="@+id/materialCardView"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView"
+            app:shapeAppearance="@style/circularImageView"
+            app:startIconDrawable="@drawable/ic_account_circle_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="50dp"
+                android:layout_gravity="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -118,12 +188,14 @@
             android:hint="@string/no_hp_hint"
             app:layout_constraintEnd_toEndOf="@+id/edl_name"
             app:layout_constraintStart_toStartOf="@+id/edl_name"
-            app:layout_constraintTop_toBottomOf="@+id/edl_name">
+            app:layout_constraintTop_toBottomOf="@+id/edl_name"
+            app:shapeAppearance="@style/circularImageView"
+            app:startIconDrawable="@drawable/baseline_phone_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_no_hp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -136,16 +208,19 @@
             android:hint="@string/list_favorite_hint"
             app:layout_constraintEnd_toEndOf="@+id/edl_no_hp"
             app:layout_constraintStart_toStartOf="@+id/edl_no_hp"
-            app:layout_constraintTop_toBottomOf="@+id/edl_no_hp">
+            app:layout_constraintTop_toBottomOf="@+id/edl_no_hp"
+            app:shapeAppearance="@style/circularImageView"
+            app:startIconDrawable="@drawable/baseline_fastfood_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_favorite"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -171,7 +246,14 @@
 
         </LinearLayout>
 
-
+        <ProgressBar
+            android:id="@+id/profileProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

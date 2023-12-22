@@ -37,6 +37,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="roundedImageView" parent="">
+        <item name="cornerSize">20%</item>
+    </style>
+
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>

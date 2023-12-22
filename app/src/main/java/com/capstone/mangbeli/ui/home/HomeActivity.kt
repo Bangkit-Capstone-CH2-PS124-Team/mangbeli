@@ -1,8 +1,9 @@
 package com.capstone.mangbeli.ui.home
 
+
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
@@ -14,9 +15,17 @@ import com.capstone.mangbeli.R
 import com.capstone.mangbeli.data.local.pref.SettingsPref
 import com.capstone.mangbeli.data.local.pref.dataStore
 import com.capstone.mangbeli.databinding.ActivityHomeBinding
+import com.capstone.mangbeli.model.FCMToken
 import com.capstone.mangbeli.ui.ViewModelFactory
-import com.capstone.mygithubusers.ui.settings.SettingViewModel
+import com.capstone.mangbeli.ui.settings.SettingViewModel
+import com.capstone.mangbeli.utils.Result.Error
+import com.capstone.mangbeli.utils.Result.Loading
+import com.capstone.mangbeli.utils.Result.Success
 import com.capstone.mygithubusers.ui.settings.SettingViewModelFactory
+import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -25,6 +34,7 @@ class HomeActivity : AppCompatActivity() {
     private val viewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(this)
     }
+    private val tokenViewModel by viewModels<TokenViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +43,36 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
-
         val navView: BottomNavigationView = binding.navView
 
         val pref = SettingsPref.getInstance(applicationContext.dataStore)
         val settingViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingViewModel::class.java]
+
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task: Task<String> ->
+                if (!task.isSuccessful) {
+                    Log.w("FCM", "Failed to get token", task.exception)
+                    return@addOnCompleteListener
+                }
+
+                // Mendapatkan token
+                val token = task.result
+                Log.d("FCM", "Token: $token")
+                val fcmToken = FCMToken(token)
+                viewModel.updateFCMToken(fcmToken).observe(this){result ->
+                    when (result) {
+                        is Loading -> {
+                            Log.d("FCM", "Loading Token: $result")
+                        }
+                        is Success -> {
+                            Log.d("FCM", "Success Token: ${result.data.message}")
+                        }
+                        is Error -> {
+                            Log.d("FCM", "Error Token: ${result.error}")
+                        }
+                    }
+                }
+            }
 
         settingViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
             if (isDarkModeActive) {
@@ -47,9 +82,9 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
+
         viewModel.getSession().observe(this) { user ->
             userRole = user.role
-
             val navController = findNavController(R.id.nav_host_fragment_activity_home)
 
             // Inflate navGraph
@@ -90,6 +125,11 @@ class HomeActivity : AppCompatActivity() {
                     }
                      R.id.navigation_maps -> {
                             navController.navigate(R.id.navigation_maps)
+                         when (userRole) {
+                             "user" -> navController.navigate(R.id.navigation_maps)
+                             "vendor" -> navController.navigate(R.id.navigation_maps_pedagang)
+                             else -> navController.navigate(R.id.navigation_maps)
+                         }
                             true
                      }
                      R.id.navigation_profile -> {
@@ -97,13 +137,17 @@ class HomeActivity : AppCompatActivity() {
                          when (userRole) {
                              "user" -> navController.navigate(R.id.navigation_profile)
                              "vendor" -> navController.navigate(R.id.navigation_profile_pedagang)
-                             else -> navController.navigate(R.id.navigation_home)
+                             else -> navController.navigate(R.id.navigation_profile)
                          }
                          true
 
                      }
                      R.id.navigation_settings -> {
-                            navController.navigate(R.id.navigation_settings)
+                         when (userRole) {
+                             "user" ->  navController.navigate(R.id.navigation_settings)
+                             "vendor" ->  navController.navigate(R.id.navigation_settings)
+                             else ->  navController.navigate(R.id.navigation_settings)
+                         }
                             true
                      }
                     else -> false

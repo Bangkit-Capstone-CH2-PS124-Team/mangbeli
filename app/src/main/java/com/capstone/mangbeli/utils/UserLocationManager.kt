@@ -1,15 +1,15 @@
 package com.capstone.mangbeli.utils
 
 object UserLocationManager {
-    private var currentLat: Float = 0F
-    private var currentLog: Float = 0F
+    private var currentLat: Double = 0.0
+    private var currentLog: Double = 0.0
 
-    fun setCurrentLocation(lat: Float, log: Float) {
+    fun setCurrentLocation(lat: Double, log: Double) {
         currentLat = lat
         currentLog = log
     }
 
-    fun getCurrentLocation(): Pair<Float, Float> {
+    fun getCurrentLocation(): Pair<Double, Double> {
         return Pair(currentLat, currentLog)
     }
 }

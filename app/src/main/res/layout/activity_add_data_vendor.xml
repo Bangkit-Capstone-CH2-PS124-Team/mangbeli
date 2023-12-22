@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.role.AddDataVendor">
+
+    <TextView
+        android:id="@+id/profile_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:text="@string/fill_your_personal_data"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameVendorTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp">
+
+        <EditText
+            android:id="@+id/nameVendorEditText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:autofillHints="Name Product"
+            android:hint="@string/name_product_hint"
+            android:inputType="text"
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edl_no_hp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/no_hp_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_no_hp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="22dp"
+        android:layout_marginVertical="10dp"
+        android:text="@string/list_product_hint"
+        />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/productTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+
+        app:hintEnabled="false"
+        android:layout_marginEnd="20dp">
+
+        <EditText
+            android:id="@+id/productEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:autofillHints="Name"
+            android:hint="@string/product1_product2_product3"
+            android:inputType="text"
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/range_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/price_range"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
+
+    <TextView
+        android:id="@+id/maksimum_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/maksimum_price" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/maksimum_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:stepSize="1000"
+        android:value="1000"
+        android:valueFrom="1000"
+        android:valueTo="100000"
+        app:labelBehavior="withinBounds"
+        app:thumbColor="@color/white"
+        app:thumbElevation="8dp"
+        app:thumbRadius="12dp"
+        app:trackColorActive="@color/white"
+        app:trackColorInactive="@color/white"
+        app:trackHeight="2dp" />
+    <TextView
+        android:id="@+id/minimum_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/minimum_price" />
+
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/minimum_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:stepSize="500"
+        android:value="500"
+        android:valueFrom="500"
+        android:valueTo="100000"
+        app:labelBehavior="withinBounds"
+        app:thumbColor="@color/white"
+        app:thumbElevation="8dp"
+        app:thumbRadius="12dp"
+        app:trackColorActive="@color/white"
+        app:trackColorInactive="@color/white"
+        app:trackHeight="2dp" />
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/next_btn"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+
+</LinearLayout>

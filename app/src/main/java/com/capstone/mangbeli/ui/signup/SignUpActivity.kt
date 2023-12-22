@@ -1,10 +1,11 @@
 package com.capstone.mangbeli.ui.signup
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.capstone.mangbeli.R
@@ -12,6 +13,7 @@ import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.databinding.ActivitySignUpBinding
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.login.LoginActivity
+import com.capstone.mangbeli.utils.isNetworkAvailable
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -35,14 +37,17 @@ class SignUpActivity : AppCompatActivity() {
                 val email = binding.emailEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
                 val confPassword = binding.confpasswordEditText.text.toString()
-                val role = when {
-                    binding.radioButton1.isChecked -> "user"
-                    binding.radioButton2.isChecked -> "vendor"
-                    else -> {
-                        "user"
-                    }
+                if (!isNetworkAvailable(this@SignUpActivity)) {
+                    Toast.makeText(
+                        this@SignUpActivity,
+                        "Internet connection is required",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                } else {
+                    registerSet(name, email, password, confPassword)
+
                 }
-                registerSet(name, email, password, confPassword, role)
             }
         }
     }
@@ -51,7 +56,7 @@ class SignUpActivity : AppCompatActivity() {
         email: String,
         password: String,
         confPassword: String,
-        role: String
+//        role: String
     ) {
         binding.apply {
             if (name.isEmpty()) {
@@ -80,7 +85,7 @@ class SignUpActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 try {
-                    viewModel.register(name, email, password, confPassword, role)
+                    viewModel.register(name, email, password, confPassword)
                     runOnUiThread {
                         showSuccessDialog(email)
                         showLoading(false)

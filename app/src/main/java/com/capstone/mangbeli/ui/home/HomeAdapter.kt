@@ -1,35 +1,37 @@
 package com.capstone.mangbeli.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.capstone.mangbeli.R
+import com.capstone.mangbeli.data.local.entity.VendorEntity
 import com.capstone.mangbeli.databinding.ItemListHomeBinding
-import com.capstone.mangbeli.model.Vendor
 import com.capstone.mangbeli.ui.detail.DetailActivity
-import com.bumptech.glide.Glide
+import com.capstone.mangbeli.utils.loadImage
+import com.capstone.mangbeli.utils.setVisibility
 
-class HomeAdapter : ListAdapter<Vendor, HomeAdapter.VendorViewHolder>(DIFF_CALLBACK) {
+class HomeAdapter : PagingDataAdapter<VendorEntity, HomeAdapter.VendorViewHolder>(DIFF_CALLBACK) {
     class VendorViewHolder(var binding: ItemListHomeBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private val vendorName = binding.tvItemNameVendor
         private val name = binding.tvItemName
-        private val distance = binding.tvItemDistance
-        fun bind(vendor: Vendor) {
-            val location = binding.root.context.getString(
-                R.string.vendor_location_format,
-                vendor.latitude.toString(),
-                vendor.longitude.toString()
-            )
-
-            vendorName.text = vendor.vendorName
+        private val products = binding.tvListProduct
+        @SuppressLint("SetTextI18n")
+        fun bind(vendor: VendorEntity) {
+            val minPrice = vendor.minPrice.toString()
+            val maxPrice = vendor.maxPrice.toString()
+            binding.tvMinPrice.text = "Rp. $minPrice"
+            binding.tvMaxPrice.text = "Rp. $maxPrice"
+            vendorName.text = vendor.nameVendor ?: "Pedagang"
             name.text = vendor.name
-            distance.text = location
-
+            if (vendor.products != null) {
+                setVisibility(products, true)
+                products.text = vendor.products
+            }
         }
 
     }
@@ -44,42 +46,43 @@ class HomeAdapter : ListAdapter<Vendor, HomeAdapter.VendorViewHolder>(DIFF_CALLB
     }
 
     override fun onBindViewHolder(holder: VendorViewHolder, position: Int) {
-        val vendor = getItem(position) as Vendor
-        holder.binding.imgVendor.loadImage(vendor.photoUrl)
-        holder.bind(vendor)
+        val vendor = getItem(position)
+        val image = vendor?.imageUrl
+        if (image != null) {
+            holder.binding.imgVendor.loadImage(image)
+        } else {
+            holder.binding.imgVendor.setImageResource(R.drawable.logo_mangbeli)
+        }
+        if (vendor != null) {
+            holder.bind(vendor)
+        }
 
         holder.itemView.setOnClickListener {
             val contextIntent = holder.itemView.context
             val intent = Intent(contextIntent, DetailActivity::class.java)
-            intent.putExtra("id", vendor.id)
-            // delete the intent below when data is already apply
-            intent.putExtra("photoUrl", vendor.photoUrl)
-            intent.putExtra("vendorName", vendor.vendorName)
-            intent.putExtra("name", vendor.name)
-            intent.putExtra("latitude", vendor.latitude)
-            intent.putExtra("longitude", vendor.longitude)
-            intent.putStringArrayListExtra("products", ArrayList(vendor.products))
+            intent.apply {
+                putExtra("id", vendor?.vendorId)
+                putExtra("photoUrl", vendor?.imageUrl)
+                putExtra("name", vendor?.name)
+                putExtra("latitude", vendor?.latitude)
+                putExtra("longitude", vendor?.longitude)
+                putExtra("noHp", vendor?.noHp)
+            }
             contextIntent.startActivity(intent)
         }
     }
 
     companion object {
 
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Vendor>() {
-            override fun areItemsTheSame(oldItem: Vendor, newItem: Vendor): Boolean {
-                return oldItem.id == newItem.id
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<VendorEntity>() {
+            override fun areItemsTheSame(oldItem: VendorEntity, newItem: VendorEntity): Boolean {
+                return oldItem.userId == newItem.userId
             }
 
-            override fun areContentsTheSame(oldItem: Vendor, newItem: Vendor): Boolean {
+            override fun areContentsTheSame(oldItem: VendorEntity, newItem: VendorEntity): Boolean {
                 return oldItem == newItem
             }
         }
 
-    }
-
-    private fun ImageView.loadImage(url: String) {
-        Glide.with(this)
-            .load(url)
-            .into(this)
     }
 }

@@ -3,22 +3,26 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:icon="@drawable/selector_home_icon"
+        android:title="@string/title_home"
+        android:enabled="true"/>
 
     <item
         android:id="@+id/navigation_maps"
-        android:icon="@drawable/ic_map_24dp"
-        android:title="@string/title_maps" />
+        android:icon="@drawable/selector_maps_icon"
+        android:title="@string/title_maps"
+        android:enabled="true" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_account_circle_24"
-        android:title="@string/title_profile" />
+        android:icon="@drawable/selector_profile_icon"
+        android:title="@string/title_profile"
+        android:enabled="true" />
 
     <item
         android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_24"
-        android:title="@string/title_settings" />
+        android:icon="@drawable/selector_setting_icon"
+        android:title="@string/title_settings"
+        />
 
 </menu>

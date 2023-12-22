@@ -1,26 +1,29 @@
 package com.capstone.mangbeli.ui.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.capstone.mangbeli.R
-import com.capstone.mangbeli.data.remote.response.ErrorResponse
 import com.capstone.mangbeli.databinding.ActivityLoginBinding
 import com.capstone.mangbeli.ui.ViewModelFactory
 import com.capstone.mangbeli.ui.home.HomeActivity
+import com.capstone.mangbeli.ui.home.TokenViewModelFactory
+import com.capstone.mangbeli.ui.role.AddRoleActivity
 import com.capstone.mangbeli.ui.signup.SignUpActivity
-import com.firebase.ui.auth.AuthUI
+import com.capstone.mangbeli.utils.Result
+import com.capstone.mangbeli.utils.isNetworkAvailable
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -42,10 +45,16 @@ class LoginActivity : AppCompatActivity() {
             btnLoginActivity.setOnClickListener {
                 val email = binding.edtEmail.text.toString()
                 val password = binding.edtPassword.text.toString()
-                loginSet(email, password)
-            }
-            googleSignInButton.setOnClickListener {
-                mulaiLogin()
+                if (!isNetworkAvailable(this@LoginActivity)) {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Internet connection is required",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                } else {
+                    loginSet(email, password)
+                }
             }
             btnToRegister.setOnClickListener {
                 startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
@@ -68,34 +77,44 @@ class LoginActivity : AppCompatActivity() {
             showLoading(true)
             btnLoginActivity.isEnabled = false
 
-            lifecycleScope.launch {
-                try {
-                    viewModel.login(email, password)
-                    runOnUiThread {
-                        showSuccessDialog(email)
-                        showLoading(false)
+            viewModel.login(email, password).observe(this@LoginActivity) { result ->
+                ViewModelFactory.refreshInstance()
+                TokenViewModelFactory.refreshInstance()
+                when (result) {
+                    is Result.Loading -> {
+                        binding.loadingProgressBar.visibility = View.VISIBLE
                     }
-                } catch (e: HttpException) {
-                    val jsonInString = e.response()?.errorBody()?.string()
-                    val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
-                    val errorMessage = errorBody.message
-                    runOnUiThread {
-                        errorMessage?.let { showfailedDialog(it) }
-                        showLoading(false)
+
+                    is Result.Success -> {
+                        binding.loadingProgressBar.visibility = View.GONE
+                        val userData = result.data
+
+                        if (userData.role != null) {
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            val intent = Intent(this@LoginActivity, AddRoleActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+
+                    is Result.Error -> {
+                        binding.loadingProgressBar.visibility = View.GONE
+                        runOnUiThread {
+                            showfailedDialog(result.error)
+                            showLoading(false)
+                        }
+                        Log.d("LoginActivity", "onCreate: ${result.error}")
                     }
                 }
             }
         }
     }
 
-    private fun mulaiLogin() {
-        val providers = arrayListOf(AuthUI.IdpConfig.GoogleBuilder().build())
-        val intent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-        signInLauncher.launch(intent)
-    }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
@@ -117,9 +136,11 @@ class LoginActivity : AppCompatActivity() {
     private fun showSuccessDialog(email: String) {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.success))
-            setMessage(resources.getString(R.string.success) + email)
+            setMessage(email + resources.getString(R.string.success))
+
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
                 startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                binding.btnLoginActivity.isEnabled = true
                 finish()
             }
             create()
@@ -129,8 +150,28 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showfailedDialog(errorMessage: String) {
         AlertDialog.Builder(this).apply {
-            setTitle(getString(R.string.error))
-            setMessage(errorMessage)
+            when (errorMessage) {
+                "Email is not registered" -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(getString(R.string.email_not_registered))
+                }
+
+                "Wrong Password" -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(getString(R.string.wrong_password))
+                }
+
+                "Password must be at least 8 characters" -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(getString(R.string.minimal_8_characters))
+                }
+
+                else -> {
+                    setTitle(getString(R.string.error))
+                    setMessage(errorMessage)
+                }
+            }
+            binding.btnLoginActivity.isEnabled = true
             setPositiveButton(resources.getString(R.string.next_btn)) { _, _ ->
                 binding.btnLoginActivity.isEnabled = true
             }

@@ -10,10 +10,11 @@
         android:id="@+id/text_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_home_vendor_around"
+        android:text="@string/title_home_pembeli_around"
         android:layout_marginTop="30dp"
         android:layout_marginHorizontal="16dp"
-        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+        android:fontFamily="@font/nunito_bold"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -52,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/title_home_buyer_around"
+                android:fontFamily="@font/nunito_bold"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
@@ -59,15 +61,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/title_home_mark_buyer"
+                android:fontFamily="@font/nunito_bold"
                 android:textColor="@color/md_theme_light_outline"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
             <Button
+                android:id="@+id/btn_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/nunito_extrabold"
                 android:text="@string/ya" />
 
             <androidx.fragment.app.FragmentContainerView

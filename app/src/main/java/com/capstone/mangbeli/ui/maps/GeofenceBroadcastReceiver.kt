@@ -3,13 +3,16 @@ package com.capstone.mangbeli.ui.maps
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import com.capstone.mangbeli.R
+import com.capstone.mangbeli.ui.home.HomeActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
@@ -34,7 +37,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             if (geofencingTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofencingTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
                 val geofenceTransitionString =
                     when (geofencingTransition) {
-                        Geofence.GEOFENCE_TRANSITION_ENTER -> "sedang mendekat nih!"
+                        Geofence.GEOFENCE_TRANSITION_ENTER -> "berada didekatmu nih!"
                         Geofence.GEOFENCE_TRANSITION_DWELL -> "sedang dalam area kamu!"
                         else -> "Invalid bos"
                     }
@@ -60,6 +63,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             .setContentTitle(geofenceTransitionDetails)
             .setContentText("Hehehe siapa yang laper nih?")
             .setSmallIcon(R.drawable.baseline_notifications_active_24)
+            .setContentIntent(getPendingIntent(context))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH)
@@ -69,6 +73,22 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
         val notification = mBuilder.build()
         mNotificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun getPendingIntent(context: Context): PendingIntent? {
+        val intent = Intent(context, HomeActivity::class.java)
+
+        return TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(intent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                getPendingIntent(
+                    NOTIFICATION_ID,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            } else {
+                getPendingIntent(NOTIFICATION_ID, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+        }
     }
 
     companion object {

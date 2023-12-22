@@ -1,5 +1,6 @@
 package com.capstone.mangbeli.data.repository
 
+import com.capstone.mangbeli.data.local.entity.TokenEntity
 import com.capstone.mangbeli.data.local.entity.UserEntity
 import com.capstone.mangbeli.data.local.room.UserDatabase
 
@@ -9,9 +10,11 @@ class LocationRepository(private val database: UserDatabase) {
         userLocationDao.insertLocation(location)
     }
 
-    suspend fun getLastLocation(): UserEntity? {
-        return userLocationDao.getLastLocation()
+    suspend fun saveToken(data: TokenEntity) {
+        userLocationDao.saveToken(data)
     }
+
+    fun getLastLocation(): UserEntity = userLocationDao.getLastLocation()
 
     companion object {
         @Volatile

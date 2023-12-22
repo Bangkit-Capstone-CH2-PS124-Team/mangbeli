@@ -28,4 +28,11 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_dark_inverseOnSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
     </style>
+    <style name="circularImageView" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="roundedImageView" parent="">
+        <item name="cornerSize">20%</item>
+    </style>
 </resources>

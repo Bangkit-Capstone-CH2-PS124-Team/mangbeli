@@ -3,6 +3,7 @@ package com.capstone.mygithubusers.ui.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.mangbeli.data.local.pref.SettingsPref
+import com.capstone.mangbeli.ui.settings.SettingViewModel
 
 class SettingViewModelFactory(private val pref: SettingsPref) :
     ViewModelProvider.NewInstanceFactory() {

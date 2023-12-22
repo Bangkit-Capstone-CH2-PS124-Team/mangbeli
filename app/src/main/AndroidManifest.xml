@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -19,6 +22,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MangBeli"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.role.AddDataVendor"
+            android:exported="false" />
+        <activity
+            android:name=".ui.role.DataDiriActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.role.AddFavFoodActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.role.AddRoleActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".ui.maps.GeofenceBroadcastReceiver"
             android:enabled="true"
@@ -34,15 +50,20 @@
             android:exported="false" />
         <activity
             android:name=".ui.signup.SignUpActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCrM7GX2SqCNsivoWbzkj0ExYjSVN0C0jQ" />
+            android:value="AIzaSyCJGXpV0zpsGLJxDF3IeSL77yy6Sl12zKs" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.splash.SplashScreen"
             android:exported="true">
@@ -59,6 +80,13 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
+        <service
+            android:name=".firebase.NotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

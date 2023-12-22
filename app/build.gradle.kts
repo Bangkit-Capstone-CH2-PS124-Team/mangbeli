@@ -12,12 +12,13 @@ android {
 
     defaultConfig {
         applicationId = "com.capstone.mangbeli"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BASE_URL", "\"https://mangbeli-auth-1-vb76nyymeq-et.a.run.app/\"")
     }
 
     buildTypes {
@@ -38,6 +39,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -55,9 +57,16 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    // Testing
     testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("androidx.test.espresso:espresso-idling-resource:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
 
     // Retrofit
     implementation("com.github.bumptech.glide:glide:4.16.0")
@@ -81,8 +90,21 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
 
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    implementation("com.auth0.android:jwtdecode:2.0.2")
+
+    // Paging
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.room:room-paging:2.6.0-rc01")
+
     //google
     implementation("com.google.android.gms:play-services-auth:19.2.0")
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+
+    //route
+    implementation("com.github.dangiashish:Google-Direction-Api:1.4")
 }

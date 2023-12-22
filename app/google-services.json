@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "535600905030",
-    "project_id": "mangbeli-4ff89",
-    "storage_bucket": "mangbeli-4ff89.appspot.com"
+    "project_number": "782916083412",
+    "project_id": "mangbeli-a2b38",
+    "storage_bucket": "mangbeli-a2b38.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:535600905030:android:9d4c45899ba9bcd99b4347",
+        "mobilesdk_app_id": "1:782916083412:android:5d4eb1b1a237ff5a6ea541",
         "android_client_info": {
           "package_name": "com.capstone.mangbeli"
         }
       },
       "oauth_client": [
         {
-          "client_id": "535600905030-pacvjh7sshmmla3j8um09e1g2b3imvkg.apps.googleusercontent.com",
+          "client_id": "782916083412-ptqn4ut5m9pjdlos91aocnn6cp5g84f2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.capstone.mangbeli",
@@ -22,20 +22,28 @@
           }
         },
         {
-          "client_id": "535600905030-hn3j341e50t3q956nac8s9q76nijomop.apps.googleusercontent.com",
+          "client_id": "782916083412-qa2v77pibrpjojd90u9gs93rtgk4log3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capstone.mangbeli",
+            "certificate_hash": "bd139aa17de100eed98e2739e05d8b2131aa7d2a"
+          }
+        },
+        {
+          "client_id": "782916083412-ulcqlb61h5did303n3bg3mer278gj37d.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDc9Mzkv4BQD3lNul9Q4FsrZfOnde359dQ"
+          "current_key": "AIzaSyCKc7qqLzN96X6B-KA72x0cu-y4TAShgwk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "535600905030-hn3j341e50t3q956nac8s9q76nijomop.apps.googleusercontent.com",
+              "client_id": "782916083412-ulcqlb61h5did303n3bg3mer278gj37d.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
