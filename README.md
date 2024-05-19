@@ -56,6 +56,12 @@ We welcome contributions from the community. If you wish to contribute, please f
 5. Push to the branch (`git push origin feature/your-feature-name`).
 6. Open a pull request.
 
+### Download
+
+[MangBeli_v1.0.0-alpha.apk]([https://github.com/Bangkit-Capstone-CH2-PS124-Team/mangbeli/releases/download/v1.0.0-alpha/MangBeli_v1.0.0-alpha.apk](https://github.com/Bangkit-Capstone-CH2-PS124-Team/mangbeli/releases/tag/v1.0.0-alpha))
+
+Thank you for using MangBeli App! We hope this app enhances your experience with street vendors and helps you save time.
+
 ## License
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/Bangkit-Capstone-CH2-PS124-Team/mangbeli#MIT-1-ov-file) file for details.
 
